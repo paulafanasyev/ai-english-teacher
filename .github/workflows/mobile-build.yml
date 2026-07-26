@@ -61,7 +61,7 @@ jobs:
 
       - name: Install web deps & build
         run: |
-          npm install
+          npm install --legacy-peer-deps
           npm run build
 
       - name: Add & sync Android platform
@@ -167,7 +167,7 @@ jobs:
 
       - name: Install web deps & build
         run: |
-          npm install
+          npm install --legacy-peer-deps
           npm run build
 
       - name: Add & sync iOS platform
