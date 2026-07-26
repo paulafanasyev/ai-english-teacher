@@ -18,7 +18,7 @@ rmSync(OUT, { recursive: true, force: true });
 mkdirSync(OUT, { recursive: true });
 
 console.log(`[1/3] tailwind css (${mode})…`);
-execFileSync(TW, ['-c', 'tailwind.config.js', '-i', 'src/styles.css', '-o', join(OUT, 'app.css'), '--minify'], { cwd: WEB, stdio: 'inherit' });
+execFileSync(TW, ['-c', 'tailwind.config.cjs', '-i', 'src/styles.css', '-o', join(OUT, 'app.css'), '--minify'], { cwd: WEB, stdio: 'inherit' });
 
 console.log('[2/3] esbuild bundle…');
 execFileSync(ESBUILD, [
