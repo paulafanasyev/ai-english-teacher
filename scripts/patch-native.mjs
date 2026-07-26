@@ -21,6 +21,39 @@ if (fs.existsSync(manifest)) {
   log('Android manifest не найден — пропускаю');
 }
 
+// ---------- Android: принудительно Java 17 для всех модулей ----------
+// Некоторые community-плагины (напр. @capacitor-community/text-to-speech)
+// собираются под Java 21, а CI использует JDK 17 → "invalid source release: 21".
+// Приводим ВСЕ модули к Java 17 (плагины не используют возможностей Java 21).
+const rootGradle = 'android/build.gradle';
+if (fs.existsSync(rootGradle)) {
+  let g = fs.readFileSync(rootGradle, 'utf8');
+  if (!g.includes('patch-native: force Java 17')) {
+    g += `
+
+// patch-native: force Java 17 across all modules (some plugins target Java 21)
+subprojects { sp ->
+    sp.afterEvaluate {
+        if (sp.extensions.findByName('android') != null) {
+            sp.android {
+                compileOptions {
+                    sourceCompatibility JavaVersion.VERSION_17
+                    targetCompatibility JavaVersion.VERSION_17
+                }
+            }
+        }
+    }
+}
+`;
+    fs.writeFileSync(rootGradle, g);
+    log('Android: принудительно Java 17 для всех модулей (build.gradle)');
+  } else {
+    log('Android: Java-17 override уже есть');
+  }
+} else {
+  log('Android build.gradle не найден — пропускаю Java-17 override');
+}
+
 // ---------- iOS: Info.plist usage descriptions ----------
 const plist = 'ios/App/App/Info.plist';
 if (fs.existsSync(plist)) {
