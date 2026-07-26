@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Сборка APK через Capacitor — AI English Teacher</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pur:#7c3aed; --pur2:#a855f7; --fuchsia:#d946ef;
+    --ink:#0f1222; --ink2:#3a3f55; --mut:#6b7192; --line:#e7e6f0;
+    --bg:#faf9fe; --card:#ffffff; --code:#171326; --code2:#221b3a;
+    --green:#10b981; --amber:#f59e0b; --rose:#f43f5e; --sky:#0ea5e9;
+    --radius:16px; --shadow:0 1px 3px rgba(20,10,50,.06),0 12px 30px rgba(80,40,160,.07);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,sans-serif;line-height:1.65;-webkit-font-smoothing:antialiased}
+  code,pre,kbd{font-family:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace}
+
+  /* ---------- header ---------- */
+  header.hero{
+    background:
+      radial-gradient(1100px 480px at 88% -12%,rgba(217,70,239,.28),transparent 60%),
+      radial-gradient(900px 460px at 8% 0%,rgba(124,58,237,.34),transparent 62%),
+      linear-gradient(160deg,#120a2b 0%,#1c1044 52%,#241056 100%);
+    color:#fff;padding:64px clamp(20px,5vw,72px) 56px;position:relative;overflow:hidden;
+  }
+  header.hero::after{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1px);background-size:22px 22px;opacity:.5;pointer-events:none}
+  .hero-inner{max-width:1180px;margin:0 auto;position:relative;z-index:1}
+  .eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:12.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#e9d8ff;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);padding:7px 15px;border-radius:999px}
+  h1.title{font-size:clamp(2.2rem,5.4vw,4rem);line-height:1.02;font-weight:900;margin:22px 0 0;letter-spacing:-.02em}
+  h1.title .grad{background:linear-gradient(100deg,#f0abfc,#c4b5fd 60%,#7dd3fc);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{font-size:clamp(1.02rem,2vw,1.28rem);color:#d6ccf5;max-width:720px;margin:20px 0 0;font-weight:500}
+  .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
+  .pill{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#f3eaff;font-size:13px;font-weight:600;padding:9px 15px;border-radius:12px}
+  .pill b{color:#fff;font-weight:800}
+  .pill .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green)}
+
+  /* ---------- layout ---------- */
+  .wrap{max-width:1180px;margin:0 auto;padding:0 clamp(20px,5vw,72px);display:grid;grid-template-columns:236px 1fr;gap:44px;align-items:start}
+  @media(max-width:920px){.wrap{grid-template-columns:1fr;gap:0}}
+
+  /* ---------- TOC ---------- */
+  nav.toc{position:sticky;top:22px;align-self:start;padding:26px 0 40px}
+  @media(max-width:920px){nav.toc{position:static;padding:22px 0 4px}}
+  .toc h4{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--mut);margin:0 0 12px;font-weight:800}
+  .toc ol{list-style:none;margin:0;padding:0;counter-reset:toc}
+  .toc a{counter-increment:toc;display:flex;gap:11px;align-items:baseline;text-decoration:none;color:var(--ink2);font-size:13.5px;font-weight:600;padding:8px 12px;border-radius:10px;border-left:2px solid transparent;transition:all .15s}
+  .toc a::before{content:counter(toc,decimal-leading-zero);font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--pur2);font-weight:700;min-width:22px}
+  .toc a:hover{background:#f2edfe;color:var(--ink)}
+  .toc a.active{background:#f0e9fe;color:var(--pur);border-left-color:var(--pur)}
+  @media(max-width:920px){.toc ol{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px}}
+  @media(max-width:560px){.toc ol{grid-template-columns:1fr}}
+
+  main{padding:26px 0 40px;min-width:0}
+  section{scroll-margin-top:22px;margin-bottom:14px}
+  .step{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:30px clamp(20px,3.4vw,38px);margin-bottom:26px}
+  .step-head{display:flex;align-items:center;gap:16px;margin:0 0 6px}
+  .num{flex-shrink:0;width:44px;height:44px;border-radius:13px;display:grid;place-items:center;font-weight:900;font-size:18px;color:#fff;background:linear-gradient(135deg,var(--pur),var(--fuchsia));box-shadow:0 8px 20px rgba(124,58,237,.32);font-family:'JetBrains Mono',monospace}
+  h2{font-size:clamp(1.35rem,2.6vw,1.72rem);font-weight:850;margin:0;letter-spacing:-.015em;font-weight:800}
+  h3{font-size:1.06rem;font-weight:800;margin:26px 0 10px;color:var(--ink)}
+  p{margin:12px 0;color:var(--ink2)}
+  a.inline{color:var(--pur);font-weight:600;text-decoration:none;border-bottom:1.5px solid #d8c8fb}
+  a.inline:hover{border-bottom-color:var(--pur)}
+  ul,ol.list{margin:12px 0;padding-left:2px;list-style:none}
+  ul li,ol.list li{position:relative;padding-left:28px;margin:9px 0;color:var(--ink2)}
+  ul li::before{content:"";position:absolute;left:6px;top:11px;width:7px;height:7px;border-radius:2px;background:var(--pur2);transform:rotate(45deg)}
+  ol.list{counter-reset:sub}
+  ol.list li{counter-increment:sub}
+  ol.list li::before{content:counter(sub);position:absolute;left:0;top:1px;width:20px;height:20px;border-radius:6px;background:#efe8fd;color:var(--pur);font-size:11px;font-weight:800;display:grid;place-items:center;font-family:'JetBrains Mono',monospace}
+  b,strong{color:var(--ink);font-weight:700}
+  kbd{background:#efe8fd;border:1px solid #d8c8fb;border-bottom-width:2px;border-radius:6px;padding:1px 7px;font-size:12px;font-weight:600;color:var(--pur)}
+
+  /* ---------- code blocks ---------- */
+  .code{position:relative;margin:16px 0;border-radius:13px;overflow:hidden;background:var(--code);border:1px solid #2b2247}
+  .code-bar{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;background:var(--code2);border-bottom:1px solid #2b2247}
+  .code-bar .lbl{font-size:11.5px;font-weight:700;color:#b9a8e6;letter-spacing:.04em;display:flex;align-items:center;gap:8px}
+  .code-bar .lbl .fdot{width:9px;height:9px;border-radius:50%;background:#4b3d75}
+  .copy{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.13);color:#d9ccff;font-size:11.5px;font-weight:700;padding:5px 12px;border-radius:8px;cursor:pointer;transition:all .15s;font-family:Inter,sans-serif}
+  .copy:hover{background:var(--pur);border-color:var(--pur);color:#fff}
+  .copy.ok{background:var(--green);border-color:var(--green);color:#fff}
+  pre{margin:0;padding:16px 18px;overflow-x:auto;font-size:13px;line-height:1.72;color:#e9e3fb}
+  pre .c{color:#7d76a8;font-style:italic}   /* comment */
+  pre .k{color:#c4b5fd;font-weight:600}      /* keyword/flag */
+  pre .s{color:#7dd3fc}                        /* string/path */
+  pre .g{color:#86efac}                        /* good/prompt */
+  pre .v{color:#fca5f5}                        /* var */
+
+  /* ---------- callouts ---------- */
+  .note{border-radius:13px;padding:15px 18px 15px 16px;margin:18px 0;display:flex;gap:13px;font-size:14px;border:1px solid;line-height:1.6}
+  .note .ic{flex-shrink:0;font-size:19px;line-height:1.4}
+  .note p{margin:0;color:inherit}
+  .note.info{background:#eff7ff;border-color:#bae0fd;color:#0b4a72}
+  .note.warn{background:#fff7ed;border-color:#fed7aa;color:#9a3412}
+  .note.tip{background:#ecfdf5;border-color:#a7f3d0;color:#065f46}
+  .note.danger{background:#fff1f2;border-color:#fecdd3;color:#9f1239}
+  .note b{color:inherit}
+
+  /* ---------- table ---------- */
+  .tbl{width:100%;border-collapse:collapse;margin:16px 0;font-size:13.5px;background:var(--card);border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+  .tbl th{background:#f4effe;text-align:left;padding:12px 15px;font-weight:800;color:var(--ink);font-size:12px;letter-spacing:.03em;text-transform:uppercase}
+  .tbl td{padding:12px 15px;border-top:1px solid var(--line);color:var(--ink2);vertical-align:top}
+  .tbl td code{background:#f3eefe;padding:2px 6px;border-radius:5px;font-size:12px;color:var(--pur)}
+  .tbl tr:hover td{background:#fbf9ff}
+
+  /* result path chip */
+  .out{display:flex;align-items:center;gap:11px;background:linear-gradient(100deg,#f0fdf4,#ecfdf5);border:1px solid #a7f3d0;border-radius:12px;padding:13px 16px;margin:16px 0;font-size:13.5px;color:#065f46;font-weight:600}
+  .out .ic{font-size:18px}
+  .out code{background:#fff;border:1px solid #a7f3d0;padding:3px 9px;border-radius:7px;color:#047857;font-weight:700}
+
+  .divider{height:1px;background:var(--line);margin:8px 0 0}
+
+  footer{background:#0f0a24;color:#cbb9f2;padding:44px clamp(20px,5vw,72px);margin-top:20px}
+  .foot-inner{max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;gap:24px;justify-content:space-between;align-items:center}
+  .foot-inner .devs{font-size:14px}
+  .foot-inner .devs b{color:#fff}
+  .foot-inner .brand{font-weight:900;font-size:16px;color:#fff;display:flex;align-items:center;gap:9px}
+  .foot-small{max-width:1180px;margin:22px auto 0;font-size:12px;color:#8b7fb5;border-top:1px solid #2a2148;padding-top:18px}
+  .anchor-h{color:inherit;text-decoration:none}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <span class="eyebrow">🤖 Android Build Guide · Capacitor 6</span>
+    <h1 class="title">Сборка <span class="grad">APK</span> из проекта<br>AI English Teacher</h1>
+    <p class="sub">Пошагово: что установить, какие команды выполнить и как подписать приложение для установки на телефон и публикации в Google Play. Все команды выверены по реальной конфигурации проекта.</p>
+    <div class="meta">
+      <span class="pill"><span class="dot"></span> <b>Готово к сборке</b></span>
+      <span class="pill">appId&nbsp;<b>com.aiteacher.app</b></span>
+      <span class="pill">Capacitor&nbsp;<b>v6.1</b></span>
+      <span class="pill">webDir&nbsp;<b>dist</b></span>
+      <span class="pill">⏱ ~40–60&nbsp;мин первый раз</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <nav class="toc">
+    <h4>Содержание</h4>
+    <ol id="toc">
+      <li><a href="#req">Требования и установка</a></li>
+      <li><a href="#env">Переменные окружения</a></li>
+      <li><a href="#setup">Инициализация проекта</a></li>
+      <li><a href="#debug">Debug-APK (тест)</a></li>
+      <li><a href="#icons">Иконки и сплэш</a></li>
+      <li><a href="#sign">Ключ подписи</a></li>
+      <li><a href="#release">Подписанный APK / AAB</a></li>
+      <li><a href="#server">Онлайн-режим (сервер)</a></li>
+      <li><a href="#trouble">Ошибки и решения</a></li>
+      <li><a href="#cheat">Шпаргалка команд</a></li>
+    </ol>
+  </nav>
+
+  <main>
+
+    <!-- 1 -->
+    <section id="req"><div class="step">
+      <div class="step-head"><div class="num">1</div><h2><a class="anchor-h" href="#req">Требования и установка</a></h2></div>
+      <p>APK нельзя собрать в облачном окружении — нужны JDK, Android SDK и Gradle на вашей машине (Windows, macOS или Linux — любая подойдёт, в отличие от iOS, которому нужен только macOS). Установите три вещи:</p>
+      <ul>
+        <li><b>Node.js 18+</b> — <a class="inline" href="https://nodejs.org/" target="_blank" rel="noopener noreferrer">nodejs.org</a>. Проверка: <kbd>node -v</kbd></li>
+        <li><b>JDK 17</b> (именно 17 — требование Capacitor&nbsp;6 и Android Gradle Plugin&nbsp;8). Рекомендую <a class="inline" href="https://adoptium.net/temurin/releases/?version=17" target="_blank" rel="noopener noreferrer">Eclipse Temurin 17</a>. Проверка: <kbd>java -version</kbd></li>
+        <li><b>Android Studio</b> — <a class="inline" href="https://developer.android.com/studio" target="_blank" rel="noopener noreferrer">developer.android.com/studio</a>. Он ставит Android SDK, build-tools, platform-tools и Gradle.</li>
+      </ul>
+      <h3>Настройка Android Studio (один раз)</h3>
+      <ol class="list">
+        <li>Запустите Android Studio → пройдите мастер первого запуска (он докачает SDK).</li>
+        <li>Откройте <b>Settings → Languages &amp; Frameworks → Android SDK</b> и убедитесь, что установлены: <b>Android SDK Platform 34</b>, <b>SDK Build-Tools 34</b>, <b>Platform-Tools</b>, <b>SDK Command-line Tools</b>.</li>
+        <li>Примите лицензии SDK (обязательно, иначе Gradle упадёт):</li>
+      </ol>
+      <div class="code"><div class="code-bar"><span class="lbl"><span class="fdot"></span>терминал — принять лицензии SDK</span><button class="copy">Копировать</button></div>
+<pre><span class="c"># macOS / Linux</span>
+yes | <span class="v">$ANDROID_HOME</span>/cmdline-tools/latest/bin/sdkmanager <span class="k">--licenses</span>
+
+<span class="c"># Windows (PowerShell)</span>
+&amp; <span class="s">"$env:ANDROID_HOME\cmdline-tools\latest\bin\sdkmanager.bat"</span> <span class="k">--licenses</span></pre></div>
+      <div class="note tip"><span class="ic">💡</span><p><b>Проверка готовности:</b> <kbd>node -v</kbd> ≥ 18, <kbd>java -version</kbd> → 17.x, а также появилась команда <kbd>adb version</kbd>. Если все три отвечают — можно продолжать.</p></div>
+    </div></section>
+
+    <!-- 2 -->
+    <section id="env"><div class="step">
+      <div class="step-head"><div class="num">2</div><h2><a class="anchor-h" href="#env">Переменные окружения</a></h2></div>
+      <p>Gradle должен знать, где лежат JDK и Android SDK. Задайте <code>JAVA_HOME</code>, <code>ANDROID_HOME</code> и добавьте инструменты в <code>PATH</code>.</p>
+      <div class="code"><div class="code-bar"><span class="lbl"><span class="fdot"></span>macOS / Linux — ~/.zshrc или ~/.bashrc</span><button class="copy">Копировать</button></div>
+<pre><span class="k">export</span> <span class="v">JAVA_HOME</span>=<span class="s">"/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home"</span>  <span class="c"># macOS</span>
+<span class="c"># export JAVA_HOME="/usr/lib/jvm/temurin-17-jdk-amd64"                        # Linux</span>
+
+<span class="k">export</span> <span class="v">ANDROID_HOME</span>=<span class="s">"$HOME/Library/Android/sdk"</span>   <span class="c"># macOS</span>
+<span class="c"># export ANDROID_HOME="$HOME/Android/Sdk"          # Linux</span>
+
+<span class="k">export</span> <span class="v">PATH</span>=<span class="s">"$PATH:$ANDROID_HOME/platform-tools:$ANDROID_HOME/cmdline-tools/latest/bin"</span></pre></div>
+      <div class="code"><div class="code-bar"><span class="lbl"><span class="fdot"></span>Windows — PowerShell (постоянно)</span><button class="copy">Копировать</button></div>
+<pre>[System.Environment]::SetEnvironmentVariable(<span class="s">'JAVA_HOME'</span>,<span class="s">'C:\Program Files\Eclipse Adoptium\jdk-17'</span>,<span class="s">'User'</span>)
+[System.Environment]::SetEnvironmentVariable(<span class="s">'ANDROID_HOME'</span>,<span class="s">"$env:LOCALAPPDATA\Android\Sdk"</span>,<span class="s">'User'</span>)
+<span class="c"># затем перезапустите терминал</span></pre></div>
+      <div class="note info"><span class="ic">ℹ️</span><p>Android Studio обычно сам создаёт файл <code>android/local.properties</code> со строкой <code>sdk.dir=...</code> при первом открытии проекта. Если собираете чисто из терминала и Gradle пишет «SDK location not found» — создайте этот файл вручную (см. раздел «Ошибки»).</p></div>
+    </div></section>
+
+    <!-- 3 -->
+    <section id="setup"><div class="step">
+      <div class="step-head"><div class="num">3</div><h2><a class="anchor-h" href="#setup">Инициализация проекта</a></h2></div>
+      <p>Capacitor уже добавлен в зависимости проекта (<code>@capacitor/core</code>, <code>@capacitor/android</code>, <code>@capacitor/cli</code> — v6.1), а конфиг <code>apps/web/capacitor.config.json</code> заполнен. Нужно установить зависимости, собрать веб-билд и создать нативный Android-проект.</p>
+      <div class="code"><div class="code-bar"><span class="lbl"><span class="fdot"></span>из корня репозитория</span><button class="copy">Копировать</button></div>
+<pre><span class="k">cd</span> apps/web
+
+npm install                 <span class="c"># зависимости, включая Capacitor 6</span>
+npm run build               <span class="c"># Vite собирает веб-приложение в apps/web/dist</span>
+
+npx cap add android         <span class="c"># создаёт папку android/ (только один раз)</span>
+npx cap sync android        <span class="c"># копирует dist/ в нативный проект + плагины</span></pre></div>
+      <p>Что делает каждая команда:</p>
+      <ul>
+        <li><code>npm run build</code> — генерирует статический веб-билд в <code>apps/web/dist</code> (это и есть <code>webDir</code> из конфига).</li>
+        <li><code>npx cap add android</code> — разворачивает Gradle-проект в папке <code>android/</code> с вашим <code>appId</code> и иконкой-заглушкой.</li>
+        <li><code>npx cap sync</code> — переносит свежий <code>dist/</code> внутрь <code>android/app/src/main/assets/public</code> и подключает плагины. <b>Запускайте его после каждого</b> <code>npm run build</code>.</li>
+      </ul>
+      <div class="note tip"><span class="ic">⚡</span><p>В <code>package.json</code> есть готовый скрипт-ярлык: <kbd>npm run cap:sync</kbd> = <code>npm run build &amp;&amp; npx cap sync</code>. Удобно повторять при каждом изменении кода.</p></div>
+    </div></section>
+
+    <!-- 4 -->
+    <section id="debug"><div class="step">
+      <div class="step-head"><div class="num">4</div><h2><a class="anchor-h" href="#debug">Debug-APK — для теста и сайдлоада</a></h2></div>
+      <p>Debug-APK не требует ключа подписи (Android подписывает его автоматически debug-ключом) — идеально, чтобы быстро проверить приложение на своём телефоне.</p>
+      <div class="code"><div class="code-bar"><span class="lbl"><span class="fdot"></span>сборка debug-APK</span><button class="copy">Копировать</button></div>
+<pre><span class="k">cd</span> android
+
+<span class="c"># macOS / Linux</span>
+./gradlew assembleDebug
+
+<span class="c"># Windows</span>
+gradlew.bat assembleDebug</pre></div>
+      <div class="out"><span class="ic">📦</span><span>Готовый файл:&nbsp; <code>android/app/build/outputs/apk/debug/app-debug.apk</code></span></div>
+      <h3>Установка на телефон</h3>
+      <ol class="list">
+        <li><b>Через кабель (adb):</b> включите на телефоне «Отладку по USB», подключите его и выполните команду ниже.</li>
+        <li><b>Вручную:</b> перекиньте <code>app-debug.apk</code> на телефон и откройте, разрешив «Установку из неизвестных источников».</li>
+      </ol>
+      <div class="code"><div class="code-bar"><span class="lbl"><span class="fdot"></span>установка по кабелю</span><button class="copy">Копировать</button></div>
+<pre>adb devices                              <span class="c"># убедитесь, что телефон виден</span>
+adb install app/build/outputs/apk/debug/app-debug.apk</pre></div>
+      <div class="note info"><span class="ic">🖥️</span><p>Альтернатива терминалу — открыть проект в Android Studio: <kbd>npx cap open android</kbd> (или <kbd>npm run cap:android</kbd>), затем нажать ▶ <b>Run</b> с подключённым устройством/эмулятором.</p></div>
+    </div></section>
+
+    <!-- 5 -->
+    <section id="icons"><div class="step">
+      <div class="step-head"><div class="num">5</div><h2><a class="anchor-h" href="#icons">Иконки и сплэш-экран</a></h2></div>
+      <p><code>cap sync</code> не генерирует иконки сам. Официальный инструмент <code>@capacitor/assets</code> создаёт все размеры из одной картинки.</p>
+      <div class="code"><div class="code-bar"><span class="lbl"><span class="fdot"></span>генерация иконок и сплэша</span><button class="copy">Копировать</button></div>
+<pre><span class="c"># положите исходники в apps/web/resources/</span>
+<span class="c">#   icon.png    — 1024×1024 (иконка приложения)</span>
+<span class="c">#   splash.png  — 2732×2732 (заставка, по желанию)</span>
+
+npm i <span class="k">-D</span> @capacitor/assets
+
+npx capacitor-assets generate <span class="k">--android</span> \
+  <span class="k">--iconBackgroundColor</span> <span class="s">'#7c3aed'</span> \
+  <span class="k">--iconBackgroundColorDark</span> <span class="s">'#4c1d95'</span></pre></div>
+      <p>После генерации пересоберите и синхронизируйте: <kbd>npm run build</kbd> → <kbd>npx cap sync</kbd>. Цвета выше совпадают с фирменным фиолетовым приложения (<code>#7c3aed</code>).</p>
+    </div></section>
+
+    <!-- 6 -->
+    <section id="sign"><div class="step">
+      <div class="step-head"><div class="num">6</div><h2><a class="anchor-h" href="#sign">Ключ подписи (keystore)</a></h2></div>
+      <p>Для установки на чужие устройства и публикации в Google Play APK/AAB нужно подписать своим ключом. Создайте keystore <b>один раз</b> и храните его надёжно — <b>потерять его нельзя</b> (без него не выпустить обновления приложения).</p>
+      <div class="code"><div class="code-bar"><span class="lbl"><span class="fdot"></span>создание ключа — keytool входит в JDK</span><button class="copy">Копировать</button></div>
+<pre>keytool <span class="k">-genkey</span> <span class="k">-v</span> \
+  <span class="k">-keystore</span> aet-release.keystore \
+  <span class="k">-alias</span> aet \
+  <span class="k">-keyalg</span> RSA <span class="k">-keysize</span> 2048 <span class="k">-validity</span> 10000</pre></div>
+      <p>Команда спросит пароль и данные (имя, организация — можно кратко). Запомните <b>пароль хранилища</b>, <b>alias</b> (<code>aet</code>) и <b>пароль ключа</b>.</p>
+      <div class="note danger"><span class="ic">🔒</span><p><b>Критично:</b> сделайте резервную копию файла <code>aet-release.keystore</code> и паролей. Никогда не коммитьте его в git — добавьте <code>*.keystore</code> и <code>keystore.properties</code> в <code>.gitignore</code>.</p></div>
+    </div></section>
+
+    <!-- 7 -->
+    <section id="release"><div class="step">
+      <div class="step-head"><div class="num">7</div><h2><a class="anchor-h" href="#release">Подписанный APK и AAB для Google Play</a></h2></div>
+      <p>Подключим ключ к Gradle через файл свойств, чтобы не хранить пароли в коде.</p>
+      <h3>7.1 &nbsp;Файл <code>android/keystore.properties</code></h3>
+      <div class="code"><div class="code-bar"><span class="lbl"><span class="fdot"></span>android/keystore.properties (создать)</span><button class="copy">Копировать</button></div>
+<pre>storeFile=../../aet-release.keystore
+storePassword=ВАШ_ПАРОЛЬ_ХРАНИЛИЩА
+keyAlias=aet
+keyPassword=ВАШ_ПАРОЛЬ_КЛЮЧА</pre></div>
+      <p><code>storeFile</code> — путь к keystore относительно папки <code>android/app</code>. Если положили <code>aet-release.keystore</code> в корень репозитория, то путь <code>../../aet-release.keystore</code> подходит (можно указать и абсолютный путь).</p>
+      <h3>7.2 &nbsp;Правка <code>android/app/build.gradle</code></h3>
+      <p>В самом верху файла (до блока <code>android {</code>) добавьте загрузку свойств, а внутри <code>android {</code> — конфиг подписи:</p>
+      <div class="code"><div class="code-bar"><span class="lbl"><span class="fdot"></span>android/app/build.gradle</span><button class="copy">Копировать</button></div>
+<pre><span class="c">// --- вверху файла, до "android {" ---</span>
+<span class="k">def</span> keystorePropertiesFile = rootProject.file(<span class="s">"keystore.properties"</span>)
+<span class="k">def</span> keystoreProperties = <span class="k">new</span> Properties()
+<span class="k">if</span> (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(<span class="k">new</span> FileInputStream(keystorePropertiesFile))
+}
+
+android {
+    <span class="c">// ... существующие настройки (compileSdk, defaultConfig и т.д.) ...</span>
+
+    signingConfigs {
+        release {
+            <span class="k">if</span> (keystorePropertiesFile.exists()) {
+                storeFile file(keystoreProperties[<span class="s">'storeFile'</span>])
+                storePassword keystoreProperties[<span class="s">'storePassword'</span>]
+                keyAlias keystoreProperties[<span class="s">'keyAlias'</span>]
+                keyPassword keystoreProperties[<span class="s">'keyPassword'</span>]
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled <span class="k">false</span>
+            proguardFiles getDefaultProguardFile(<span class="s">'proguard-android-optimize.txt'</span>), <span class="s">'proguard-rules.pro'</span>
+        }
+    }
+}</pre></div>
+      <h3>7.3 &nbsp;Сборка</h3>
+      <div class="code"><div class="code-bar"><span class="lbl"><span class="fdot"></span>подписанный APK (для сайдлоада) и AAB (для Play)</span><button class="copy">Копировать</button></div>
+<pre><span class="k">cd</span> android
+
+<span class="c"># Вариант A — подписанный APK (раздать напрямую / установить вручную)</span>
+./gradlew assembleRelease
+<span class="c">#  → app/build/outputs/apk/release/app-release.apk</span>
+
+<span class="c"># Вариант B — AAB (обязательный формат для Google Play)</span>
+./gradlew bundleRelease
+<span class="c">#  → app/build/outputs/bundle/release/app-release.aab</span></pre></div>
+      <div class="out"><span class="ic">✅</span><span>Проверить подпись:&nbsp; <code>$ANDROID_HOME/build-tools/34.0.0/apksigner verify --print-certs app-release.apk</code></span></div>
+      <h3>7.4 &nbsp;Публикация в Google Play</h3>
+      <ol class="list">
+        <li>Зарегистрируйте аккаунт в <a class="inline" href="https://play.google.com/console" target="_blank" rel="noopener noreferrer">Google Play Console</a> (разовый взнос $25).</li>
+        <li>Создайте приложение, заполните карточку (описание, скриншоты, значок 512×512, приватность).</li>
+        <li>В разделе <b>Production → Create release</b> загрузите <code>app-release.aab</code>.</li>
+        <li>Рекомендуется включить <b>Play App Signing</b> — Google будет хранить финальный ключ подписи, а вы подписываете загрузочным ключом.</li>
+      </ol>
+    </div></section>
+
+    <!-- 8 -->
+    <section id="server"><div class="step">
+      <div class="step-head"><div class="num">8</div><h2><a class="anchor-h" href="#server">Онлайн-режим с вашим сервером (опционально)</a></h2></div>
+      <p>По умолчанию APK упаковывает <b>офлайн-демо</b> (все данные — на устройстве, без интернета). Чтобы приложение работало с вашим backend (Node&nbsp;+&nbsp;PostgreSQL: логин по JWT, кабинеты, дневник онлайн) — соберите веб-часть с адресом API и пересинхронизируйте.</p>
+      <div class="code"><div class="code-bar"><span class="lbl"><span class="fdot"></span>сборка в серверном режиме</span><button class="copy">Копировать</button></div>
+<pre><span class="k">cd</span> apps/web
+
+<span class="v">VITE_API_URL</span>=<span class="s">https://api.вашдомен.com</span> npm run build
+npx cap sync android
+
+<span class="c"># дальше — обычная сборка debug/release из шага 4 или 7</span></pre></div>
+      <div class="note warn"><span class="ic">⚠️</span><p>Backend должен работать по <b>HTTPS</b> (в конфиге <code>androidScheme: "https"</code>, <code>allowMixedContent: false</code>). Настройка сервера и TLS — в <code>DEPLOY.md</code>.</p></div>
+    </div></section>
+
+    <!-- 9 -->
+    <section id="trouble"><div class="step">
+      <div class="step-head"><div class="num">9</div><h2><a class="anchor-h" href="#trouble">Частые ошибки и решения</a></h2></div>
+      <table class="tbl">
+        <thead><tr><th>Ошибка</th><th>Причина и решение</th></tr></thead>
+        <tbody>
+          <tr><td><code>SDK location not found</code></td><td>Нет пути к SDK. Создайте <code>android/local.properties</code> со строкой <code>sdk.dir=/путь/к/Android/sdk</code> (Windows: <code>sdk.dir=C:\\Users\\Вы\\AppData\\Local\\Android\\Sdk</code>), либо задайте <code>ANDROID_HOME</code> (шаг&nbsp;2).</td></tr>
+          <tr><td><code>Unsupported class file major version</code></td><td>Неверная версия Java. Нужен <b>JDK 17</b>. Проверьте <code>java -version</code> и <code>JAVA_HOME</code>.</td></tr>
+          <tr><td><code>You have not accepted the license agreements</code></td><td>Не приняты лицензии SDK. Выполните <code>sdkmanager --licenses</code> (шаг&nbsp;1).</td></tr>
+          <tr><td><code>Failed to find Build Tools revision 34.0.0</code></td><td>Не установлены build-tools. Поставьте через SDK Manager в Android Studio или <code>sdkmanager "build-tools;34.0.0"</code>.</td></tr>
+          <tr><td>Белый экран после установки</td><td>Не синхронизирован свежий билд. Выполните <code>npm run build &amp;&amp; npx cap sync</code> и пересоберите.</td></tr>
+          <tr><td><code>adb: no devices found</code></td><td>На телефоне не включена «Отладка по USB», либо не подтверждён запрос доверия. Проверьте <code>adb devices</code>.</td></tr>
+          <tr><td>Gradle падает по памяти (OOM)</td><td>В <code>android/gradle.properties</code> увеличьте <code>org.gradle.jvmargs=-Xmx2048m</code>.</td></tr>
+          <tr><td><code>keystore was tampered with, or password was incorrect</code></td><td>Неверный пароль/alias в <code>keystore.properties</code>, либо путь <code>storeFile</code> указывает не на тот файл.</td></tr>
+        </tbody>
+      </table>
+    </div></section>
+
+    <!-- 10 -->
+    <section id="cheat"><div class="step">
+      <div class="step-head"><div class="num">10</div><h2><a class="anchor-h" href="#cheat">Шпаргалка команд</a></h2></div>
+      <p>Полный цикл от нуля до подписанного релиза:</p>
+      <div class="code"><div class="code-bar"><span class="lbl"><span class="fdot"></span>всё вместе</span><button class="copy">Копировать</button></div>
+<pre><span class="c"># --- разовая настройка ---</span>
+<span class="k">cd</span> apps/web
+npm install
+npm run build
+npx cap add android
+keytool <span class="k">-genkey</span> <span class="k">-v</span> <span class="k">-keystore</span> aet-release.keystore <span class="k">-alias</span> aet <span class="k">-keyalg</span> RSA <span class="k">-keysize</span> 2048 <span class="k">-validity</span> 10000
+<span class="c"># + создать android/keystore.properties и правку build.gradle (шаг 7)</span>
+
+<span class="c"># --- каждая новая сборка ---</span>
+<span class="k">cd</span> apps/web
+npm run build &amp;&amp; npx cap sync android
+
+<span class="k">cd</span> android
+./gradlew assembleDebug      <span class="c"># debug APK для теста</span>
+./gradlew assembleRelease    <span class="c"># подписанный APK</span>
+./gradlew bundleRelease      <span class="c"># AAB для Google Play</span></pre></div>
+      <table class="tbl">
+        <thead><tr><th>Результат</th><th>Путь</th></tr></thead>
+        <tbody>
+          <tr><td>Debug APK</td><td><code>android/app/build/outputs/apk/debug/app-debug.apk</code></td></tr>
+          <tr><td>Release APK</td><td><code>android/app/build/outputs/apk/release/app-release.apk</code></td></tr>
+          <tr><td>Release AAB</td><td><code>android/app/build/outputs/bundle/release/app-release.aab</code></td></tr>
+        </tbody>
+      </table>
+      <div class="note tip"><span class="ic">📱</span><p><b>Самый быстрый путь на телефон без Android SDK</b> — это PWA: приложение уже содержит <code>manifest.webmanifest</code> + service worker и устанавливается прямо из браузера по HTTPS («Установить приложение»). Подробнее — в <code>MOBILE.md</code>. Capacitor нужен именно для публикации в Google Play.</p></div>
+    </div></section>
+
+  </main>
+</div>
+
+<footer>
+  <div class="foot-inner">
+    <div class="brand">🎓 AI English Teacher</div>
+    <div class="devs">Разработка: <b>Pavel Afanasev</b> · <b>Sergei Mikhailov</b></div>
+  </div>
+  <div class="foot-small">
+    Инструкция по сборке Android APK через Capacitor 6. Команды выверены по конфигурации проекта: <code>appId com.aiteacher.app</code>, <code>webDir dist</code>. iOS собирается аналогично на macOS + Xcode (<code>npx cap add ios</code>) — см. <code>MOBILE.md</code>.
+  </div>
+</footer>
+
+<script>
+  // copy buttons
+  document.querySelectorAll('.code').forEach(function(block){
+    var btn=block.querySelector('.copy'), pre=block.querySelector('pre');
+    if(!btn||!pre)return;
+    btn.addEventListener('click',function(){
+      var txt=pre.innerText.replace(/ /g,' ');
+      navigator.clipboard.writeText(txt).then(function(){
+        var old=btn.textContent;btn.textContent='✓ Скопировано';btn.classList.add('ok');
+        setTimeout(function(){btn.textContent=old;btn.classList.remove('ok');},1600);
+      }).catch(function(){});
+    });
+  });
+  // scrollspy for TOC
+  var links=[].slice.call(document.querySelectorAll('#toc a'));
+  var map={};links.forEach(function(a){var id=a.getAttribute('href').slice(1);map[id]=a;});
+  var obs=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        links.forEach(function(a){a.classList.remove('active');});
+        var a=map[e.target.id];if(a)a.classList.add('active');
+      }
+    });
+  },{rootMargin:'-20% 0px -70% 0px',threshold:0});
+  document.querySelectorAll('main section').forEach(function(s){obs.observe(s);});
+</script>
+</body>
+</html>

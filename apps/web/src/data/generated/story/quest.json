@@ -1,0 +1,188 @@
+{
+  "title": {
+    "en": "Rescue Max",
+    "ru": "Спаси Макса",
+    "vi": "Giải cứu Max"
+  },
+  "intro": {
+    "en": "Your best friend Max flew to London for a robotics competition — and now he's vanished! A weird message just popped up on your phone: someone calling themselves the 'Grammar Goblin' has scrambled every sign, ticket, and text in the city. Nothing makes sense anymore, and Max is stuck somewhere out there, totally lost. You're the only one who can unscramble the clues, complete the English challenges, and guide him home step by step. Ready to be a hero? London is waiting.",
+    "ru": "Твой лучший друг Макс улетел в Лондон на конкурс роботехники — и вдруг пропал! На телефон приходит странное сообщение: кто-то по имени 'Грамматический Гоблин' перемешал все таблички, билеты и сообщения в городе. Теперь ничего не понятно, а Макс застрял где-то там совсем один и без подсказок. Только ты можешь распутать эти головоломки, выполнить задания по английскому и провести Макса домой шаг за шагом. Готов стать героем? Лондон ждёт тебя.",
+    "vi": "Max, người bạn thân nhất của bạn, đã bay đến London để tham gia cuộc thi robot — và giờ thì cậu ấy mất tích! Một tin nhắn kỳ lạ vừa hiện lên trên điện thoại: một kẻ tự xưng là 'Yêu Tinh Ngữ Pháp' đã xáo trộn hết các biển báo, vé xe và tin nhắn trong cả thành phố. Chẳng còn gì có nghĩa nữa, còn Max thì đang lạc lối một mình ở đâu đó ngoài kia. Chỉ có bạn mới có thể giải mã manh mối, hoàn thành các thử thách tiếng Anh và dẫn đường cho Max về nhà. Sẵn sàng làm anh hùng chưa? London đang chờ bạn đấy."
+  },
+  "chapters": [
+    {
+      "id": "ch1",
+      "title": {
+        "en": "Chaos at Heathrow",
+        "ru": "Хаос в Хитроу",
+        "vi": "Hỗn loạn ở Heathrow"
+      },
+      "place": {
+        "en": "Heathrow Airport",
+        "ru": "Аэропорт Хитроу",
+        "vi": "Sân bay Heathrow"
+      },
+      "emoji": "✈️",
+      "story": {
+        "en": "Max lands at Heathrow, buzzing with excitement about the robotics competition. But the second he steps off the plane, every screen in the terminal flickers and the words turn to nonsense. Arrival boards show gibberish, his phone won't load his hotel address, and even the 'Welcome' sign now reads backwards. A tiny note flutters down from a vent above him, signed only with a wobbly cartoon goblin face. Max picks it up, hands shaking slightly, and reads three words that make his stomach drop.",
+        "ru": "Макс приземляется в Хитроу, весь в предвкушении конкурса роботехники. Но едва он выходит из самолёта, все экраны в терминале начинают мигать, а буквы на них превращаются в бессмыслицу. На табло прилёта — сплошная каша, телефон не может загрузить адрес отеля, а на табличке 'Добро пожаловать' теперь всё написано в обратном порядке. Сверху из вентиляции слетает крошечная записка с нарисованной мордочкой гоблина. Макс поднимает её, руки чуть дрожат, и читает три слова, от которых сердце уходит в пятки.",
+        "vi": "Max đáp xuống Heathrow, lòng đầy hào hứng về cuộc thi robot sắp tới. Nhưng ngay khi vừa bước ra khỏi máy bay, mọi màn hình trong nhà ga bỗng nhấp nháy rồi chữ nghĩa biến thành một mớ hỗn độn. Bảng thông báo chuyến bay hiện toàn ký tự lộn xộn, điện thoại không tải được địa chỉ khách sạn, và ngay cả tấm biển 'Chào mừng' giờ cũng viết ngược. Một tờ giấy nhỏ từ lỗ thông gió phía trên bay xuống, chỉ ký tên bằng một hình mặt yêu tinh vẽ nghệch ngoạc. Max nhặt lên, tay hơi run, và đọc ba từ khiến bụng cậu ấy thắt lại."
+      },
+      "tasks": ["vocab", "match", "listening"],
+      "reward": {
+        "xp": 50,
+        "coins": 30
+      },
+      "finale": {
+        "en": "You decode the goblin's riddle just in time — the arrival board flickers back into English! Max breathes out and finds the sign pointing toward the Underground.",
+        "ru": "Ты расшифровываешь загадку гоблина как раз вовремя — табло прилёта снова мигает нормальным английским! Макс облегчённо вздыхает и находит табличку, указывающую в сторону метро.",
+        "vi": "Bạn giải mã câu đố của yêu tinh vừa kịp lúc — bảng thông báo chuyến bay nhấp nháy trở lại bằng tiếng Anh bình thường! Max thở phào và tìm thấy tấm biển chỉ hướng vào tàu điện ngầm."
+      }
+    },
+    {
+      "id": "ch2",
+      "title": {
+        "en": "Lost in the Underground",
+        "ru": "Заблудился в метро",
+        "vi": "Lạc trong tàu điện ngầm"
+      },
+      "place": {
+        "en": "The London Underground",
+        "ru": "Лондонское метро",
+        "vi": "Tàu điện ngầm London"
+      },
+      "emoji": "🚇",
+      "story": {
+        "en": "Max hurries down into the Underground, following signs that used to say 'Piccadilly Line' but now spell something like 'Yllacidacip Enil.' Every map on the wall is smudged and swapped around, and the automated announcer keeps mixing up her verb tenses, saying things like 'the train have leaved five minutes ago yesterday.' Max hops on what he hopes is the right train, squeezing between a violinist and a man walking a very unimpressed bulldog. As the doors slide shut, he realizes with a jolt that he has absolutely no idea which stop is his.",
+        "ru": "Макс спешит вниз в метро, следуя указателям, которые раньше писали 'Пикадилли Лайн', а теперь пишут что-то вроде 'Йллацидацип Энил'. Все карты на стенах размазаны и перепутаны местами, а автоматический голос диктора постоянно путает времена глаголов, говоря что-то вроде 'поезд уходил пять минут назад вчера завтра'. Макс садится в поезд, надеясь, что это тот самый, протискиваясь между скрипачом и мужчиной с недовольным бульдогом на поводке. Когда двери закрываются, его пронзает мысль: он совершенно не знает, на какой станции ему выходить.",
+        "vi": "Max vội vàng đi xuống tàu điện ngầm, theo các biển chỉ dẫn từng viết 'Piccadilly Line' nhưng giờ đánh vần thành thứ gì đó như 'Yllacidacip Enil'. Mọi bản đồ trên tường đều bị nhoè và đảo lộn vị trí, còn giọng thông báo tự động thì cứ nhầm lẫn thời của động từ, nói những câu như 'chuyến tàu đã rời đi năm phút trước hôm qua ngày mai'. Max nhảy lên chuyến tàu mà cậu hy vọng là đúng, len giữa một người chơi vi-ô-lông và một ông đang dắt con bulldog có vẻ mặt chẳng vui vẻ gì. Khi cửa tàu trượt đóng lại, cậu chợt nhận ra mình hoàn toàn không biết phải xuống ở trạm nào."
+      },
+      "tasks": ["grammar", "listening", "writing"],
+      "reward": {
+        "xp": 55,
+        "coins": 32
+      },
+      "finale": {
+        "en": "Your grammar fixes untangle the announcer's confused tenses, and a calm voice finally says the right station name. Max jumps off just before the doors close.",
+        "ru": "Твои исправления грамматики распутывают путаницу во временах диктора, и спокойный голос наконец называет правильную станцию. Макс выскакивает наружу прямо перед закрытием дверей.",
+        "vi": "Những chỗ sửa ngữ pháp của bạn gỡ rối được các thời động từ lộn xộn của giọng thông báo, và một giọng nói bình tĩnh cuối cùng đọc đúng tên trạm. Max nhảy ra ngoài đúng lúc cửa tàu vừa đóng."
+      }
+    },
+    {
+      "id": "ch3",
+      "title": {
+        "en": "Menu Mayhem in Camden",
+        "ru": "Меню-безумие в Камдене",
+        "vi": "Hỗn loạn thực đơn ở Camden"
+      },
+      "place": {
+        "en": "Camden Market",
+        "ru": "Рынок Камден",
+        "vi": "Chợ Camden"
+      },
+      "emoji": "🍔",
+      "story": {
+        "en": "Starving and a little shaky, Max wanders into Camden Market, where colorful food stalls sizzle and smoke under string lights. But every menu board has been rewritten in bizarre, scrambled English — 'chicken burger' has become 'ckinche gerbur,' and the drink prices seem to change every time he blinks. A street vendor with kind eyes notices Max squinting at the chalkboard and offers to help, but only if Max can prove he understands basic food words first. Max's stomach growls loudly, right on cue, making them both laugh.",
+        "ru": "Голодный и немного растерянный, Макс забредает на рынок Камден, где яркие ларьки с едой шипят и дымятся под гирляндами лампочек. Но все меню переписаны странным, перепутанным английским — 'куриный бургер' превратился в 'кцуирный бургр', а цены на напитки будто меняются каждый раз, когда он моргает. Продавец с добрыми глазами замечает, как Макс щурится на грифельную доску, и предлагает помощь — но только если Макс докажет, что знает базовые слова о еде. Живот Макса громко булькает, как по заказу, и оба смеются.",
+        "vi": "Đói bụng và có chút run rẩy, Max lang thang vào chợ Camden, nơi các quầy hàng ăn đầy màu sắc xì xèo và bốc khói dưới ánh đèn dây. Nhưng mọi bảng thực đơn đều bị viết lại thành tiếng Anh kỳ quặc, xáo trộn — 'chicken burger' biến thành 'ckinche gerbur', còn giá đồ uống thì cứ như đổi mỗi khi cậu chớp mắt. Một người bán hàng có ánh mắt hiền từ để ý thấy Max đang nhíu mắt nhìn tấm bảng đen và ngỏ ý giúp đỡ, nhưng chỉ khi Max chứng minh được mình hiểu các từ cơ bản về đồ ăn. Đúng lúc đó, bụng Max kêu to, khiến cả hai bật cười."
+      },
+      "tasks": ["vocab", "match", "writing"],
+      "reward": {
+        "xp": 60,
+        "coins": 35
+      },
+      "finale": {
+        "en": "With the food words sorted out, the vendor hands Max a warm pastry and a scribbled tip about a museum where his team might be waiting.",
+        "ru": "Разобравшись со словами про еду, продавец протягивает Максу тёплую выпечку и записку с подсказкой про музей, где может ждать его команда.",
+        "vi": "Sau khi giải quyết xong các từ về đồ ăn, người bán hàng đưa cho Max một chiếc bánh nướng còn nóng cùng một mẩu giấy ghi gợi ý về một viện bảo tàng nơi có thể đội của cậu đang chờ."
+      }
+    },
+    {
+      "id": "ch4",
+      "title": {
+        "en": "The Museum of Muddled Words",
+        "ru": "Музей запутанных слов",
+        "vi": "Viện bảo tàng Từ Ngữ Rối Rắm"
+      },
+      "place": {
+        "en": "Science Museum",
+        "ru": "Музей науки",
+        "vi": "Viện bảo tàng Khoa học"
+      },
+      "emoji": "🔬",
+      "story": {
+        "en": "Max sprints to the Science Museum, hoping his robotics teammates are inside — but the exhibit labels have all been jumbled into riddles, and a security guard at the door won't let anyone in without answering a listening challenge first. Somewhere past the ticket gate, Max can just barely hear familiar laughter echoing off the marble floors. His heart leaps. He presses his ear to the door speaker, straining to catch every word of the guard's instructions before the gate closes for the group tour.",
+        "ru": "Макс мчится к музею науки, надеясь, что его команда по роботехнике внутри — но все подписи к экспонатам превратились в загадки, а охранник на входе не пускает никого, пока они не пройдут задание на аудирование. Где-то за билетными воротами Макс еле слышит знакомый смех, эхом отдающийся от мраморного пола. Сердце подскакивает. Он прижимается ухом к динамику у двери, стараясь разобрать каждое слово из инструкций охранника, прежде чем ворота закроются перед групповой экскурсией.",
+        "vi": "Max chạy hết tốc lực đến viện bảo tàng khoa học, hy vọng đội robot của mình đang ở trong đó — nhưng tất cả các nhãn trưng bày đều bị xáo trộn thành những câu đố, còn bảo vệ ở cửa không cho ai vào nếu chưa trả lời được một thử thách nghe. Đâu đó phía sau cổng soát vé, Max chỉ vừa đủ nghe thấy tiếng cười quen thuộc vang vọng trên sàn đá cẩm thạch. Tim cậu nhảy lên. Cậu ghé tai vào loa ở cửa, cố gắng nghe rõ từng lời hướng dẫn của bảo vệ trước khi cổng đóng lại cho đoàn tham quan theo nhóm."
+      },
+      "tasks": ["listening", "grammar", "vocab"],
+      "reward": {
+        "xp": 65,
+        "coins": 38
+      },
+      "finale": {
+        "en": "The guard nods and waves Max through with a smile. Inside, he spots his team's banner — but no Max-shaped teammates, just an empty chair and a cold cup of tea.",
+        "ru": "Охранник кивает и с улыбкой пропускает Макса внутрь. Там он замечает флаг своей команды — но никого из товарищей, только пустой стул и остывшая чашка чая.",
+        "vi": "Người bảo vệ gật đầu và mỉm cười ra hiệu cho Max đi qua. Bên trong, cậu thấy lá cờ của đội mình — nhưng không có bóng dáng đồng đội nào, chỉ có một chiếc ghế trống và một cốc trà đã lạnh."
+      }
+    },
+    {
+      "id": "ch5",
+      "title": {
+        "en": "A Trail of Riddles by the Thames",
+        "ru": "Дорожка загадок у Темзы",
+        "vi": "Dấu vết câu đố bên sông Thames"
+      },
+      "place": {
+        "en": "South Bank, River Thames",
+        "ru": "Саут-Бэнк, река Темза",
+        "vi": "South Bank, sông Thames"
+      },
+      "emoji": "🎡",
+      "story": {
+        "en": "A crumpled note on the empty chair leads Max along the River Thames, past street performers and the giant slow turn of the London Eye. Each lamppost he passes has a tiny scrap of paper taped to it, covered in scrambled grammar that looks almost like a trail of breadcrumbs made of words. The wind keeps trying to snatch the notes away before Max can read them properly. Just as the sky turns orange over the water, he spots a small figure in a hoodie sitting alone on a bench, sketching something furiously in a notebook.",
+        "ru": "Скомканная записка на пустом стуле ведёт Макса вдоль реки Темзы, мимо уличных артистов и гигантского медленного колеса Лондонского глаза. На каждом фонарном столбе, который он проходит, приклеен маленький обрывок бумаги, покрытый перепутанной грамматикой — почти как дорожка из хлебных крошек, сделанных из слов. Ветер всё время норовит унести записки прежде, чем Макс успевает их толком прочитать. Когда небо над рекой становится оранжевым, он замечает маленькую фигуру в толстовке с капюшоном, одиноко сидящую на скамейке и что-то яростно рисующую в блокноте.",
+        "vi": "Một tờ giấy nhăn nhúm trên chiếc ghế trống dẫn Max đi dọc sông Thames, qua các nghệ sĩ đường phố và vòng quay khổng lồ chậm rãi của London Eye. Mỗi cột đèn cậu đi qua đều dán một mảnh giấy nhỏ, đầy chữ ngữ pháp bị xáo trộn, giống như một dấu vết bánh mì vụn làm từ chữ. Gió cứ chực giật lấy những tờ giấy trước khi Max kịp đọc rõ. Ngay khi bầu trời trên mặt nước chuyển sang màu cam, cậu thấy một bóng người nhỏ bé mặc áo hoodie ngồi một mình trên ghế đá, đang vẽ nguệch ngoạc thứ gì đó vào một cuốn sổ."
+      },
+      "tasks": ["grammar", "writing", "match"],
+      "reward": {
+        "xp": 70,
+        "coins": 40
+      },
+      "finale": {
+        "en": "Max slowly walks closer. The hooded figure looks up, startled, and quickly slams the notebook shut — but not before Max spots a doodle of a tiny cartoon goblin.",
+        "ru": "Макс медленно подходит ближе. Фигура в капюшоне поднимает взгляд, вздрагивает и быстро захлопывает блокнот — но не раньше, чем Макс замечает рисунок крошечного гоблина.",
+        "vi": "Max chậm bước đến gần hơn. Bóng người mặc hoodie ngước lên, giật mình, rồi nhanh chóng gập cuốn sổ lại — nhưng không kịp trước khi Max thấy hình vẽ nguệch ngoạc một chú yêu tinh nhỏ."
+      }
+    },
+    {
+      "id": "ch6",
+      "title": {
+        "en": "The Goblin's Secret",
+        "ru": "Секрет гоблина",
+        "vi": "Bí mật của yêu tinh"
+      },
+      "place": {
+        "en": "South Bank Bench, near Tower Bridge",
+        "ru": "Скамейка на Саут-Бэнк, у Тауэрского моста",
+        "vi": "Ghế đá South Bank, gần Cầu Tháp"
+      },
+      "emoji": "🌉",
+      "story": {
+        "en": "'Please don't be mad,' the kid in the hoodie whispers, peeking out from under the hood. Her name is Nora, a coding genius who moved to London last month and didn't know how to make friends, so she built a silly app that scrambled the city's words just to give someone — anyone — a puzzle worth solving together. Max stares, stunned, then starts laughing so hard he nearly falls off the bench. Nora looks terrified until Max says the words that change everything: one final challenge to fix the whole city, together, as a team.",
+        "ru": "'Пожалуйста, не злись', — шепчет ребёнок в толстовке, выглядывая из-под капюшона. Её зовут Нора, гений в программировании, которая переехала в Лондон в прошлом месяце и не знала, как заводить друзей, поэтому создала глупое приложение, перепутавшее слова во всём городе — просто чтобы дать кому-нибудь, хоть кому-то, головоломку, которую можно решить вместе. Макс смотрит на неё, потрясённый, а потом начинает так сильно смеяться, что чуть не падает со скамейки. Нора выглядит испуганной, пока Макс не произносит слова, которые меняют всё: последнее задание, чтобы исправить весь город — вместе, всей командой.",
+        "vi": "'Đừng giận nhé,' đứa trẻ mặc hoodie thì thầm, hé nhìn ra từ dưới mũ trùm. Cô bé tên Nora, một thiên tài lập trình mới chuyển đến London tháng trước và không biết làm sao để có bạn, nên đã tạo ra một ứng dụng ngớ ngẩn xáo trộn hết chữ nghĩa trong thành phố, chỉ để cho ai đó — bất kỳ ai — một câu đố đáng để cùng giải. Max nhìn cô bé, sững sờ, rồi bật cười to đến mức suýt ngã khỏi ghế đá. Nora trông sợ hãi cho đến khi Max nói ra những lời làm thay đổi tất cả: một thử thách cuối cùng để sửa lại cả thành phố, cùng nhau, như một đội."
+      },
+      "tasks": ["vocab", "grammar", "writing"],
+      "reward": {
+        "xp": 80,
+        "coins": 50
+      },
+      "finale": {
+        "en": "Together you crack the final challenge, and every sign in London flickers back to normal. Max, Nora, and you end the night sharing chips by the river — three new best friends under the bridge lights.",
+        "ru": "Вместе вы решаете последнее задание, и все таблички в Лондоне снова мигают и становятся нормальными. Макс, Нора и ты заканчиваете вечер, делясь чипсами у реки — три новых лучших друга под огнями моста.",
+        "vi": "Cùng nhau, bạn giải được thử thách cuối cùng, và mọi biển báo ở London nhấp nháy trở lại bình thường. Max, Nora và bạn kết thúc buổi tối bằng việc chia nhau ăn khoai tây chiên bên sông — ba người bạn thân mới dưới ánh đèn cầu."
+      }
+    }
+  ]
+}

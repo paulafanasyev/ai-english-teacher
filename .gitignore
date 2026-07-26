@@ -1,0 +1,31 @@
+# deps & builds
+node_modules/
+apps/web/dist/
+apps/web/dist-demo/
+apps/web/android/
+apps/web/ios/
+
+# secrets & local config
+.env
+.env.*
+!.env.example
+*.keystore
+keystore.properties
+ci/AuthKey_*.p8
+domain-credentials.txt
+
+# release artifacts & backups
+releases/
+backups/
+*.apk
+*.aab
+*.ipa
+
+# offline toolchain binaries (re-fetched via tools/fetch-vendor.mjs)
+tools/bin/
+
+# os / editor
+.DS_Store
+*.log
+.vite/
+.cache/

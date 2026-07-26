@@ -1,0 +1,9 @@
+{
+  "appId": "com.aiteacher.app",
+  "appName": "AI English Teacher",
+  "webDir": "dist",
+  "backgroundColor": "#7c3aedff",
+  "server": { "androidScheme": "https" },
+  "android": { "allowMixedContent": false },
+  "ios": { "contentInset": "always" }
+}

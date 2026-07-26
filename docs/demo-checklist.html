@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Чек-лист демо инвестору — AI English & Math Teacher</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@600;700;800;900&family=Nunito:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--pur:#7c3aed;--pur2:#a855f7;--fuchsia:#d946ef;--ink:#0f1222;--ink2:#3a3f55;--mut:#6b7192;--line:#e7e6f0;--bg:#faf9fe;--card:#fff;--code:#171326;--code2:#221b3a;--green:#10b981;--shadow:0 1px 3px rgba(20,10,50,.06),0 12px 30px rgba(80,40,160,.07)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Nunito,system-ui,-apple-system,sans-serif;line-height:1.65;-webkit-font-smoothing:antialiased}
+code,pre,kbd{font-family:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace}
+header.hero{background:radial-gradient(1100px 480px at 88% -12%,rgba(217,70,239,.28),transparent 60%),radial-gradient(900px 460px at 8% 0%,rgba(124,58,237,.34),transparent 62%),linear-gradient(160deg,#120a2b,#1c1044 52%,#241056);color:#fff;padding:60px clamp(20px,5vw,72px) 40px;position:relative;overflow:hidden}
+header.hero::after{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1px);background-size:22px 22px;opacity:.5}
+.hero-inner{max-width:1180px;margin:0 auto;position:relative;z-index:1}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:12.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#e9d8ff;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);padding:7px 15px;border-radius:999px}
+h1.title{font-family:Onest,Nunito,sans-serif;font-size:clamp(2rem,5vw,3.4rem);line-height:1.03;font-weight:900;margin:20px 0 0;letter-spacing:-.02em}
+h1.title .grad{background:linear-gradient(100deg,#f0abfc,#c4b5fd 60%,#7dd3fc);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{font-size:clamp(1rem,2vw,1.2rem);color:#d6ccf5;max-width:720px;margin:16px 0 0;font-weight:500}
+.pbar-wrap{max-width:1180px;margin:22px auto 0;position:relative;z-index:1}
+.pbar-top{display:flex;justify-content:space-between;font-size:13px;font-weight:800;color:#f3eaff;margin-bottom:7px}
+.pbar{height:10px;border-radius:999px;background:rgba(255,255,255,.15);overflow:hidden}
+.pbar>div{height:100%;width:0;background:linear-gradient(90deg,#a855f7,#f0abfc);transition:width .3s}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(20px,5vw,72px);display:grid;grid-template-columns:250px 1fr;gap:44px;align-items:start}
+@media(max-width:960px){.wrap{grid-template-columns:1fr;gap:0}}
+nav.toc{position:sticky;top:18px;align-self:start;padding:26px 0 40px}
+@media(max-width:960px){nav.toc{position:static;padding:18px 0 4px}}
+.toc h4{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--mut);margin:0 0 10px;font-weight:800}
+.toc ol{list-style:none;margin:0;padding:0;counter-reset:t}
+.toc a{counter-increment:t;display:flex;gap:10px;align-items:baseline;text-decoration:none;color:var(--ink2);font-size:13px;font-weight:600;padding:7px 11px;border-radius:9px;border-left:2px solid transparent;transition:.15s}
+.toc a::before{content:counter(t,decimal-leading-zero);font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--pur2);font-weight:700;min-width:20px}
+.toc a:hover{background:#f2edfe;color:var(--ink)}.toc a.active{background:#f0e9fe;color:var(--pur);border-left-color:var(--pur)}
+@media(max-width:960px){.toc ol{display:grid;grid-template-columns:1fr 1fr;gap:2px}}
+main{padding:26px 0 60px;min-width:0}
+.prose{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:26px clamp(18px,3vw,38px)}
+.prose h3{font-family:Onest,Nunito,sans-serif;font-size:1.3rem;font-weight:850;margin:34px 0 8px;letter-spacing:-.01em;scroll-margin-top:16px;padding-top:8px;border-top:1px solid var(--line);display:flex;align-items:flex-start;gap:11px}
+.prose h3:first-child{margin-top:0;border-top:0;padding-top:0}
+.prose h4{font-size:1.02rem;font-weight:800;margin:18px 0 6px;color:var(--pur)}
+.prose p{margin:10px 0;color:var(--ink2)}.prose strong{color:var(--ink);font-weight:800}
+.prose a{color:var(--pur);font-weight:700;text-decoration:none;border-bottom:1.5px solid #d8c8fb}
+.prose ul,.prose ol{margin:10px 0;padding-left:2px;list-style:none}
+.prose li{position:relative;padding-left:26px;margin:7px 0;color:var(--ink2)}
+.prose ul>li::before{content:"";position:absolute;left:5px;top:11px;width:7px;height:7px;border-radius:2px;background:var(--pur2);transform:rotate(45deg)}
+.prose ol{counter-reset:li}.prose ol>li{counter-increment:li}
+.prose ol>li::before{content:counter(li);position:absolute;left:0;top:1px;width:19px;height:19px;border-radius:6px;background:#efe8fd;color:var(--pur);font-size:11px;font-weight:800;display:grid;place-items:center;font-family:'JetBrains Mono',monospace}
+.prose code{background:#f3eefe;padding:2px 6px;border-radius:5px;font-size:.85em;color:var(--pur);font-weight:600;word-break:break-word}
+.prose hr{border:0;border-top:1px solid var(--line);margin:22px 0}
+.prose blockquote{margin:14px 0;padding:13px 16px;background:#fff7ed;border:1px solid #fed7aa;border-left:4px solid #f59e0b;border-radius:12px;color:#9a3412;font-size:14px;font-weight:600}
+.prose blockquote code{background:#fde9d3;color:#9a3412}
+.tbl{width:100%;border-collapse:collapse;margin:14px 0;font-size:13.5px;background:var(--card);border-radius:12px;overflow:hidden;border:1px solid var(--line);display:block;overflow-x:auto}
+.tbl thead{background:#f4effe}.tbl th{text-align:left;padding:11px 14px;font-weight:800;font-size:11.5px;letter-spacing:.02em;text-transform:uppercase;white-space:nowrap}
+.tbl td{padding:11px 14px;border-top:1px solid var(--line);color:var(--ink2);vertical-align:top}
+.tbl td code{background:#f3eefe;padding:2px 6px;border-radius:5px;font-size:12px;color:var(--pur)}
+.code{position:relative;margin:14px 0;border-radius:13px;overflow:hidden;background:var(--code);border:1px solid #2b2247}
+.code-bar{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:var(--code2);border-bottom:1px solid #2b2247}
+.code-bar .lbl{font-size:11.5px;font-weight:700;color:#b9a8e6;letter-spacing:.04em;display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace}
+.code-bar .lbl .fdot{width:9px;height:9px;border-radius:50%;background:#4b3d75}
+.copy{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.13);color:#d9ccff;font-size:11.5px;font-weight:700;padding:5px 12px;border-radius:8px;cursor:pointer;transition:.15s;font-family:Nunito,sans-serif}
+.copy:hover{background:var(--pur);border-color:var(--pur);color:#fff}.copy.ok{background:var(--green);border-color:var(--green);color:#fff}
+.code pre{margin:0;padding:15px 18px;overflow-x:auto;font-size:12.5px;line-height:1.7;color:#e9e3fb;white-space:pre}
+.stepcheck{flex-shrink:0;width:24px;height:24px;border-radius:7px;border:2px solid #d8c8fb;background:#fff;cursor:pointer;display:grid;place-items:center;font-size:14px;color:#fff;transition:.15s;margin-top:1px}
+.stepcheck.done{background:var(--green);border-color:var(--green)}
+h3.step.done{opacity:.62}
+footer{background:#0f0a24;color:#cbb9f2;padding:36px clamp(20px,5vw,72px);margin-top:10px;font-size:13px}
+.foot-inner{max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:center}
+.foot-inner b{color:#fff}
+
+.prose blockquote{background:#f0e9fe;border-color:#d8c8fb;border-left-color:#7c3aed;color:#4c1d95;font-size:15px}
+.prose blockquote code{background:#e5d8fb;color:#4c1d95}
+</style></head><body>
+<header class="hero"><div class="hero-inner">
+<span class="eyebrow">🎤 Demo Script · для встречи с инвестором</span>
+<h1 class="title">Чек-лист <span class="grad">демо</span> на ноутбуке</h1>
+<p class="sub">Что нажимать по порядку и что говорить: живой ИИ-учитель → вовлечение → IELTS → кабинеты для школ → цифры. ~6–8 минут. Реплики — фиолетовым 💬.</p>
+</div>
+<div class="pbar-wrap"><div class="pbar-top"><span>Прогресс репетиции</span><span id="pcount">0 / 10</span></div><div class="pbar"><div id="pfill"></div></div></div>
+</header>
+<div class="wrap">
+<nav class="toc"><h4>Шаги</h4><ol id="toc"><li><a href="#sec1">Шаг 1 — Вход и языки (30 сек)</a></li>
+<li><a href="#sec2">Шаг 2 — Живой ИИ-учитель (главный WOW) (60–90 сек)</a></li>
+<li><a href="#sec3">Шаг 3 — Урок с геймификацией (60 сек)</a></li>
+<li><a href="#sec4">Шаг 4 — Игры (по желанию, 20–30 сек)</a></li>
+<li><a href="#sec5">Шаг 5 — Подготовка к IELTS / TOEFL (45 сек)</a></li>
+<li><a href="#sec6">Шаг 6 — Курсы: языки и предметы (20 сек)</a></li>
+<li><a href="#sec7">Шаг 7 — Кабинет учителя и электронный журнал — B2B (60 сек)</a></li>
+<li><a href="#sec8">Шаг 8 — Кабинет родителя (30 сек)</a></li>
+<li><a href="#sec9">Шаг 9 — Админка и аналитика (по желанию, 20 сек)</a></li>
+<li><a href="#sec10">Шаг 10 — Закрытие и переход к цифрам (30 сек)</a></li>
+<li><a href="#sec11">⏱ Мини-версия на 2 минуты (если времени мало)</a></li>
+<li><a href="#sec12">🆘 Если что-то пойдёт не так</a></li></ol></nav>
+<main><div class="prose"><p>Сценарий на ~6–8 минут: показать (1) живого ИИ-учителя, (2) вовлечение, (3) монетизируемую ценность (IELTS), (4) B2B для школ, (5) перейти к цифрам. Отмечайте шаги галочками при репетиции — прогресс сохраняется.</p>
+<blockquote>Подготовка до встречи (2 минуты): открыть в Chrome, из папки проекта выполнить <code>npx serve apps/web/dist</code>, зайти на http://localhost:3000, войти демо-кнопкой, один раз нажать 🎤 и заранее разрешить микрофон, проверить, что звук ноутбука включён и есть интернет (для аватаров). Держите открытой презентацию на втором экране.</blockquote>
+<h3 id="sec1">Шаг 1 — Вход и языки (30 сек)</h3>
+<p>Действие: открыть http://localhost:3000 → на экране входа переключить язык RU → EN → VI → нажать «🎒 Ученик» (вход в один клик).</p>
+<blockquote>💬 «Продукт работает в вебе, как приложение (PWA) и в нативных версиях. Интерфейс сразу на трёх языках — русский, английский, вьетнамский: мы целимся в Россию и Вьетнам.»</blockquote>
+<h3 id="sec2">Шаг 2 — Живой ИИ-учитель (главный WOW) (60–90 сек)</h3>
+<p>Действие: на Главной кликнуть по аватару учителя (он поздоровается голосом) → открыть «🎤 Разговор» → нажать микрофон, сказать простую фразу («Hello, my name is Pavel») → учитель отвечает голосом.</p>
+<blockquote>💬 «Это не чат-бот и не аудио — это говорящий учитель-аватар. Ученик разговаривает голосом когда угодно, 24/7, между занятиями с живым педагогом. Вот главный крючок продукта.»</blockquote>
+<h3 id="sec3">Шаг 3 — Урок с геймификацией (60 сек)</h3>
+<p>Действие: «📖 Урок» → выбрать тему, уровень, длину → пройти 2–3 задания (показать, как учитель реагирует мимикой и голосом) → дойти до экрана результатов (XP, монеты, точность, конфетти).</p>
+<blockquote>💬 «Каждый урок — это опыт, монеты и серия. Дети возвращаются сами, ретеншн как в играх — на этом строится наша экономика удержания.»</blockquote>
+<h3 id="sec4">Шаг 4 — Игры (по желанию, 20–30 сек)</h3>
+<p>Действие: «🎮 Игры» → открыть WordBattle → сделать пару ходов.</p>
+<blockquote>💬 «Учёба как игра: WordBattle, Quest и другие. Это про вовлечение и виральный контент в TikTok и Reels.»</blockquote>
+<h3 id="sec5">Шаг 5 — Подготовка к IELTS / TOEFL (45 сек)</h3>
+<p>Действие: «📝 Экзамены» → выбрать IELTS → открыть раздел (Reading/Listening/Use) → пройти пару вопросов → запустить «Пробный тест» → показать оценку уровня по CEFR.</p>
+<blockquote>💬 «Серьёзная, монетизируемая ценность: подготовка к IELTS и TOEFL с оценкой уровня по CEFR. За это платят и родители, и языковые центры.»</blockquote>
+<h3 id="sec6">Шаг 6 — Курсы: языки и предметы (20 сек)</h3>
+<p>Действие: «📚 Курсы» → показать испанский/немецкий/французский (юниты) и математику.</p>
+<blockquote>💬 «Каркас расширяемый: новый язык или предмет — это новый пакет контента. Это платформа, а не одно приложение.»</blockquote>
+<h3 id="sec7">Шаг 7 — Кабинет учителя и электронный журнал — B2B (60 сек)</h3>
+<p>Действие: выйти → войти «🧑‍🏫 Учитель» → показать класс, список учеников с прогрессом и точностью, электронный журнал → добавить оценку и комментарий.</p>
+<blockquote>💬 «Для школ и языковых центров это готовая платформа: учитель видит прогресс каждого ученика, ставит оценки, ведёт журнал. Это наш B2B-ров и путь к контрактам.»</blockquote>
+<h3 id="sec8">Шаг 8 — Кабинет родителя (30 сек)</h3>
+<p>Действие: выйти → войти «👪 Родитель» → показать прогресс ребёнка и дневник с оценками.</p>
+<blockquote>💬 «Родитель видит прогресс и оценки ребёнка в реальном времени — это доверие и удержание в B2C.»</blockquote>
+<h3 id="sec9">Шаг 9 — Админка и аналитика (по желанию, 20 сек)</h3>
+<p>Действие: войти «🛠️ Админ» → показать аналитику, пользователей, тумблеры, загрузку материалов.</p>
+<blockquote>💬 «Админка: аналитика, управление пользователями и школами, загрузка учебных материалов — всё для управления продуктом.»</blockquote>
+<h3 id="sec10">Шаг 10 — Закрытие и переход к цифрам (30 сек)</h3>
+<p>Действие: вернуться на Главную; переключиться на презентацию/финмодель на втором экране.</p>
+<blockquote>💬 «Продукт работает уже сейчас. Модель: подписка для частных школ и центров, бесплатно для муниципальных — это охват и миссия. Рынок Россия + Вьетнам. Дальше — цифры: привлекаем Seed 3 млн долларов, план выручки — до 37 млн к 2030 году.»</blockquote>
+<h3 id="sec11">⏱ Мини-версия на 2 минуты (если времени мало)</h3>
+<p>Только Шаг 2 (разговор с учителем) → Шаг 5 (IELTS) → Шаг 7 (кабинет учителя). Этого достаточно, чтобы показать WOW, монетизацию и B2B.</p>
+<h3 id="sec12">🆘 Если что-то пойдёт не так</h3>
+<ul><li>Микрофон молчит → проверьте Chrome + адрес http://localhost (не file://) + выданное разрешение на микрофон.</li><li>Голос учителя молчит → Настройки → тумблер «Голос учителя» включён; звук ноутбука не в mute.</li><li>Аватары не загрузились → нужен интернет (или используйте сборку <code>dist/</code> — там ассеты локальные).</li><li>Резерв: заранее запишите 20-секундный скринкаст разговора с учителем — подстраховка на случай проблем с микрофоном в переговорке.</li></ul>
+<p>Успехов на встрече! Разработка: Pavel Afanasev · Sergei Mikhailov.</p></div></main>
+</div>
+<footer><div class="foot-inner"><span>🎓 AI English &amp; Math Teacher — investor demo</span><span><b>Pavel Afanasev</b> · <b>Sergei Mikhailov</b></span></div></footer>
+<script>
+(function(){
+  var KEY='aet_demo_progress';var done={};try{done=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+  var steps=[].slice.call(document.querySelectorAll('.prose h3')).filter(function(h){return h.textContent.trim().indexOf('Шаг')===0;});
+  var total=steps.length;
+  function refresh(){var c=0;steps.forEach(function(h){if(done[h.id])c++;});document.getElementById('pcount').textContent=c+' / '+total;document.getElementById('pfill').style.width=(total?Math.round(c/total*100):0)+'%';}
+  steps.forEach(function(h){h.classList.add('step');
+    var box=document.createElement('span');box.className='stepcheck'+(done[h.id]?' done':'');box.textContent=done[h.id]?'✓':'';box.title='Отметить шаг';
+    box.addEventListener('click',function(e){e.stopPropagation();done[h.id]=!done[h.id];box.classList.toggle('done',done[h.id]);box.textContent=done[h.id]?'✓':'';h.classList.toggle('done',done[h.id]);try{localStorage.setItem(KEY,JSON.stringify(done))}catch(e){}refresh();});
+    if(done[h.id])h.classList.add('done');h.insertBefore(box,h.firstChild);});
+  refresh();
+  var links=[].slice.call(document.querySelectorAll('#toc a'));var map={};links.forEach(function(a){map[a.getAttribute('href').slice(1)]=a;});
+  var obs=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){links.forEach(function(a){a.classList.remove('active')});if(map[e.target.id])map[e.target.id].classList.add('active');}});},{rootMargin:'-12% 0px -75% 0px',threshold:0});
+  document.querySelectorAll('.prose h3').forEach(function(h){obs.observe(h);});
+})();
+</script></body></html>

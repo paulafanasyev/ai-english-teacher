@@ -1,0 +1,49 @@
+{
+  "praise": [
+    "Great job!",
+    "Exactly right!",
+    "You nailed it!",
+    "Awesome work!",
+    "Perfect answer!",
+    "You're on fire today!",
+    "Brilliant!",
+    "Spot on!",
+    "Yes! That's it!",
+    "Superb thinking!",
+    "You're a natural!",
+    "Fantastic effort!"
+  ],
+  "encourage": [
+    "Almost! Let's try once more.",
+    "So close! Give it another go.",
+    "Not quite, but you're getting there.",
+    "Good try! Let's take another look.",
+    "Nice attempt — one more try?",
+    "You're close, keep going!",
+    "That's okay, let's fix it together.",
+    "Small slip — try again, you've got this.",
+    "Not this time, but don't give up!",
+    "Keep thinking, you're almost there.",
+    "Oops, let's try that one again.",
+    "It happens! Let's give it another shot."
+  ],
+  "greetings": [
+    "Hello {name}! Ready for some English magic today?",
+    "Hey {name}, so happy to see you again!",
+    "Welcome back, {name}! Let's dive into today's lesson.",
+    "Hi {name}! I've been looking forward to our lesson.",
+    "Great to see you, {name}! Let's make today count.",
+    "{name}! Right on time — let's get started."
+  ],
+  "correction": {
+    "en": "A small fix: say \"{fix}\".",
+    "ru": "Небольшая поправка: правильно — \"{fix}\".",
+    "vi": "Chỉnh một chút: hãy nói \"{fix}\"."
+  },
+  "sessionEnd": [
+    "That's all for now — you were brilliant today!",
+    "Great session! See you next time.",
+    "Awesome work today — rest up and come back soon!",
+    "You did amazing! Same time next lesson?"
+  ]
+}

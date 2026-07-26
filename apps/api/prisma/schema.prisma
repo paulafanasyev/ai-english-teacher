@@ -1,0 +1,186 @@
+// Prisma schema for AI English Teacher backend
+// Provider: PostgreSQL. Connection string comes from DATABASE_URL env var.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  STUDENT
+  TEACHER
+  PARENT
+  ADMIN
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         Role     @default(STUDENT)
+  blocked      Boolean  @default(false)
+  level        String   @default("A1")
+  xp           Int      @default(0)
+  coins        Int      @default(0)
+  teacherId    String?
+  locale       String   @default("ru")
+  createdAt    DateTime @default(now())
+
+  refreshTokens RefreshToken[]
+  attempts      Attempt[]
+  unlocks       Unlock[]
+  materials     Material[]
+
+  // Phase 10 — cabinets & electronic journal
+  classes        Class[]        @relation("TeacherClasses")
+  journalWritten JournalEntry[] @relation("TeacherJournal")
+  enrollments    Enrollment[]   @relation("StudentEnrollments")
+  journalEntries JournalEntry[] @relation("StudentJournal")
+  parentLinks    ParentLink[]   @relation("ParentLinks")
+  childLinks     ParentLink[]   @relation("ChildLinks")
+
+  @@index([teacherId])
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  userId    String
+  tokenHash String
+  expiresAt DateTime
+  revoked   Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([tokenHash])
+}
+
+model Attempt {
+  id         String   @id @default(cuid())
+  userId     String
+  taskType   String
+  topic      String
+  level      String
+  correct    Boolean
+  durationMs Int
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, createdAt])
+  @@index([taskType])
+  @@index([topic])
+}
+
+model Unlock {
+  id        String   @id @default(cuid())
+  userId    String
+  itemType  String
+  itemId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@unique([userId, itemType, itemId])
+}
+
+model Material {
+  id        String   @id @default(cuid())
+  ownerId   String
+  filename  String
+  mime      String
+  text      String
+  createdAt DateTime @default(now())
+
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@index([ownerId])
+}
+
+model Setting {
+  key   String @id @unique
+  value String
+}
+
+model AdminLog {
+  id        String   @id @default(cuid())
+  actorId   String
+  action    String
+  target    String
+  createdAt DateTime @default(now())
+
+  @@index([actorId])
+  @@index([createdAt])
+}
+
+// ---------------------------------------------------------------------------
+// Phase 10 — classes, enrollments, parent links, electronic journal
+// ---------------------------------------------------------------------------
+
+model Class {
+  id        String   @id @default(cuid())
+  name      String
+  teacherId String
+  createdAt DateTime @default(now())
+
+  teacher     User           @relation("TeacherClasses", fields: [teacherId], references: [id], onDelete: Cascade)
+  enrollments Enrollment[]
+  journal     JournalEntry[]
+
+  @@index([teacherId])
+}
+
+model Enrollment {
+  id        String   @id @default(cuid())
+  classId   String
+  studentId String
+  createdAt DateTime @default(now())
+
+  class   Class @relation(fields: [classId], references: [id], onDelete: Cascade)
+  student User  @relation("StudentEnrollments", fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([classId, studentId])
+  @@index([studentId])
+}
+
+model ParentLink {
+  id        String   @id @default(cuid())
+  parentId  String
+  studentId String
+  createdAt DateTime @default(now())
+
+  parent  User @relation("ParentLinks", fields: [parentId], references: [id], onDelete: Cascade)
+  student User @relation("ChildLinks", fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([parentId, studentId])
+  @@index([studentId])
+}
+
+model JournalEntry {
+  id        String   @id @default(cuid())
+  studentId String
+  classId   String?
+  teacherId String
+  kind      String // lesson | quiz | homework | note
+  topic     String   @default("")
+  mark      Int? // 2..5, null for notes
+  comment   String   @default("")
+  createdAt DateTime @default(now())
+
+  student User   @relation("StudentJournal", fields: [studentId], references: [id], onDelete: Cascade)
+  teacher User   @relation("TeacherJournal", fields: [teacherId], references: [id], onDelete: Cascade)
+  class   Class? @relation(fields: [classId], references: [id], onDelete: SetNull)
+
+  @@index([studentId])
+  @@index([classId])
+  @@index([teacherId])
+  @@index([studentId, createdAt])
+}

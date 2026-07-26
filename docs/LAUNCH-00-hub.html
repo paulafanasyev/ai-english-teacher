@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Лаунч-пакет — AI English &amp; Math Teacher</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800;900&family=Nunito:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>:root{
+  --pur:#7c3aed; --pur2:#a855f7; --fuchsia:#d946ef;
+  --ink:#0f1222; --ink2:#3a3f55; --mut:#6b7192; --line:#e9e7f2;
+  --bg:#faf9fe; --card:#ffffff; --code:#161226; --code2:#211a38;
+  --green:#10b981; --amber:#f59e0b; --rose:#f43f5e; --sky:#0ea5e9;
+  --shadow:0 1px 3px rgba(20,10,50,.05),0 14px 34px rgba(80,40,160,.07);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Nunito,system-ui,-apple-system,sans-serif;line-height:1.65;-webkit-font-smoothing:antialiased}
+code,pre,kbd{font-family:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace}
+
+/* hero */
+header.hero{
+  background:
+    radial-gradient(1100px 480px at 88% -12%,rgba(217,70,239,.30),transparent 60%),
+    radial-gradient(900px 460px at 6% 0%,rgba(124,58,237,.36),transparent 62%),
+    linear-gradient(160deg,#120a2b 0%,#1c1044 52%,#2a1160 100%);
+  color:#fff;padding:66px clamp(20px,5vw,72px) 60px;position:relative;overflow:hidden;
+}
+header.hero::after{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1px);background-size:22px 22px;opacity:.5}
+.hero-inner{max-width:1200px;margin:0 auto;position:relative;z-index:1}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:12.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#ecd9ff;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);padding:7px 15px;border-radius:999px}
+h1.title{font-family:Onest,Nunito,sans-serif;font-size:clamp(2.2rem,5.6vw,4.2rem);line-height:1.02;font-weight:900;margin:22px 0 0;letter-spacing:-.02em}
+h1.title .grad{background:linear-gradient(100deg,#f0abfc,#c4b5fd 55%,#7dd3fc);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{font-size:clamp(1.02rem,2vw,1.3rem);color:#d9cff5;max-width:760px;margin:20px 0 0;font-weight:500}
+.meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
+.pill{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#f3eaff;font-size:13px;font-weight:600;padding:9px 15px;border-radius:12px}
+.pill b{color:#fff;font-weight:800}
+.pill .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green)}
+
+/* layout */
+.wrap{max-width:1200px;margin:0 auto;padding:0 clamp(20px,5vw,72px);display:grid;grid-template-columns:250px 1fr;gap:46px;align-items:start}
+@media(max-width:960px){.wrap{grid-template-columns:1fr;gap:0}}
+
+/* toc */
+nav.toc{position:sticky;top:22px;align-self:start;padding:28px 0 40px}
+@media(max-width:960px){nav.toc{position:static;padding:22px 0 4px}}
+.toc h4{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--mut);margin:0 0 12px;font-weight:800}
+.toc ol{list-style:none;margin:0;padding:0}
+.toc a{display:flex;gap:12px;align-items:center;text-decoration:none;color:var(--ink2);font-size:14px;font-weight:700;padding:11px 13px;border-radius:12px;border-left:2px solid transparent;transition:all .15s}
+.toc .tnum{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--pur),var(--fuchsia));width:24px;height:24px;border-radius:8px;display:grid;place-items:center;flex-shrink:0}
+.toc a:hover{background:#f2edfe;color:var(--ink)}
+.toc a.active{background:#f0e9fe;color:var(--pur);border-left-color:var(--pur)}
+.toc-foot{margin-top:22px;padding:14px 13px;border-top:1px solid var(--line);font-size:12.5px;font-weight:800;color:var(--ink2)}
+.toc-foot span{font-weight:600;color:var(--mut);font-size:11.5px}
+@media(max-width:960px){.toc ol{display:grid;grid-template-columns:1fr 1fr;gap:4px}.toc-foot{display:none}}
+@media(max-width:560px){.toc ol{grid-template-columns:1fr}}
+
+main{padding:26px 0 40px;min-width:0}
+.intro{background:linear-gradient(120deg,#f4efff,#fdf2ff);border:1px solid #e6dcfb;border-radius:18px;padding:20px 24px;margin-bottom:26px}
+.intro p{margin:0;color:var(--ink2);font-size:15px}
+
+/* section */
+section{scroll-margin-top:20px;margin-bottom:30px}
+.sec-head{display:flex;align-items:center;gap:16px;margin:0 0 18px;padding-bottom:16px;border-bottom:2px solid var(--line)}
+.sec-num{flex-shrink:0;width:50px;height:50px;border-radius:15px;display:grid;place-items:center;font-weight:900;font-size:20px;color:#fff;background:linear-gradient(135deg,var(--pur),var(--fuchsia));box-shadow:0 8px 22px rgba(124,58,237,.32);font-family:'JetBrains Mono',monospace}
+.sec-head h2{font-family:Onest,Nunito,sans-serif;font-size:clamp(1.5rem,3vw,2.05rem);font-weight:900;margin:0;letter-spacing:-.02em}
+.sec-sub{margin:3px 0 0;color:var(--mut);font-weight:600;font-size:14px}
+
+/* prose */
+.prose{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:26px clamp(18px,3vw,36px)}
+.prose h3{font-family:Onest,Nunito,sans-serif;font-size:1.32rem;font-weight:800;margin:30px 0 6px;letter-spacing:-.01em;color:var(--ink);scroll-margin-top:20px}
+.prose h3:first-child{margin-top:4px}
+.prose h4{font-size:1.08rem;font-weight:800;margin:22px 0 6px;color:var(--pur)}
+.prose h5{font-size:.98rem;font-weight:800;margin:16px 0 4px;color:var(--ink2)}
+.prose p{margin:11px 0;color:var(--ink2)}
+.prose strong{color:var(--ink);font-weight:800}
+.prose a{color:var(--pur);font-weight:700;text-decoration:none;border-bottom:1.5px solid #d8c8fb}
+.prose a:hover{border-bottom-color:var(--pur)}
+.prose ul,.prose ol{margin:11px 0;padding-left:2px;list-style:none}
+.prose li{position:relative;padding-left:26px;margin:7px 0;color:var(--ink2)}
+.prose ul>li::before{content:"";position:absolute;left:5px;top:11px;width:7px;height:7px;border-radius:2px;background:var(--pur2);transform:rotate(45deg)}
+.prose ol{counter-reset:li}
+.prose ol>li{counter-increment:li}
+.prose ol>li::before{content:counter(li);position:absolute;left:0;top:1px;width:19px;height:19px;border-radius:6px;background:#efe8fd;color:var(--pur);font-size:11px;font-weight:800;display:grid;place-items:center;font-family:'JetBrains Mono',monospace}
+.prose code{background:#f3eefe;padding:2px 6px;border-radius:5px;font-size:.86em;color:var(--pur);font-weight:600;word-break:break-word}
+.prose hr{border:0;border-top:1px solid var(--line);margin:24px 0}
+.prose blockquote{margin:16px 0;padding:13px 16px;background:#eff7ff;border:1px solid #bae0fd;border-left:4px solid var(--sky);border-radius:12px;color:#0b4a72;font-size:14px;font-weight:600}
+.prose blockquote code{background:#dff0ff;color:#0b4a72}
+
+/* table */
+.tbl{width:100%;border-collapse:collapse;margin:16px 0;font-size:13.5px;background:var(--card);border-radius:12px;overflow:hidden;border:1px solid var(--line);display:block;overflow-x:auto}
+.tbl thead{background:#f4effe}
+.tbl th{text-align:left;padding:11px 14px;font-weight:800;color:var(--ink);font-size:11.5px;letter-spacing:.02em;text-transform:uppercase;white-space:nowrap}
+.tbl td{padding:11px 14px;border-top:1px solid var(--line);color:var(--ink2);vertical-align:top;min-width:110px}
+.tbl td code{background:#f3eefe;padding:2px 6px;border-radius:5px;font-size:12px;color:var(--pur)}
+.tbl tbody tr:hover td,.tbl tr:hover td{background:#fbf9ff}
+
+/* code block */
+.code{position:relative;margin:16px 0;border-radius:13px;overflow:hidden;background:var(--code);border:1px solid #2b2247}
+.code-bar{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;background:var(--code2);border-bottom:1px solid #2b2247}
+.code-bar .lbl{font-size:11.5px;font-weight:700;color:#b9a8e6;letter-spacing:.04em;display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace}
+.code-bar .lbl .fdot{width:9px;height:9px;border-radius:50%;background:#4b3d75}
+.copy{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.13);color:#d9ccff;font-size:11.5px;font-weight:700;padding:5px 12px;border-radius:8px;cursor:pointer;transition:all .15s;font-family:Nunito,sans-serif}
+.copy:hover{background:var(--pur);border-color:var(--pur);color:#fff}
+.copy.ok{background:var(--green);border-color:var(--green);color:#fff}
+.code pre{margin:0;padding:15px 18px;overflow-x:auto;font-size:12.5px;line-height:1.7;color:#e9e3fb;white-space:pre}
+
+/* footer */
+footer{background:#0f0a24;color:#cbb9f2;padding:44px clamp(20px,5vw,72px);margin-top:10px}
+.foot-inner{max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;gap:22px;justify-content:space-between;align-items:center}
+.foot-inner .brand{font-family:Onest,Nunito,sans-serif;font-weight:900;font-size:17px;color:#fff}
+.foot-inner .devs{font-size:14px}
+.foot-inner .devs b{color:#fff}
+.foot-small{max-width:1200px;margin:20px auto 0;font-size:12px;color:#8b7fb5;border-top:1px solid #2a2148;padding-top:18px}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="hero-inner">
+    <span class="eyebrow">🚀 Launch Package · Product &amp; Growth</span>
+    <h1 class="title">Лаунч-пакет<br><span class="grad">AI English &amp; Math Teacher</span></h1>
+    <p class="sub">Полный набор материалов для вывода продукта на новый уровень: маркетинг и SMM, редизайн UI/UX, нативная мобильная сборка и готовая страница загрузки. Всё — под ограниченный бюджет и горизонт 3 месяца.</p>
+    <div class="meta">
+      <span class="pill"><span class="dot"></span> 4 раздела · готовые тексты и код</span>
+      <span class="pill">Рынки: <b>РФ + Вьетнам</b></span>
+      <span class="pill">Стек: <b>React + Tailwind + Capacitor</b></span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <nav class="toc">
+    <h4>Разделы</h4>
+    <ol id="toc"><li><a href="#mkt"><span class="tnum">1</span><span>📱 Маркетинг и SMM</span></a></li>
+<li><a href="#uiux"><span class="tnum">2</span><span>🎨 Редизайн UI/UX</span></a></li>
+<li><a href="#mob"><span class="tnum">3</span><span>📲 Мобильные приложения</span></a></li>
+<li><a href="#dl"><span class="tnum">4</span><span>🌐 Страница загрузки</span></a></li></ol>
+    <div class="toc-foot">🎓 AI Teacher<br><span>Pavel Afanasev · Sergei Mikhailov</span></div>
+  </nav>
+  <main>
+    <div class="intro">
+      <p><b>Коротко.</b> Продукт уже работает (веб/PWA + Android/iOS, 6 ИИ-аватаров, IELTS/TOEFL, курсы и математика, дневник и кабинеты, RU/EN/VI). Этот пакет отвечает на вопрос «как расти дальше»: как привлекать пользователей, как сделать интерфейс современнее, как выпустить нативные приложения и как встроить загрузку на сайт. Каждый раздел содержит готовые к использованию тексты, код и практики. Ниже — по порядку.</p>
+    </div>
+    
+    <section id="mkt">
+      <div class="sec-head">
+        <div class="sec-num">1</div>
+        <div><h2>📱 Маркетинг и SMM</h2><p class="sec-sub">Контент-план на 3 месяца, 10 готовых постов, 5 вирусных тизеров и бриф для найма SMM-команды.</p></div>
+      </div>
+      <div class="prose"><h3>1. Контент-план на 3 месяца</h3>
+<h4>Стратегия по платформам</h4>
+<table class="tbl"><thead><tr><th>Платформа</th><th>Главная цель</th><th>Частота</th><th>Форматы</th></tr></thead><tbody><tr><td><strong>Telegram</strong></td><td>Прогрев B2B-аудитории (директора школ, методисты, языковые центры) + экспертный контент</td><td>4–5 постов/нед</td><td>Длинные тексты, опросы, PDF-инструкции, кейсы, демо-скрины</td></tr><tr><td><strong>TikTok</strong></td><td>Охват молодёжи + родители 25–40; вирусный рост</td><td>5–7 видео/нед</td><td>Shorts ≤30 сек: демо приложения, «дуэты», челленджи, смешные ошибки в English</td></tr><tr><td><strong>Instagram</strong></td><td>Визуальный бренд, продажи B2C, ретаргетинг</td><td>4–5 постов + 3–5 Reels/нед</td><td>Карусели, Reels, Stories с опросами и ссылками, UGC-репосты</td></tr><tr><td><strong>YouTube</strong></td><td>Доверие и SEO-трафик; длинные демо и отзывы</td><td>1–2 видео/нед + Shorts</td><td>Обзоры урока (3–8 мин), Shorts, «урок с аватаром», сравнение с репетитором</td></tr></tbody></table>
+<h4>Рубрики по платформам</h4>
+<p><strong>Telegram</strong> — <code>#ИИ_в_образовании</code> (тренды, аналитика) · <code>#КейсЦентра</code> (как центр использует платформу) · <code>#МнениеУчителя</code> (реакции живых педагогов) · <code>#ФишкаДня</code> (одна функция) · <code>#БесплатноДляШкол</code> (для директоров муниципальных школ)</p>
+<p><strong>TikTok / Reels</strong> — <code>Говори с ИИ</code> (живой разговор с аватаром) · <code>Ошибка за $1000</code> (частые ошибки IELTS/TOEFL) · <code>VS Репетитор</code> (сравнение цена/результат) · <code>Minh говорит</code> (учитель-аватар) · <code>ГеймерУчится</code> (XP, стрики, WordBattle)</p>
+<p><strong>YouTube</strong> — <code>Полный обзор</code> · <code>Урок изнутри</code> (реальный урок A2→B1) · <code>Мать двоих детей</code> (сторителлинг) · <code>Директор школы говорит</code> (внедрение)</p>
+<h4>Месяц 1 — «Знакомство и запуск»</h4>
+<p>Цель: первые 500–1000 установок, 300+ подписчиков Telegram, 200+ в TikTok/Instagram. KPI: установки 500–1000 · Telegram 300+ · охват хотя бы 1 видео TikTok/Reels 5000+ · переходы на лендинг 800+.</p>
+<table class="tbl"><thead><tr><th>Неделя</th><th>Telegram</th><th>TikTok</th><th>Instagram</th><th>YouTube</th></tr></thead><tbody><tr><td><strong>Нед 1</strong></td><td>Анонс «Мы запустились»: история Pavel &amp; Sergei, УТП, ссылка. Закреп</td><td>Тизер «AI-учитель, который не устаёт» — 15 сек экрана, реакция ребёнка</td><td>Карусель «6 учителей — 6 характеров» + Reels = тот же тизер</td><td>Первый обзор приложения (5–7 мин): full demo</td></tr><tr><td><strong>Нед 2</strong></td><td>«Как работает живой разговор с аватаром» + скрин диалога. Опрос</td><td>«Я говорю с ИИ — он отвечает» (экран, живая реакция)</td><td>Stories «Знакомьтесь — Minh» (аватар-вьетнамец)</td><td>Shorts = тот же ролик TikTok</td></tr><tr><td><strong>Нед 3</strong></td><td>Пост для директоров: «Бесплатно для муниципальных школ — как подключить»</td><td>«Ошибка, которую делают 90% на IELTS» + функция подготовки</td><td>Карусель «IELTS за 30 дней с ИИ»</td><td>Shorts «Говорю с ИИ — сдам ли IELTS?»</td></tr><tr><td><strong>Нед 4</strong></td><td>Кейс «Языковой центр подключился за 1 день» (помечен как демо)</td><td>«Смотри, сколько XP за урок» — экран + реакция</td><td>Опрос в Stories «Твой уровень английского?»</td><td>Итог 30 дней: метрики + отзывы бета-юзеров</td></tr></tbody></table>
+<h4>Месяц 2 — «Вовлечение и доверие»</h4>
+<p>Цель: соцдоказательство, первые платящие B2C, отзывы, UGC. KPI: платящие B2C 50–150 · UGC-видео 10+ · ER Telegram 15%+ · ≥1 партнёрское размещение.</p>
+<table class="tbl"><thead><tr><th>Неделя</th><th>Telegram</th><th>TikTok</th><th>Instagram</th><th>YouTube</th></tr></thead><tbody><tr><td><strong>Нед 5</strong></td><td>«Первые отзывы: что говорят родители» — цитаты + скрины</td><td>Дуэт с образовательным блогером / реакция</td><td>Репост UGC + Stories «Поделись прогрессом»</td><td>«Мама 2 детей: почему перешла с репетитора»</td></tr><tr><td><strong>Нед 6</strong></td><td>Разбор «Кабинет родителя»: как следить за прогрессом</td><td>«WordBattle — правила за 20 сек» (геймплей)</td><td>Карусель «До/после: уровень за месяц»</td><td>Полный урок с Minh, A2 → B1</td></tr><tr><td><strong>Нед 7</strong></td><td>«Математика тоже здесь» — демо-курс, приглашение тестировать</td><td>«ИИ проверил мою математику» (экран)</td><td>Reels «ИИ vs живой учитель — кто быстрее объяснит дроби?»</td><td>Shorts «Решаю задачу с ИИ-учителем»</td></tr><tr><td><strong>Нед 8</strong></td><td>«Вьетнамский рынок: почему мы туда идём» + Minh</td><td>TikTok на VN-аудиторию (субтитры): «AI học tiếng Anh cùng Minh»</td><td>Stories-опрос «Учить испанский с ИИ?»</td><td>Обзор всех языков (EN/ES/DE/FR)</td></tr></tbody></table>
+<h4>Месяц 3 — «Конверсия и партнёрства»</h4>
+<p>Цель: B2B-сделки с центрами/школами, рост платящей базы, первые партнёрства. KPI: B2B-сделки 3–5 · B2C суммарно 200–400 · Telegram 1000+ · YouTube 500+ подписчиков, 5000+ просмотров.</p>
+<table class="tbl"><thead><tr><th>Неделя</th><th>Telegram</th><th>TikTok</th><th>Instagram</th><th>YouTube</th></tr></thead><tbody><tr><td><strong>Нед 9</strong></td><td>«Как мы помогаем центрам: 3 кейса» — числа, время, результат</td><td>«Языковой центр выбирает ИИ — почему?» (интервью)</td><td>Карусель «Что получает центр» — ROI</td><td>Вебинар-запись «Платформа для школ — демо и Q&amp;A»</td></tr><tr><td><strong>Нед 10</strong></td><td>Спецпредложение для школ (ограниченный оффер) + прямой контакт</td><td>«Я директор — вот почему взял ИИ-учителя» (selfie-монолог)</td><td>Stories: countdown до конца акции + отзывы</td><td>Shorts «Школа будущего — уже сегодня»</td></tr><tr><td><strong>Нед 11</strong></td><td>Партнёрский пост: коллаборация с блогером/методистом</td><td>Дуэт с популярным учителем TikTok</td><td>Reels с UGC: лучшие видео за 3 месяца</td><td>«90 дней с ИИ-учителем — итоги и цифры»</td></tr><tr><td><strong>Нед 12</strong></td><td>«3 месяца — наши итоги» + анонс новых функций</td><td>Финальный челлендж «Покажи свой стрик»</td><td>Stories-голосование «Какой курс добавить?»</td><td>Итоговый обзор: что изменилось, куда развиваемся</td></tr></tbody></table>
+<h3>2. Первые 10 постов (готовый текст)</h3>
+<h4>Пост 1 — Telegram · Анонс запуска</h4>
+<p><strong>Мы запустились. И это не просто ещё одно приложение для английского.</strong></p>
+<p>Два года назад Pavel Afanasev и Sergei Mikhailov сидели над вопросом: почему дети готовы часами играть в телефоне, но 20 минут с учебником — это пытка? Ответ нашёлся не в педагогике, а в технологиях.</p>
+<p>Сегодня мы открываем доступ к <strong>AI English &amp; Math Teacher</strong> — платформе, где каждый урок ведёт живой ИИ-аватар. Не чат-бот. Не аудио. Настоящий говорящий учитель — с лицом, голосом, характером и безграничным терпением.</p>
+<p>Что внутри: 6 уникальных учителей-аватаров (познакомьтесь с Minh — он из Вьетнама); живые голосовые диалоги A1–C1; подготовка к IELTS и TOEFL; геймификация (XP, стрики, монеты, мини-игры); кабинет родителя и электронный дневник; <strong>бесплатно для муниципальных школ</strong>. Работает на Android, iOS и в браузере. Интерфейс на русском, английском и вьетнамском.</p>
+<p>Мы маленькая команда с большой миссией. Подписывайтесь — здесь будет честно: и победы, и трудности. 🔗 [ссылка на приложение] CTA: жми на ссылку — первый урок бесплатно. <code>#AIEnglish</code> <code>#образование</code> <code>#английскийязык</code> <code>#ИИучитель</code> <code>#IELTS</code> <code>#языковойцентр</code> <code>#школыРоссии</code></p>
+<h4>Пост 2 — Instagram (карусель) · История учителя Minh</h4>
+<p>Хук слайда 1: «Его зовут Minh. Он из Вьетнама. И он знает, каково это — учить английский с нуля.»</p>
+<p>Слайд 2: Minh — один из 6 AI-учителей. Мягкий голос, структурированный подход, безграничное терпение. Не вздохнёт, если переспросите пятый раз. Слайд 3: Почему вьетнамский учитель? Во Вьетнаме огромный запрос на English, а ученику легче раскрыться, когда учитель «свой». Слайд 4: Minh ведёт A1–B2, объясняет разницу Present Perfect / Simple так, что запоминается, и проведёт через Speaking на IELTS — без осуждения. Слайд 5: Попробуй урок с Minh бесплатно. Ссылка в профиле.</p>
+<p>Подпись: 6 учителей. 6 характеров. Одно приложение. Попробуй бесплатно — ссылка в шапке. CTA: сохрани пост, если хочешь познакомить с Minh детей или учеников. <code>#AIучитель</code> <code>#английскийязык</code> <code>#IELTS</code> <code>#Minh</code> <code>#вьетнам</code> <code>#онлайнобразование</code> <code>#EdTech</code> <code>#английскийдлядетей</code></p>
+<h4>Пост 3 — TikTok · Кейс подготовки к IELTS (скрипт)</h4>
+<p>Хук (2 сек): «Я провалил IELTS дважды. Вот что изменилось на третий раз.»</p>
+<p>Первые два раза не добрал в Speaking: занимался с репетитором, но в кабинете терялся. Проблема была не в знаниях — не было ежедневной практики живого разговора. Потом нашёл AI English Teacher: раздел IELTS с практикой по каждой части, пробный тест с оценкой CEFR, Speaking с живым ИИ-аватаром и реальной обратной связью. 20 минут каждое утро → через месяц Band 7.0. Впервые. CTA: напиши в комментариях свой целевой балл IELTS — отвечу каждому. <code>#IELTS</code> <code>#IELTSspeaking</code> <code>#подготовкакIELTS</code> <code>#AIEnglish</code> <code>#TOEFL</code> <code>#английскийонлайн</code> <code>#EdTech</code></p>
+<h4>Пост 4 — Telegram · Для родителей</h4>
+<p><strong>Вы платите репетитору 1500–3000 ₽/час. Ребёнок занимается 45 минут в неделю. Считайте сами.</strong></p>
+<p>Это не наезд на репетиторов — это разговор о математике времени. Язык требует ежедневного контакта, пусть короткого. В <strong>AI English Teacher</strong> ребёнок занимается 15–20 минут каждый день: говорит с ИИ-учителем голосом, играет в WordBattle, идёт по уровням. Вы как родитель видите в кабинете полную статистику, уведомления о стриках и уровень CEFR в реальном времени. Репетитор + ежедневная практика с ИИ — формула, которая работает. 🔗 [ссылка] · CTA: напишите уровень ребёнка — дадим рекомендации. <code>#английскийдлядетей</code> <code>#родители</code> <code>#репетитор</code> <code>#кабинетродителя</code> <code>#ИИучитель</code></p>
+<h4>Пост 5 — Instagram (Reels) · Геймификация (скрипт)</h4>
+<p>Хук: «Мой сын сам просит включить английский. Сам. Попросил.»</p>
+<p>[0–3с] крупно: «Он сам попросил включить уроки». [3–10с] экран: полоса XP, монеты, streak 🔥. [10–20с] голос: «Каждый урок — опыт, монеты и стрик. Потерять стрик обидно — поэтому занимается сам». [20–28с] WordBattle: побеждает, награда. [28–30с] «Попробуй бесплатно 🎓». Подпись: когда обучение похоже на игру — уговоры не нужны. CTA: тегни родителя, который мечтает о таком же. <code>#геймификация</code> <code>#английскийдлядетей</code> <code>#мотивация</code> <code>#EdTech</code> <code>#WordBattle</code> <code>#учимсяиграя</code></p>
+<h4>Пост 6 — Telegram · Для директоров школ и центров</h4>
+<p><strong>Директорам школ и руководителям языковых центров — читайте внимательно.</strong></p>
+<p>Мы не продаём «революцию», мы предлагаем инструмент. Что получает языковой центр: все занятия через платформу, кабинет учителя с аналитикой, электронный дневник, ИИ-учитель закрывает пробелы между занятиями с живым педагогом, встроенная подготовка к IELTS/TOEFL. Что получает муниципальная школа: доступ <strong>бесплатно</strong> + те же инструменты. Для центров — подписочная модель (детали при запросе). Мы работаем с первыми партнёрами вручную: помогаем с онбордингом, дорабатываем под нужды. Напишите напрямую: [контакт]. CTA: ответим лично, не «продаём» — ищем тех, кому нужно. <code>#языковойцентр</code> <code>#директоршколы</code> <code>#ИИвшколе</code> <code>#EdTech</code> <code>#кабинетучителя</code> <code>#муниципальнаяшкола</code></p>
+<h4>Пост 7 — YouTube (описание) · «Математика тоже здесь»</h4>
+<p>Заголовок видео: «ИИ-учитель математики — это реально? Смотрим демо».</p>
+<p>Все знают нас по английскому, но мы запустили демо-курс математики по той же логике: живой аватар, объяснения голосом, пошаговые задачи. В видео: запускаю урок с нуля (реальный экран), смотрим объяснение дробей без скуки, сравниваю с English-уроками, честно говорю, что математика пока в демо. Учителям математики и родителям — ваше мнение особенно важно. CTA: комментарий — какую тему по математике показать первой? Ответим всем. <code>#математика</code> <code>#ИИучитель</code> <code>#математикаонлайн</code> <code>#школьнаяматематика</code> <code>#EdTech</code></p>
+<h4>Пост 8 — TikTok · Вьетнамский рынок (миссия)</h4>
+<p>Хук: «Мы русские разработчики. И мы делаем приложение для Вьетнама. Вот почему.»</p>
+<p>Во Вьетнаме ~97 млн человек, и огромная часть хочет выучить английский — для работы, карьеры, эмиграции. Хороших репетиторов мало, они дороги, онлайн-курсы безлики. Мы создали Minh — ИИ-аватар с вьетнамским именем, объясняющий английский так, как понимает носитель вьетнамского. Интерфейс на вьетнамском, уроки по уровням, подготовка к IELTS. Это не просто рынок — это миссия. CTA: если ты из Вьетнама или знаешь кого-то оттуда — поделись. Học tiếng Anh cùng AI nhé! 🎓 <code>#Вьетнам</code> <code>#Vietnam</code> <code>#LearnEnglish</code> <code>#EdTech</code> <code>#AIteacher</code> <code>#Minh</code> <code>#языковойбарьер</code></p>
+<h4>Пост 9 — Instagram Stories (серия) · «Бесплатно для муниципальных школ»</h4>
+<p>Story 1: «Есть кое-что, о чём мы не кричим на каждом углу. Но это важно.» → свайп Story 2: «Муниципальные школы России получают нашу платформу <strong>бесплатно</strong>. Навсегда. Без скрытых условий.» → свайп Story 3: «Почему? Потому что ребёнок из небольшого города заслуживает тех же инструментов, что и ребёнок из Москвы.» → свайп Story 4: «Что включено: ✓ уроки A1–C1 ✓ кабинет учителя и дневник ✓ кабинет родителя ✓ ИИ-учителя 24/7 ✓ подготовка к ОГЭ/ЕГЭ-формату (в разработке)» → свайп Story 5: «Директор или учитель? Напишите — подключим вашу школу лично.» [кнопка: написать] CTA: отправь это директору своей школы. <code>#муниципальнаяшкола</code> <code>#бесплатно</code> <code>#ИИвшколе</code> <code>#директоршколы</code></p>
+<h4>Пост 10 — Telegram · Челлендж-вовлечение</h4>
+<p><strong>Честный вопрос: на каком вы уровне английского прямо сейчас?</strong> Не тот, что в резюме. Реальный.</p>
+<p>В приложении есть пробный тест: определяет уровень по CEFR и даёт рекомендации по разделам IELTS и грамматике. Сделка: (1) проходите тест (~10 минут, бесплатно); (2) скидываете результат в комментарии; (3) даём персональный совет. Делаем это для первых <strong>50 откликнувшихся</strong>, лично. Почему? Нам важно понять пользователей и сделать продукт лучше. 🔗 [ссылка] · CTA: напиши свой уровень — начнём разговор. <code>#английскийязык</code> <code>#уровеньанглийского</code> <code>#CEFR</code> <code>#IELTS</code> <code>#тестанглийский</code> <code>#AIEnglish</code></p>
+<h3>3. Пять идей вирусных видео-тизеров (≤30 сек)</h3>
+<h4>Тизер 1 — «Он не устаёт» · TikTok/Reels · 28 сек</h4>
+<p>Хук (0–3с): экран телефона, часы 02:14, аватар говорит — «Ночь. Учитель онлайн. Всегда.»</p>
+<table class="tbl"><thead><tr><th>Тайм-код</th><th>Визуал</th><th>Экранный текст</th><th>Звук/Реплики</th></tr></thead><tbody><tr><td>0–3с</td><td>Экран 02:14, аватар говорит</td><td>«02:14. Он всё ещё здесь.»</td><td>Атмосферная музыка</td></tr><tr><td>3–10с</td><td>Аватар: «What did you do today?» — юзер отвечает голосом</td><td>«Живой диалог. Голосом.»</td><td>Реальный звук приложения</td></tr><tr><td>10–20с</td><td>Утро, другой юзер снова открывает приложение</td><td>«Утро. Стрик 🔥 14 дней.»</td><td>Уведомление о стрике</td></tr><tr><td>20–28с</td><td>Нарезка: дети, взрослые, устройства</td><td>«6 учителей. 24/7. Без выходных.»</td><td>Нарастающий бит</td></tr></tbody></table>
+<p>CTA: «Ссылка в профиле — первый урок бесплатно». Почему завирусится: контраст «ночь + учёба» узнаваем; снять телефоном (экран + часы).</p>
+<h4>Тизер 2 — «VS Репетитор» · TikTok · 30 сек</h4>
+<p>Хук (0–3с): split-screen. Слева таймер «45 мин / Репетитор», справа «365 дней / AI Teacher». «Сравним?»</p>
+<table class="tbl"><thead><tr><th>Тайм-код</th><th>Визуал</th><th>Экранный текст</th><th>Звук</th></tr></thead><tbody><tr><td>0–3с</td><td>Split: репетитор vs AI-аватар</td><td>«2 раза в неделю vs каждый день»</td><td>Тревога слева, позитив справа</td></tr><tr><td>3–12с</td><td>Калькулятор 1500×8=12000 vs цена подписки</td><td>«12 000 ₽/мес vs [цена]/мес»</td><td>Кассовый звук слева</td></tr><tr><td>12–22с</td><td>Скучает между уроками vs играет в WordBattle</td><td>«Между уроками — ничего vs игра»</td><td>Музыка оживает справа</td></tr><tr><td>22–30с</td><td>Экраны сливаются в лого</td><td>«Лучший вариант — оба. Но начни с AI.»</td><td>Финальный аккорд</td></tr></tbody></table>
+<p>CTA: «Комментируй: сколько платишь репетитору?» Почему завирусится: сравнение вызывает споры → органический трафик.</p>
+<h4>Тизер 3 — «Minh говорит» · TikTok (+VN) · 25 сек</h4>
+<p>Хук (0–3с): крупный план Minh: «Hello. I am Minh. And I know how hard it is.»</p>
+<table class="tbl"><thead><tr><th>Тайм-код</th><th>Визуал</th><th>Экранный текст</th><th>Реплики</th></tr></thead><tbody><tr><td>0–3с</td><td>Крупный план реалистичного аватара</td><td>—</td><td>«Hello. I know how hard it is.»</td></tr><tr><td>3–10с</td><td>Объясняет Present Perfect — просто</td><td>«Объясняет так, чтобы запомнилось.»</td><td>Речь аватара</td></tr><tr><td>10–18с</td><td>Юзер отвечает голосом, аватар мягко поправляет</td><td>«Говоришь ты. Слушает он.»</td><td>Диалог</td></tr><tr><td>18–25с</td><td>Minh: «See you tomorrow?» + streak +1 🔥</td><td>«Он придёт завтра. И послезавтра.»</td><td>Мягкая музыка</td></tr></tbody></table>
+<p>CTA: «Попробуй урок с Minh — ссылка в профиле». Почему завирусится: реалистичный аватар вызывает «вау», делятся из любопытства; для VN — культурная близость.</p>
+<h4>Тизер 4 — «WordBattle: покажи, кто ты» · TikTok/Reels · 20 сек</h4>
+<p>Хук (0–3с): «BATTLE START» на весь экран — «Ты думал, учёба скучная?»</p>
+<table class="tbl"><thead><tr><th>Тайм-код</th><th>Визуал</th><th>Экранный текст</th><th>Звук</th></tr></thead><tbody><tr><td>0–3с</td><td>BATTLE START, яркая динамика</td><td>«Ты думал, учёба скучная?»</td><td>Игровой старт</td></tr><tr><td>3–10с</td><td>Геймплей: слова летят, очки растут</td><td>«WordBattle. Учишь — побеждаешь.»</td><td>Динамичный бит</td></tr><tr><td>10–16с</td><td>Победа: монеты, +XP, уровень</td><td>«+150 XP. Уровень повышен 🏆»</td><td>Победный джингл</td></tr><tr><td>16–20с</td><td>Следующий враг сложнее</td><td>«Ты готов?»</td><td>Нарастание</td></tr></tbody></table>
+<p>CTA: «Комментируй свой счёт». Почему завирусится: геймплей дёшево снять, высокий retention, конкурентный дух → репосты.</p>
+<h4>Тизер 5 — «Школа будущего уже открылась» · YouTube Shorts/TikTok · 30 сек</h4>
+<p>Хук (0–3с): пустой класс — «Что, если учитель никогда не опаздывает, не болеет и знает каждого по имени?»</p>
+<table class="tbl"><thead><tr><th>Тайм-код</th><th>Визуал</th><th>Экранный текст</th><th>Звук</th></tr></thead><tbody><tr><td>0–3с</td><td>Пустой класс, ожидание</td><td>«Что, если учитель всегда здесь?»</td><td>Лёгкая тревога</td></tr><tr><td>3–12с</td><td>Ученики говорят каждый со своим аватаром</td><td>«6 учителей. Для каждого — свой.»</td><td>Голоса сливаются в гармонию</td></tr><tr><td>12–22с</td><td>Кабинет учителя: прогресс класса, дневник</td><td>«Учитель видит всё.»</td><td>Спокойный голос</td></tr><tr><td>22–30с</td><td>Ребёнок улыбается, оценка «отлично»</td><td>«Школа будущего. Уже сегодня.»</td><td>Вдохновляющий финал</td></tr></tbody></table>
+<p>CTA: «Для директоров и учителей — бесплатное подключение». Почему завирусится: эмоциональный нарратив, педагоги делятся в проф-сетях.</p>
+<h3>4. Шаблон брифа для найма SMM-команды</h3>
+<h4>О проекте</h4>
+<table class="tbl"><thead><tr><th>Поле</th><th>Информация</th></tr></thead><tbody><tr><td><strong>Продукт</strong></td><td>AI English &amp; Math Teacher — мобильное и веб-приложение (PWA + Android + iOS)</td></tr><tr><td><strong>Суть</strong></td><td>Платформа с ИИ-аватарами-учителями: голосовые уроки, геймификация, IELTS/TOEFL, кабинеты учителя и родителя</td></tr><tr><td><strong>Рынки</strong></td><td>Россия (B2C + B2B: школы, языковые центры) + Вьетнам (B2C)</td></tr><tr><td><strong>Модель</strong></td><td>Подписка для частных школ/центров; бесплатно для муниципальных; B2C-подписка</td></tr><tr><td><strong>Стадия</strong></td><td>Только запущен; активная фаза роста — 3 месяца</td></tr><tr><td><strong>Бренд</strong></td><td>Дружелюбный, игровой. Цвета #7c3aed → #d946ef, маскот 🎓. Разработчики: Pavel Afanasev, Sergei Mikhailov</td></tr></tbody></table>
+<h4>Цели и KPI на 3 месяца</h4>
+<table class="tbl"><thead><tr><th>Метрика</th><th>Цель</th></tr></thead><tbody><tr><td>Установки приложения</td><td>2000–5000</td></tr><tr><td>Telegram-подписчики</td><td>1000+</td></tr><tr><td>TikTok / Instagram</td><td>500+ каждый</td></tr><tr><td>YouTube</td><td>300+</td></tr><tr><td>B2C платящие</td><td>200–500</td></tr><tr><td>B2B-партнёрства</td><td>5–10 контрактов</td></tr><tr><td>Охват вирусного видео</td><td>20 000+ просмотров</td></tr></tbody></table>
+<h4>Платформы и объём работ</h4>
+<table class="tbl"><thead><tr><th>Платформа</th><th>Контент</th><th>Частота/мес</th></tr></thead><tbody><tr><td>Telegram</td><td>Тексты, опросы, PDF, кейсы</td><td>16–20 постов</td></tr><tr><td>TikTok</td><td>Вертикальное видео ≤60 сек</td><td>20–24 видео</td></tr><tr><td>Instagram</td><td>Reels + карусели + Stories</td><td>12–16 постов + 15–20 Stories</td></tr><tr><td>YouTube</td><td>Длинные видео + Shorts</td><td>4–6 + 8–10 Shorts</td></tr></tbody></table>
+<p>Итого: 50–70 единиц контента в месяц.</p>
+<h4>Роли</h4>
+<p><strong>1. SMM-менеджер / контент-стратег (ключевая, part-time/фриланс).</strong> Обязанности: контент-план, тексты Telegram/Instagram, ТЗ на видео, публикация и планирование, модерация комментариев, еженедельная отчётность, поиск партнёров. Требования: опыт SMM в EdTech ≥1 года, портфолио, понимание платформ, живой слог, самостоятельность. Плюс: вьетнамский/азиатская аудитория, B2B-контент, Canva/Figma.</p>
+<p><strong>2. Видеомейкер / монтажёр (ключевая, оплата за единицу).</strong> Обязанности: съёмка коротких видео (оборудование предоставим), монтаж вертикали с субтитрами, экранная запись, превью для YouTube. Требования: CapCut/DaVinci/Premiere, портфолио ≥5 вертикальных роликов, чувство «крючков», скорость (ролик за 1–2 дня). Плюс: демо-видео приложений, субтитры EN/VN.</p>
+<p><strong>3. Таргетолог (по запросу, малый бюджет).</strong> Обязанности: тестовые кампании (VK/Telegram Ads/Meta), A/B креативов на бюджете от 5–10 тыс ₽/мес, отчётность CPC/CPI/ROI. Подключается во 2-й половине месяца 2 — на старте упор на органику.</p>
+<h4>Что предоставит компания</h4>
+<p>Доступ ко всем функциям приложения · брендбук (цвета, шрифты, tone of voice) · готовый контент-план месяца 1 · исходники (скрины, экранные записи, материалы об аватарах) · прямой доступ к Pavel и Sergei для согласований · доступ к аналитике.</p>
+<h4>Формат оплаты</h4>
+<table class="tbl"><thead><tr><th>Вариант</th><th>Детали</th></tr></thead><tbody><tr><td>Фикс + KPI</td><td>Базовая ставка (ниже рынка) + бонус за KPI</td></tr><tr><td>За единицу контента</td><td>Видеомейкер: 300–1000 ₽/ролик по сложности</td></tr><tr><td>Revenue Share</td><td>С SMM-менеджером при долгосроке (% от B2C)</td></tr><tr><td>Бартер + мин. фикс</td><td>Для начинающих с хорошим портфолио — опыт, кейсы, рекомендации</td></tr></tbody></table>
+<h4>Тестовое задание</h4>
+<p>SMM-менеджер: 2 поста на тему «Почему ИИ-учитель — не замена, а усиление живого педагога» (хук, CTA, хештеги), срок 2 дня. Видеомейкер: тизер 15–20 сек из наших материалов, срок 3 дня.</p>
+<h4>Как откликнуться</h4>
+<p>Написать на [email/Telegram] с темой «SMM — [роль]»: роль, 2–3 проекта из портфолио, ожидаемые условия, дата старта. Без портфолио и без конкретики — не рассматриваем.</p></div>
+    </section>
+    <section id="uiux">
+      <div class="sec-head">
+        <div class="sec-num">2</div>
+        <div><h2>🎨 Редизайн UI/UX</h2><p class="sec-sub">10 конкретных улучшений, готовый Tailwind-конфиг, чек-лист WCAG и структура Figma.</p></div>
+      </div>
+      <div class="prose"><p>Текущий стек: React 18 + Tailwind, темы через <code>data-theme</code> (по умолчанию <code>candy</code>), готовые утилиты <code>.card</code> / <code>.btn-primary</code> / <code>.chip</code>, шрифт Nunito, богатая геймификация (XP, монеты, стрики). Ниже — 10 конкретных улучшений, готовые токены Tailwind, требования WCAG и структура Figma. Всё реалистично внедряется за 3 месяца силами 1 дизайнера + 1 фронтендера.</p>
+<h3>10 конкретных улучшений</h3>
+<h4>1. Система цветовых токенов + тёмная тема</h4>
+<p>Уйти от одного фиолетового к семантическим токенам (primary / accent / success / warning / danger / surface / ink) на CSS-переменных, с готовой тёмной темой. Это упрощает ребрендинг и контроль контраста (см. Tailwind-конфиг ниже).</p>
+<h4>2. Типографика: пара «дисплей + текст» и модульная шкала</h4>
+<p>Дисплей — выразительный гротеск (Onest / Manrope) для заголовков, текст — Nunito / Inter для чтения. Флюидная шкала на <code>clamp()</code>, чтобы заголовки красиво масштабировались от телефона до десктопа.</p>
+<h4>3. Микро-анимации состояний</h4>
+<p>Нажатие кнопки <code>active:scale-[.97]</code>, лифт карточек <code>hover:-translate-y-1</code>, появление контента (fade/slide), пульс стрика, конфетти при level-up, <code>skeleton</code> вместо спиннеров. Все — короткие (150–250 мс), с уважением к <code>prefers-reduced-motion</code>.</p>
+<h4>4. Мобильная навигация: нижний таб-бар</h4>
+<p>Заменить боковое меню на мобильных нижним таб-баром под большой палец: 5 пунктов (Главная · Урок · Игры · Экзамены · Ещё) с индикатором активной вкладки и учётом <code>safe-area</code>.</p>
+<h4>5. Онбординг за 3 шага до «ага-момента»</h4>
+<p>Шаг 1 — цель (IELTS / для школы / для ребёнка / просто разговор), Шаг 2 — выбор учителя-аватара, Шаг 3 — микро-урок на 60 секунд с первым XP. Прогресс-точки и «пропустить».</p>
+<h4>6. Пространство и иерархия</h4>
+<p>Единая шкала отступов (4/8/12/16/24/32), радиусы карт 20–28px, токены теней (elevation-1..3). Контент должен «дышать» — меньше визуального шума, крупнее ключевые действия.</p>
+<h4>7. Полные состояния кнопок + тактильная отдача</h4>
+<p>Проработать hover / active / focus-visible / disabled / loading. На мобильных — Capacitor Haptics при важных действиях (правильный ответ, покупка в магазине, получение награды).</p>
+<h4>8. Пустые состояния и загрузка</h4>
+<p>Дружелюбные empty-states с иллюстрацией и одним понятным CTA; skeleton-карточки вместо крутилки; оптимистичные обновления UI (сначала показываем результат, потом синхронизируем).</p>
+<h4>9. Геймификация как визуальный язык</h4>
+<p>Кольцо прогресса уровня, анимированный огонёк стрика, XP-тост «+15 XP», момент награды (вспышка + падающие монеты). Вынести в единый компонент <code>RewardToast</code>, вызывать из уроков/игр/экзаменов.</p>
+<h4>10. Доступность, встроенная в дизайн</h4>
+<p>Контраст ≥ 4.5:1, видимый focus-ring, hit-target ≥ 44×44px, поддержка reduced-motion, корректные роли и aria. A11y не «в конце», а часть системы токенов и компонентов.</p>
+<h3>Готовый Tailwind-конфиг (tailwind.config.js — extend)</h3>
+<div class="code"><div class="code-bar"><span class="lbl"><span class="fdot"></span>js</span><button class="copy">Копировать</button></div><pre>// расширение темы: токены цветов, шрифты, радиусы, тени, анимации
+export default {
+  darkMode: ['class', '[data-theme="dark"]'],
+  theme: {
+    extend: {
+      colors: {
+        primary:  { DEFAULT: '#7c3aed', 600: '#7c3aed', 700: '#6d28d9' },
+        accent:   { DEFAULT: '#d946ef' },
+        success: '#10b981', warning: '#f59e0b', danger: '#f43f5e', sky: '#0ea5e9',
+        surface:  'rgb(var(--surface) / &lt;alpha-value&gt;)',
+        ink:      'rgb(var(--ink) / &lt;alpha-value&gt;)',
+      },
+      fontFamily: {
+        display: ['Onest', 'Nunito', 'system-ui', 'sans-serif'],
+        sans:    ['Nunito', 'Inter', 'system-ui', 'sans-serif'],
+      },
+      fontSize: {
+        'fluid-h1': ['clamp(1.9rem,5vw,3rem)', { lineHeight: '1.05', fontWeight: '800' }],
+        'fluid-h2': ['clamp(1.4rem,3vw,2rem)',  { lineHeight: '1.1',  fontWeight: '800' }],
+      },
+      borderRadius: { xl: '16px', '2xl': '20px', '3xl': '28px' },
+      boxShadow: {
+        e1: '0 1px 3px rgba(20,10,50,.06)',
+        e2: '0 8px 24px rgba(80,40,160,.10)',
+        e3: '0 20px 48px rgba(80,40,160,.16)',
+      },
+      keyframes: {
+        pop:     { '0%': { transform: 'scale(.8)', opacity: '0' }, '100%': { transform: 'scale(1)', opacity: '1' } },
+        floaty:  { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-6px)' } },
+        shimmer: { '100%': { transform: 'translateX(100%)' } },
+      },
+      animation: {
+        pop: 'pop .25s ease-out',
+        floaty: 'floaty 3s ease-in-out infinite',
+        shimmer: 'shimmer 1.5s infinite',
+      },
+    },
+  },
+};</pre></div>
+<h3>Токены на CSS-переменных (styles.css)</h3>
+<div class="code"><div class="code-bar"><span class="lbl"><span class="fdot"></span>css</span><button class="copy">Копировать</button></div><pre>:root { --surface: 255 255 255; --ink: 15 18 34; }
+[data-theme="dark"] { --surface: 20 18 34; --ink: 236 233 248; }
+
+/* уважение к настройке «уменьшить движение» */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    transition-duration: .001ms !important;
+  }
+}</pre></div>
+<h3>Ключевые компоненты — готовые классы</h3>
+<div class="code"><div class="code-bar"><span class="lbl"><span class="fdot"></span>html</span><button class="copy">Копировать</button></div><pre>&lt;!-- Кнопка со всеми состояниями --&gt;
+&lt;button class="inline-flex items-center gap-2 rounded-2xl bg-primary px-5 py-3 font-bold text-white
+  shadow-e2 transition active:scale-[.97] hover:-translate-y-0.5
+  focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent/40
+  disabled:opacity-50 disabled:pointer-events-none"&gt;
+  Начать урок
+&lt;/button&gt;
+
+&lt;!-- Нижний таб-бар (мобильный) --&gt;
+&lt;nav class="fixed bottom-0 inset-x-0 z-40 flex justify-around border-t border-black/5
+  bg-surface/90 backdrop-blur px-2 pb-[env(safe-area-inset-bottom)] md:hidden"&gt;
+  &lt;a aria-current="page" class="flex flex-col items-center gap-0.5 py-2 min-w-[56px]
+     text-xs font-bold text-ink/50 aria-[current=page]:text-primary"&gt;
+    &lt;span class="text-xl"&gt;🏠&lt;/span&gt;Главная
+  &lt;/a&gt;
+  &lt;!-- ...ещё 4 пункта... --&gt;
+&lt;/nav&gt;
+
+&lt;!-- Skeleton-загрузка --&gt;
+&lt;div class="relative overflow-hidden rounded-2xl bg-black/5 h-24"&gt;
+  &lt;div class="absolute inset-0 -translate-x-full animate-shimmer
+     bg-gradient-to-r from-transparent via-white/60 to-transparent"&gt;&lt;/div&gt;
+&lt;/div&gt;</pre></div>
+<h3>Доступность (WCAG 2.1 AA) — чек-лист</h3>
+<ul><li>Контраст текста ≥ 4.5:1 (крупный ≥ 3:1). Отдельно проверить фиолетовый на белом и в тёмной теме.</li><li>Видимый <code>focus-visible</code> ring на всех интерактивных элементах.</li><li>Цель нажатия ≥ 44×44px (особенно таб-бар и иконки-кнопки).</li><li>Не передавать смысл только цветом: у «верно/неверно» — иконка + текст, не только зелёный/красный.</li><li>Все аватары/картинки — <code>alt</code>; кнопки-иконки — <code>aria-label</code>.</li><li>Поддержка <code>prefers-reduced-motion</code> (отключать floaty/конфетти/шиммер).</li><li>Логичный порядок фокуса; модалки с focus-trap и закрытием по <code>Esc</code>.</li><li>Формы: связка <code>label</code> + сообщение об ошибке, <code>aria-invalid</code> на невалидных полях.</li><li>Атрибут <code>lang</code> для контента на RU/EN/VI.</li></ul>
+<h3>Структура Figma-файла для дизайнера</h3>
+<div class="code"><div class="code-bar"><span class="lbl"><span class="fdot"></span>text</span><button class="copy">Копировать</button></div><pre>📁 AI Teacher — Design System
+├─ 00 Cover
+├─ 01 Foundations
+│   ├─ Colors (токены + light/dark)
+│   ├─ Typography (шкала, стили текста)
+│   ├─ Spacing · Radius · Elevation
+│   └─ Iconography / Emoji set
+├─ 02 Components
+│   ├─ Buttons (все состояния как variants)
+│   ├─ Cards · Chips · Inputs · Selects
+│   ├─ Avatar (4 эмоции) + SpeechBubble
+│   ├─ Nav (desktop sidebar + mobile tab-bar)
+│   └─ Gamification (XP toast · streak · progress ring · reward)
+├─ 03 Screens — Mobile
+│   ├─ Onboarding (3 шага)
+│   ├─ Home · Lesson · Talk · Games
+│   ├─ Exams (IELTS/TOEFL) · Courses · Diary
+│   └─ Empty &amp; Loading states
+├─ 04 Screens — Cabinets (teacher / parent / admin)
+├─ 05 Prototype (flows: онбординг · урок · покупка)
+└─ 06 Handoff (specs · redlines · экспорт)</pre></div>
+<p>Практика: компоненты — на auto-layout + variants; токены — через Figma Variables (light/dark); имена токенов совпадают с Tailwind, чтобы дизайн ложился в код 1:1.</p></div>
+    </section>
+    <section id="mob">
+      <div class="sec-head">
+        <div class="sec-num">3</div>
+        <div><h2>📲 Мобильные приложения</h2><p class="sec-sub">Изменения конфигов (Capacitor, AndroidManifest, Info.plist) и код плагинов: push, офлайн, share.</p></div>
+      </div>
+      <div class="prose"><p>Полные пошаговые гайды по сборке уже готовы отдельными страницами («Сборка APK через Capacitor» и «Сборка iOS через Capacitor»), а автосборка настроена в <code>.github/workflows/mobile-build.yml</code>. Здесь — конкретные изменения конфигов и готовый код нативных плагинов: <strong>push-уведомления, офлайн-режим, share</strong>.</p>
+<h3>Установка плагинов</h3>
+<div class="code"><div class="code-bar"><span class="lbl"><span class="fdot"></span>bash</span><button class="copy">Копировать</button></div><pre>cd apps/web
+npm i @capacitor/push-notifications @capacitor/share @capacitor/network \
+      @capacitor/preferences @capacitor/haptics @capacitor/splash-screen
+npx cap sync</pre></div>
+<h3>capacitor.config.json — дополнения</h3>
+<p>Добавьте блок <code>plugins</code> к существующему конфигу (appId / appName / webDir не меняем):</p>
+<div class="code"><div class="code-bar"><span class="lbl"><span class="fdot"></span>json</span><button class="copy">Копировать</button></div><pre>{
+  "appId": "com.aiteacher.app",
+  "appName": "AI English Teacher",
+  "webDir": "dist",
+  "backgroundColor": "#7c3aedff",
+  "server": { "androidScheme": "https" },
+  "ios": { "contentInset": "always" },
+  "plugins": {
+    "PushNotifications": { "presentationOptions": ["badge", "sound", "alert"] },
+    "SplashScreen": {
+      "launchShowDuration": 1200,
+      "backgroundColor": "#7c3aed",
+      "showSpinner": false
+    }
+  }
+}</pre></div>
+<h3>Android — apps/web/android/app/src/main/AndroidManifest.xml</h3>
+<p><code>INTERNET</code> подключается Capacitor автоматически. Добавьте разрешение на уведомления (Android 13+) и, при необходимости, deep-link:</p>
+<div class="code"><div class="code-bar"><span class="lbl"><span class="fdot"></span>xml</span><button class="copy">Копировать</button></div><pre>&lt;uses-permission android:name="android.permission.POST_NOTIFICATIONS"/&gt;
+
+&lt;!-- внутри &lt;activity&gt; основной MainActivity: диплинки aiteacher:// и https --&gt;
+&lt;intent-filter android:autoVerify="true"&gt;
+  &lt;action android:name="android.intent.action.VIEW"/&gt;
+  &lt;category android:name="android.intent.category.DEFAULT"/&gt;
+  &lt;category android:name="android.intent.category.BROWSABLE"/&gt;
+  &lt;data android:scheme="aiteacher"/&gt;
+  &lt;data android:scheme="https" android:host="app.aiteacher.app"/&gt;
+&lt;/intent-filter&gt;</pre></div>
+<p>Push через FCM: положите <code>google-services.json</code> в <code>android/app/</code> — плагин <code>@capacitor/push-notifications</code> сам зарегистрирует <code>FirebaseMessagingService</code>.</p>
+<h3>iOS — apps/web/ios/App/App/Info.plist</h3>
+<div class="code"><div class="code-bar"><span class="lbl"><span class="fdot"></span>xml</span><button class="copy">Копировать</button></div><pre>&lt;key&gt;UIBackgroundModes&lt;/key&gt;
+&lt;array&gt;
+  &lt;string&gt;remote-notification&lt;/string&gt;
+&lt;/array&gt;
+&lt;key&gt;CFBundleDisplayName&lt;/key&gt;
+&lt;string&gt;AI Teacher&lt;/string&gt;</pre></div>
+<p>В Xcode → таргет <strong>App</strong> → <strong>Signing &amp; Capabilities</strong> добавьте capability <strong>Push Notifications</strong> и <strong>Background Modes → Remote notifications</strong>. APNs-ключ загрузите в Firebase (если push идёт через FCM) или используйте APNs напрямую.</p>
+<h3>Плагин 1 — Push-уведомления</h3>
+<div class="code"><div class="code-bar"><span class="lbl"><span class="fdot"></span>js</span><button class="copy">Копировать</button></div><pre>// apps/web/src/native/push.js
+import { PushNotifications } from '@capacitor/push-notifications';
+import { Capacitor } from '@capacitor/core';
+
+export async function initPush(onToken) {
+  if (!Capacitor.isNativePlatform()) return; // веб / PWA — пропускаем
+
+  let perm = await PushNotifications.checkPermissions();
+  if (perm.receive === 'prompt') perm = await PushNotifications.requestPermissions();
+  if (perm.receive !== 'granted') return;
+
+  await PushNotifications.register();
+
+  PushNotifications.addListener('registration', (token) =&gt; {
+    onToken?.(token.value);          // отправьте token на бэкенд для адресных пушей
+  });
+  PushNotifications.addListener('registrationError', (e) =&gt; console.warn('push error', e));
+  PushNotifications.addListener('pushNotificationReceived', (n) =&gt; {
+    console.log('push received while open', n);
+  });
+  PushNotifications.addListener('pushNotificationActionPerformed', (a) =&gt; {
+    const route = a.notification?.data?.route; // навигация по тапу
+    if (route) window.location.hash = route;
+  });
+}</pre></div>
+<h3>Плагин 2 — Офлайн-режим</h3>
+<p>PWA уже кэширует оболочку через service worker (<code>apps/web/public/sw.js</code>). Для нативной обёртки добавьте контроль сети и локальный кэш данных:</p>
+<div class="code"><div class="code-bar"><span class="lbl"><span class="fdot"></span>js</span><button class="copy">Копировать</button></div><pre>// apps/web/src/native/offline.js
+import { Network } from '@capacitor/network';
+import { Preferences } from '@capacitor/preferences';
+
+export async function isOnline() {
+  return (await Network.getStatus()).connected;
+}
+
+export function watchNetwork(onChange) {
+  return Network.addListener('networkStatusChange', (s) =&gt; onChange(s.connected));
+}
+
+// Кэш-обёртка: пробуем сеть, при офлайне отдаём последнее сохранённое.
+export async function cachedJson(key, fetcher) {
+  try {
+    if (await isOnline()) {
+      const data = await fetcher();
+      await Preferences.set({ key, value: JSON.stringify(data) });
+      return data;
+    }
+  } catch { /* падаем в кэш ниже */ }
+  const cached = await Preferences.get({ key });
+  return cached.value ? JSON.parse(cached.value) : null;
+}</pre></div>
+<h3>Плагин 3 — Share intent (поделиться прогрессом)</h3>
+<div class="code"><div class="code-bar"><span class="lbl"><span class="fdot"></span>js</span><button class="copy">Копировать</button></div><pre>// apps/web/src/native/share.js
+import { Share } from '@capacitor/share';
+
+export async function shareProgress({ level, streak }) {
+  await Share.share({
+    title: 'AI English Teacher',
+    text: `Мой уровень ${level}, стрик ${streak} дней 🔥 Учусь с ИИ-учителем!`,
+    url: 'https://app.aiteacher.app',
+    dialogTitle: 'Поделиться прогрессом',
+  });
+}</pre></div>
+<h3>Автосборка (GitHub Actions)</h3>
+<p>Готовый workflow — <code>.github/workflows/mobile-build.yml</code>: два job'а (Android на ubuntu, iOS на macOS), запуск вручную или по тегу <code>v*</code>. Без секретов собирает debug-APK и неподписанный iOS-архив; при добавлении секретов подписи — подписанные APK/AAB и IPA, плюс опциональная загрузка в TestFlight. Список секретов и инструкция — <code>ci/README-CI.md</code>.</p>
+<blockquote>Пошаговые инструкции по подписи и публикации (Google Play, App Store, TestFlight) — в отдельных страницах-гайдах «Сборка APK» и «Сборка iOS», созданных ранее в этом треде.</blockquote></div>
+    </section>
+    <section id="dl">
+      <div class="sec-head">
+        <div class="sec-num">4</div>
+        <div><h2>🌐 Страница загрузки</h2><p class="sec-sub">React-компонент с определением устройства и редиректом + бэкенд-эндпоинт для раздачи APK.</p></div>
+      </div>
+      <div class="prose"><p>Готовый блок «Скачать приложение» для лендинга: React-компонент с определением ОС и авто-редиректом в нужный магазин, плюс бэкенд-эндпоинт для раздачи APK вне Google Play. Дизайн — в фирменном градиенте (#7c3aed → #d946ef), совпадает с обновлённым UI из раздела 2.</p>
+<h3>Логика определения устройства и редиректа</h3>
+<p><code>detectOS()</code> читает <code>navigator.userAgent</code>: Android → Google Play, iPhone/iPad → App Store (учитывается iPadOS, который маскируется под Mac — ловим по <code>maxTouchPoints</code>). При <code>autoRedirect=true</code> сразу перенаправляем; иначе показываем обе кнопки с подсветкой «Ваше устройство». Есть кнопка установки PWA (<code>beforeinstallprompt</code>) и прямой APK.</p>
+<h3>React-компонент (JSX)</h3>
+<p>Файл: <code>apps/web/src/features/download/DownloadApp.jsx</code></p>
+<div class="code"><div class="code-bar"><span class="lbl"><span class="fdot"></span>jsx</span><button class="copy">Копировать</button></div><pre>// AI English Teacher — блок «Скачать приложение» для лендинга.
+// Самодостаточный React-компонент на Tailwind: определяет ОС пользователя,
+// подсвечивает нужный магазин, поддерживает авто-редирект и установку PWA.
+// Ссылки на магазины и прямой APK передаются пропсами (значения по умолчанию ниже).
+import { useEffect, useMemo, useState } from 'react';
+
+export const STORE_LINKS = {
+  // Замените на реальные ссылки после публикации:
+  android: 'https://play.google.com/store/apps/details?id=com.aiteacher.app',
+  ios: 'https://apps.apple.com/app/ai-english-teacher/id0000000000',
+  // Прямая загрузка APK вне Google Play — эндпоинт бэкенда (apps/api/src/routes/download.js):
+  apk: '/api/download/android',
+};
+
+/** Определяет мобильную ОС по userAgent (с учётом iPadOS, который маскируется под Mac). */
+export function detectOS() {
+  if (typeof navigator === 'undefined') return 'other';
+  const ua = navigator.userAgent || navigator.vendor || '';
+  if (/android/i.test(ua)) return 'android';
+  const iOSLike = /iPad|iPhone|iPod/.test(ua) ||
+    (navigator.platform === 'MacIntel' &amp;&amp; navigator.maxTouchPoints &gt; 1); // iPadOS 13+
+  if (iOSLike) return 'ios';
+  return 'other';
+}
+
+function useInstallPrompt() {
+  const [deferred, setDeferred] = useState(null);
+  useEffect(() =&gt; {
+    const onPrompt = (e) =&gt; { e.preventDefault(); setDeferred(e); };
+    window.addEventListener('beforeinstallprompt', onPrompt);
+    return () =&gt; window.removeEventListener('beforeinstallprompt', onPrompt);
+  }, []);
+  const install = async () =&gt; {
+    if (!deferred) return;
+    deferred.prompt();
+    await deferred.userChoice.catch(() =&gt; {});
+    setDeferred(null);
+  };
+  return { canInstall: !!deferred, install };
+}
+
+function StoreBadge({ href, kind, recommended, onClick }) {
+  const isAndroid = kind === 'android';
+  return (
+    &lt;a
+      href={href}
+      onClick={onClick}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={isAndroid ? 'Скачать в Google Play' : 'Скачать в App Store'}
+      className={[
+        'group relative flex items-center gap-3 rounded-2xl px-5 py-3.5 min-w-[210px]',
+        'bg-black text-white transition-all hover:-translate-y-0.5 hover:shadow-xl',
+        recommended ? 'ring-2 ring-offset-2 ring-fuchsia-500 shadow-lg' : 'opacity-95',
+      ].join(' ')}
+    &gt;
+      &lt;span className="text-3xl leading-none"&gt;{isAndroid ? '🤖' : '🍎'}&lt;/span&gt;
+      &lt;span className="text-left leading-tight"&gt;
+        &lt;span className="block text-[11px] font-semibold text-white/70"&gt;
+          {isAndroid ? 'Загрузите в' : 'Загрузите в'}
+        &lt;/span&gt;
+        &lt;span className="block text-lg font-black tracking-tight"&gt;
+          {isAndroid ? 'Google Play' : 'App Store'}
+        &lt;/span&gt;
+      &lt;/span&gt;
+      {recommended &amp;&amp; (
+        &lt;span className="absolute -top-2 -right-2 rounded-full bg-fuchsia-500 px-2 py-0.5 text-[10px] font-black uppercase tracking-wide"&gt;
+          Ваше устройство
+        &lt;/span&gt;
+      )}
+    &lt;/a&gt;
+  );
+}
+
+/**
+ * Блок загрузки приложения.
+ * @param {object}  props.links        ссылки на магазины/APK (по умолчанию STORE_LINKS)
+ * @param {boolean} props.autoRedirect авто-переход в магазин по detected ОС (по умолчанию false)
+ */
+export default function DownloadApp({ links = STORE_LINKS, autoRedirect = false }) {
+  const os = useMemo(detectOS, []);
+  const { canInstall, install } = useInstallPrompt();
+  const [redirecting, setRedirecting] = useState(false);
+
+  useEffect(() =&gt; {
+    if (!autoRedirect) return;
+    const target = os === 'android' ? links.android : os === 'ios' ? links.ios : null;
+    if (target) { setRedirecting(true); window.location.href = target; }
+  }, [autoRedirect, os, links]);
+
+  const track = (platform) =&gt; () =&gt; {
+    // Хук аналитики — подставьте свой (GA4 / Яндекс.Метрика / Amplitude):
+    if (typeof window !== 'undefined' &amp;&amp; typeof window.gtag === 'function') {
+      window.gtag('event', 'app_download_click', { platform });
+    }
+  };
+
+  return (
+    &lt;section
+      className="relative overflow-hidden rounded-[28px] px-6 py-10 sm:px-10 sm:py-14
+                 bg-gradient-to-br from-violet-600 via-purple-600 to-fuchsia-600 text-white"
+      aria-labelledby="download-title"
+    &gt;
+      {/* декоративная сетка */}
+      &lt;div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-20"
+        style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,.6) 1px,transparent 1px)', backgroundSize: '22px 22px' }}
+      /&gt;
+      &lt;div className="relative mx-auto max-w-3xl text-center"&gt;
+        &lt;span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-xs font-bold uppercase tracking-widest"&gt;
+          🎓 AI English &amp;amp; Math Teacher
+        &lt;/span&gt;
+        &lt;h2 id="download-title" className="mt-5 text-3xl font-black leading-tight sm:text-5xl"&gt;
+          Твой ИИ-учитель — &lt;br className="hidden sm:block" /&gt;всегда в кармане
+        &lt;/h2&gt;
+        &lt;p className="mx-auto mt-4 max-w-xl text-base font-medium text-white/85 sm:text-lg"&gt;
+          Живые аватары-преподаватели, подготовка к IELTS/TOEFL и геймификация.
+          Скачай на своё устройство или установи как приложение прямо из браузера.
+        &lt;/p&gt;
+
+        &lt;div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row"&gt;
+          &lt;StoreBadge href={links.android} kind="android" recommended={os === 'android'} onClick={track('android')} /&gt;
+          &lt;StoreBadge href={links.ios} kind="ios" recommended={os === 'ios'} onClick={track('ios')} /&gt;
+        &lt;/div&gt;
+
+        {/* PWA + прямой APK */}
+        &lt;div className="mt-5 flex flex-wrap items-center justify-center gap-3 text-sm"&gt;
+          {canInstall &amp;&amp; (
+            &lt;button
+              onClick={install}
+              className="rounded-full bg-white px-5 py-2.5 font-bold text-violet-700 shadow hover:bg-white/90"
+            &gt;
+              ⬇️ Установить как приложение (PWA)
+            &lt;/button&gt;
+          )}
+          &lt;a
+            href={links.apk}
+            onClick={track('apk')}
+            className="rounded-full border border-white/40 px-5 py-2.5 font-semibold text-white/90 hover:bg-white/10"
+          &gt;
+            📦 Скачать APK напрямую
+          &lt;/a&gt;
+        &lt;/div&gt;
+
+        {redirecting &amp;&amp; (
+          &lt;p className="mt-4 text-sm font-semibold text-white/80" role="status"&gt;
+            Открываем магазин приложений…{' '}
+            &lt;a className="underline" href={os === 'android' ? links.android : links.ios}&gt;
+              Не открылось? Нажмите здесь
+            &lt;/a&gt;
+          &lt;/p&gt;
+        )}
+
+        &lt;p className="mt-6 text-xs font-medium text-white/60"&gt;
+          Доступно на Android и iOS · Работает офлайн после установки · Русский · English · Tiếng Việt
+        &lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/section&gt;
+  );
+}</pre></div>
+<h3>Использование на лендинге</h3>
+<div class="code"><div class="code-bar"><span class="lbl"><span class="fdot"></span>jsx</span><button class="copy">Копировать</button></div><pre>import DownloadApp from './features/download/DownloadApp.jsx';
+
+export default function Landing() {
+  return (
+    &lt;main&gt;
+      {/* ...герой, фичи... */}
+      &lt;DownloadApp /&gt;               {/* обе кнопки + PWA + прямой APK */}
+      {/* или авто-редирект на магазин по устройству: */}
+      {/* &lt;DownloadApp autoRedirect /&gt; */}
+    &lt;/main&gt;
+  );
+}</pre></div>
+<h3>Бэкенд-эндпоинт (Express)</h3>
+<p>Файл: <code>apps/api/src/routes/download.js</code>. Монтируется в <code>apps/api/src/app.js</code>:</p>
+<div class="code"><div class="code-bar"><span class="lbl"><span class="fdot"></span>js</span><button class="copy">Копировать</button></div><pre>import downloadRouter from './routes/download.js';
+// ...
+app.use('/api/download', downloadRouter);</pre></div>
+<p>Код роутера:</p>
+<div class="code"><div class="code-bar"><span class="lbl"><span class="fdot"></span>js</span><button class="copy">Копировать</button></div><pre>// Прямая раздача бинарников приложения вне магазинов (Launch pack).
+// Монтируется в app.js:  app.use('/api/download', downloadRouter);
+// Публичный роутер (без requireAuth) — это дистрибутив, а не приватные данные.
+//
+// ENV:
+//   RELEASES_DIR   каталог с собранными файлами (по умолчанию &lt;cwd&gt;/releases)
+//   PLAY_URL       ссылка на Google Play (для редиректа при PREFER_STORE=1)
+//   APPSTORE_URL   ссылка на App Store
+//   PREFER_STORE   '1' → /android редиректит в Google Play вместо отдачи файла
+import { Router } from 'express';
+import fs from 'node:fs';
+import path from 'node:path';
+
+const router = Router();
+
+const RELEASES_DIR = path.resolve(process.env.RELEASES_DIR || path.join(process.cwd(), 'releases'));
+const STORE_URLS = {
+  android: process.env.PLAY_URL || 'https://play.google.com/store/apps/details?id=com.aiteacher.app',
+  ios: process.env.APPSTORE_URL || 'https://apps.apple.com/app/ai-english-teacher/id0000000000',
+};
+
+/** Определение ОС по User-Agent — для авто-редиректа с лендинга. */
+router.get('/detect', (req, res) =&gt; {
+  const ua = req.get('user-agent') || '';
+  let os = 'other';
+  if (/android/i.test(ua)) os = 'android';
+  else if (/iphone|ipad|ipod/i.test(ua)) os = 'ios';
+  res.json({ os, store: STORE_URLS[os] || null });
+});
+
+/** Находит самый свежий файл нужного расширения в каталоге релизов и стримит его. */
+function streamLatest(res, next, { ext, contentType, downloadName }) {
+  try {
+    if (!fs.existsSync(RELEASES_DIR)) {
+      return res.status(404).json({ error: 'Releases directory not found' });
+    }
+    const candidates = fs
+      .readdirSync(RELEASES_DIR)
+      .filter((f) =&gt; f.toLowerCase().endsWith(ext))
+      .map((f) =&gt; ({ f, t: fs.statSync(path.join(RELEASES_DIR, f)).mtimeMs }))
+      .sort((a, b) =&gt; b.t - a.t);
+
+    if (!candidates.length) return res.status(404).json({ error: `No ${ext} build available` });
+
+    const full = path.join(RELEASES_DIR, candidates[0].f);
+    // Защита от path traversal: файл обязан лежать внутри RELEASES_DIR.
+    if (!full.startsWith(RELEASES_DIR + path.sep)) return res.status(400).json({ error: 'Bad path' });
+
+    res.setHeader('Content-Type', contentType);
+    res.setHeader('Content-Disposition', `attachment; filename="${downloadName}"`);
+    res.setHeader('Content-Length', fs.statSync(full).size);
+    res.setHeader('Cache-Control', 'public, max-age=300');
+
+    const stream = fs.createReadStream(full);
+    stream.on('error', next);
+    stream.pipe(res);
+  } catch (err) {
+    next(err);
+  }
+}
+
+// GET /api/download/android → отдаёт свежий подписанный APK (или редиректит в Play).
+router.get('/android', (req, res, next) =&gt; {
+  if (process.env.PREFER_STORE === '1') return res.redirect(302, STORE_URLS.android);
+  streamLatest(res, next, {
+    ext: '.apk',
+    contentType: 'application/vnd.android.package-archive',
+    downloadName: 'AI-English-Teacher.apk',
+  });
+});
+
+// iOS: веб-сайдлоад запрещён Apple → отправляем в App Store.
+// (Ad-hoc установка возможна только через itms-services + manifest.plist для enterprise/UDID.)
+router.get('/ios', (req, res) =&gt; res.redirect(302, STORE_URLS.ios));
+
+export default router;</pre></div>
+<p>Положите собранные бинарники в каталог <code>releases/</code> (или задайте <code>RELEASES_DIR</code>). <code>GET /api/download/android</code> отдаёт свежий APK, <code>/api/download/ios</code> редиректит в App Store (веб-сайдлоад iOS запрещён Apple), <code>/api/download/detect</code> возвращает ОС по User-Agent для серверного редиректа.</p>
+<h3>Дизайн-заметки</h3>
+<p>Компонент использует те же токены, что и обновлённый UI: фиолетово-фуксиевый градиент, крупные бейджи магазинов, состояние «Ваше устройство», доступные <code>aria-label</code>, hit-target ≥ 44px. Хук аналитики <code>app_download_click</code> готов под GA4 / Яндекс.Метрику. Компонент самодостаточен (нужен только Tailwind) и вставляется в любой React-лендинг.</p></div>
+    </section>
+  </main>
+</div>
+
+<footer>
+  <div class="foot-inner">
+    <div class="brand">🎓 AI English &amp; Math Teacher</div>
+    <div class="devs">Разработка: <b>Pavel Afanasev</b> · <b>Sergei Mikhailov</b></div>
+  </div>
+  <div class="foot-small">Лаунч-пакет: маркетинг · UI/UX · мобильная сборка · страница загрузки. Тексты и код готовы к использованию; реализация рассчитана на маленькую команду и 3 месяца.</div>
+</footer>
+
+<script>
+  document.querySelectorAll('.code').forEach(function(block){
+    var btn=block.querySelector('.copy'), pre=block.querySelector('pre');
+    if(!btn||!pre)return;
+    btn.addEventListener('click',function(){
+      navigator.clipboard.writeText(pre.innerText).then(function(){
+        var o=btn.textContent;btn.textContent='✓ Скопировано';btn.classList.add('ok');
+        setTimeout(function(){btn.textContent=o;btn.classList.remove('ok');},1500);
+      }).catch(function(){});
+    });
+  });
+  var links=[].slice.call(document.querySelectorAll('#toc a'));
+  var map={};links.forEach(function(a){map[a.getAttribute('href').slice(1)]=a;});
+  var obs=new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){
+      links.forEach(function(a){a.classList.remove('active');});
+      if(map[e.target.id])map[e.target.id].classList.add('active');
+    }});
+  },{rootMargin:'-15% 0px -75% 0px',threshold:0});
+  document.querySelectorAll('main section').forEach(function(s){obs.observe(s);});
+</script>
+</body>
+</html>

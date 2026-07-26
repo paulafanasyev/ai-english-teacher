@@ -1,0 +1,4480 @@
+[
+  {
+    "id": "g001",
+    "level": "A1",
+    "topic": "present simple",
+    "type": "choose",
+    "sentence": "She ___ to school every day.",
+    "options": [
+      "go",
+      "goes",
+      "going"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "With he/she/it add -s: she goes.",
+      "ru": "После he/she/it добавляем -s: she goes.",
+      "vi": "Với he/she/it thêm -s: she goes."
+    }
+  },
+  {
+    "id": "g002",
+    "level": "A1",
+    "topic": "present simple",
+    "type": "choose",
+    "sentence": "I ___ coffee every morning.",
+    "options": [
+      "drinks",
+      "drink",
+      "drinking"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "With I/you/we/they use the base form.",
+      "ru": "С I/you/we/they используем базовую форму.",
+      "vi": "Với I/you/we/they dùng dạng gốc."
+    }
+  },
+  {
+    "id": "g003",
+    "level": "A1",
+    "topic": "present simple",
+    "type": "choose",
+    "sentence": "My brother ___ football on Sundays.",
+    "options": [
+      "play",
+      "plays",
+      "playing"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "He/she/it needs -s: he plays.",
+      "ru": "He/she/it требует -s: he plays.",
+      "vi": "He/she/it cần -s: he plays."
+    }
+  },
+  {
+    "id": "g004",
+    "level": "A1",
+    "topic": "present simple",
+    "type": "choose",
+    "sentence": "They ___ in a small house.",
+    "options": [
+      "lives",
+      "live",
+      "living"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "They is plural, so no -s: they live.",
+      "ru": "They — множественное число, без -s.",
+      "vi": "They là số nhiều, không thêm -s."
+    }
+  },
+  {
+    "id": "g005",
+    "level": "A2",
+    "topic": "present simple",
+    "type": "choose",
+    "sentence": "He ___ not like spicy food.",
+    "options": [
+      "do",
+      "does",
+      "is"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "With he/she/it use does not.",
+      "ru": "С he/she/it используем does not.",
+      "vi": "Với he/she/it dùng does not."
+    }
+  },
+  {
+    "id": "g006",
+    "level": "A2",
+    "topic": "present simple",
+    "type": "choose",
+    "sentence": "___ your sister speak English?",
+    "options": [
+      "Do",
+      "Does",
+      "Is"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "Question with she uses does.",
+      "ru": "Вопрос с she требует does.",
+      "vi": "Câu hỏi với she dùng does."
+    }
+  },
+  {
+    "id": "g007",
+    "level": "A1",
+    "topic": "present simple",
+    "type": "choose",
+    "sentence": "We ___ dinner at seven.",
+    "options": [
+      "has",
+      "have",
+      "having"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "We takes the base form: have.",
+      "ru": "We требует базовую форму: have.",
+      "vi": "We dùng dạng gốc: have."
+    }
+  },
+  {
+    "id": "g008",
+    "level": "A1",
+    "topic": "present simple",
+    "type": "choose",
+    "sentence": "The shop ___ at nine every day.",
+    "options": [
+      "open",
+      "opens",
+      "opening"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "The shop is singular, so add -s.",
+      "ru": "The shop — единственное число, добавляем -s.",
+      "vi": "The shop là số ít, thêm -s."
+    }
+  },
+  {
+    "id": "g009",
+    "level": "A1",
+    "topic": "present continuous",
+    "type": "choose",
+    "sentence": "Look! She ___ a beautiful song.",
+    "options": [
+      "sing",
+      "is singing",
+      "sings"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "Now: use am/is/are + -ing.",
+      "ru": "Сейчас: используем am/is/are + -ing.",
+      "vi": "Bây giờ: dùng am/is/are, -ing."
+    }
+  },
+  {
+    "id": "g010",
+    "level": "A1",
+    "topic": "present continuous",
+    "type": "choose",
+    "sentence": "We ___ homework right now.",
+    "options": [
+      "are doing",
+      "do",
+      "did"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Right now needs the -ing form.",
+      "ru": "Right now требует форму -ing.",
+      "vi": "Right now cần dạng -ing."
+    }
+  },
+  {
+    "id": "g011",
+    "level": "A2",
+    "topic": "present continuous",
+    "type": "choose",
+    "sentence": "I ___ for the bus at the moment.",
+    "options": [
+      "wait",
+      "am waiting",
+      "waited"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "At the moment shows a present action.",
+      "ru": "At the moment показывает действие сейчас.",
+      "vi": "At the moment chỉ hành động đang diễn ra."
+    }
+  },
+  {
+    "id": "g012",
+    "level": "A1",
+    "topic": "present continuous",
+    "type": "choose",
+    "sentence": "The children ___ in the garden now.",
+    "options": [
+      "is playing",
+      "are playing",
+      "play"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "Children is plural, so use are.",
+      "ru": "Children — множественное число, используем are.",
+      "vi": "Children là số nhiều, dùng are."
+    }
+  },
+  {
+    "id": "g013",
+    "level": "A2",
+    "topic": "present continuous",
+    "type": "choose",
+    "sentence": "___ you listening to me?",
+    "options": [
+      "Are",
+      "Do",
+      "Is"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "You needs are for a question.",
+      "ru": "You требует are в вопросе.",
+      "vi": "You cần are trong câu hỏi."
+    }
+  },
+  {
+    "id": "g014",
+    "level": "A2",
+    "topic": "present continuous",
+    "type": "choose",
+    "sentence": "He ___ his bike at the moment.",
+    "options": [
+      "is fixing",
+      "fixes",
+      "fixed"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "An ongoing action now uses is + -ing.",
+      "ru": "Действие сейчас: is + -ing.",
+      "vi": "Hành động đang diễn ra: is, -ing."
+    }
+  },
+  {
+    "id": "g015",
+    "level": "A1",
+    "topic": "present continuous",
+    "type": "choose",
+    "sentence": "I ___ my homework now.",
+    "options": [
+      "am doing",
+      "do",
+      "did"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Now needs am + the -ing form.",
+      "ru": "Now требует am + форму -ing.",
+      "vi": "Now cần am, dạng -ing."
+    }
+  },
+  {
+    "id": "g016",
+    "level": "A1",
+    "topic": "past simple",
+    "type": "choose",
+    "sentence": "We ___ to the beach last summer.",
+    "options": [
+      "go",
+      "went",
+      "goes"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "Go is irregular: past form is went.",
+      "ru": "Go неправильный глагол: went.",
+      "vi": "Go là động từ bất quy tắc: went."
+    }
+  },
+  {
+    "id": "g017",
+    "level": "A1",
+    "topic": "past simple",
+    "type": "choose",
+    "sentence": "She ___ her homework yesterday.",
+    "options": [
+      "finish",
+      "finished",
+      "finishes"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "Regular past tense adds -ed.",
+      "ru": "Правильный глагол в прошедшем времени: -ed.",
+      "vi": "Động từ quy tắc thêm -ed."
+    }
+  },
+  {
+    "id": "g018",
+    "level": "A2",
+    "topic": "past simple",
+    "type": "choose",
+    "sentence": "___ you see that movie last night?",
+    "options": [
+      "Did",
+      "Do",
+      "Were"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Past questions use did + base verb.",
+      "ru": "Вопрос в прошедшем: did + база.",
+      "vi": "Câu hỏi quá khứ: did, động từ gốc."
+    }
+  },
+  {
+    "id": "g019",
+    "level": "A2",
+    "topic": "past simple",
+    "type": "choose",
+    "sentence": "I ___ not sleep well last night.",
+    "options": [
+      "did",
+      "do",
+      "was"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Negative past uses did not.",
+      "ru": "Отрицание в прошедшем: did not.",
+      "vi": "Phủ định quá khứ: did not."
+    }
+  },
+  {
+    "id": "g020",
+    "level": "A1",
+    "topic": "past simple",
+    "type": "choose",
+    "sentence": "They ___ pizza for dinner yesterday.",
+    "options": [
+      "eat",
+      "ate",
+      "eats"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "Eat is irregular: past form is ate.",
+      "ru": "Eat неправильный глагол: ate.",
+      "vi": "Eat là động từ bất quy tắc: ate."
+    }
+  },
+  {
+    "id": "g021",
+    "level": "A2",
+    "topic": "past simple",
+    "type": "choose",
+    "sentence": "He ___ at the airport two hours ago.",
+    "options": [
+      "arrive",
+      "arrived",
+      "arrives"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "Regular verb: add -ed for past.",
+      "ru": "Правильный глагол: добавляем -ed.",
+      "vi": "Động từ quy tắc: thêm -ed."
+    }
+  },
+  {
+    "id": "g022",
+    "level": "B1",
+    "topic": "past simple",
+    "type": "choose",
+    "sentence": "While I ___ dinner, the phone rang.",
+    "options": [
+      "cooked",
+      "was cooking",
+      "cook"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "Long past action uses was/were + -ing.",
+      "ru": "Длительное действие: was/were + -ing.",
+      "vi": "Hành động kéo dài: was/were, -ing."
+    }
+  },
+  {
+    "id": "g023",
+    "level": "A1",
+    "topic": "future",
+    "type": "choose",
+    "sentence": "I think it ___ rain tomorrow.",
+    "options": [
+      "will",
+      "is",
+      "was"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Predictions use will + base verb.",
+      "ru": "Предсказания: will + база глагола.",
+      "vi": "Dự đoán dùng will, động từ gốc."
+    }
+  },
+  {
+    "id": "g024",
+    "level": "A2",
+    "topic": "future",
+    "type": "choose",
+    "sentence": "We ___ visit Paris next month.",
+    "options": [
+      "are going to",
+      "went",
+      "did"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Plans use going to + base verb.",
+      "ru": "Планы: going to + база глагола.",
+      "vi": "Kế hoạch dùng going to, động từ gốc."
+    }
+  },
+  {
+    "id": "g025",
+    "level": "A2",
+    "topic": "future",
+    "type": "choose",
+    "sentence": "Look at those clouds! It ___ rain.",
+    "options": [
+      "will",
+      "is going to",
+      "went"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "Visible evidence uses going to.",
+      "ru": "Явный признак: going to.",
+      "vi": "Dấu hiệu rõ ràng dùng going to."
+    }
+  },
+  {
+    "id": "g026",
+    "level": "A1",
+    "topic": "future",
+    "type": "choose",
+    "sentence": "She ___ call you tomorrow.",
+    "options": [
+      "will",
+      "was",
+      "did"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Future promises use will + verb.",
+      "ru": "Обещания в будущем: will + глагол.",
+      "vi": "Lời hứa tương lai dùng will, động từ."
+    }
+  },
+  {
+    "id": "g027",
+    "level": "B1",
+    "topic": "future",
+    "type": "choose",
+    "sentence": "By next year, she ___ from university.",
+    "options": [
+      "will graduate",
+      "graduates",
+      "graduated"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Future event uses will + base verb.",
+      "ru": "Событие в будущем: will + база.",
+      "vi": "Sự kiện tương lai dùng will, động từ gốc."
+    }
+  },
+  {
+    "id": "g028",
+    "level": "A2",
+    "topic": "future",
+    "type": "choose",
+    "sentence": "I ___ meet him at six o'clock.",
+    "options": [
+      "am going to",
+      "went",
+      "did"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Fixed plans use going to + verb.",
+      "ru": "Точный план: going to + глагол.",
+      "vi": "Kế hoạch cụ thể dùng going to, động từ."
+    }
+  },
+  {
+    "id": "g029",
+    "level": "A1",
+    "topic": "articles",
+    "type": "choose",
+    "sentence": "I saw ___ elephant at the zoo.",
+    "options": [
+      "a",
+      "an",
+      "the"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "Use an before a vowel sound.",
+      "ru": "Перед гласным звуком используем an.",
+      "vi": "Dùng an trước âm nguyên âm."
+    }
+  },
+  {
+    "id": "g030",
+    "level": "A1",
+    "topic": "articles",
+    "type": "choose",
+    "sentence": "She is ___ doctor at the hospital.",
+    "options": [
+      "a",
+      "an",
+      "the"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Use a before a consonant sound.",
+      "ru": "Перед согласным звуком используем a.",
+      "vi": "Dùng a trước âm phụ âm."
+    }
+  },
+  {
+    "id": "g031",
+    "level": "A2",
+    "topic": "articles",
+    "type": "choose",
+    "sentence": "___ sun rises in the east.",
+    "options": [
+      "A",
+      "An",
+      "The"
+    ],
+    "answer": 2,
+    "explain": {
+      "en": "Unique things use the.",
+      "ru": "Уникальные вещи требуют the.",
+      "vi": "Vật thể duy nhất dùng the."
+    }
+  },
+  {
+    "id": "g032",
+    "level": "A2",
+    "topic": "articles",
+    "type": "choose",
+    "sentence": "We need ___ new car soon.",
+    "options": [
+      "a",
+      "an",
+      "the"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Car starts with a consonant sound.",
+      "ru": "Car начинается на согласный звук.",
+      "vi": "Car bắt đầu bằng âm phụ âm."
+    }
+  },
+  {
+    "id": "g033",
+    "level": "A1",
+    "topic": "articles",
+    "type": "choose",
+    "sentence": "Can I have ___ apple, please?",
+    "options": [
+      "a",
+      "an",
+      "the"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "Apple starts with a vowel sound.",
+      "ru": "Apple начинается на гласный звук.",
+      "vi": "Apple bắt đầu bằng âm nguyên âm."
+    }
+  },
+  {
+    "id": "g034",
+    "level": "B1",
+    "topic": "articles",
+    "type": "choose",
+    "sentence": "___ information you gave me was useful.",
+    "options": [
+      "A",
+      "An",
+      "The"
+    ],
+    "answer": 2,
+    "explain": {
+      "en": "Specific information here needs the.",
+      "ru": "Конкретная информация требует the.",
+      "vi": "Thông tin cụ thể cần the."
+    }
+  },
+  {
+    "id": "g035",
+    "level": "A1",
+    "topic": "plurals",
+    "type": "choose",
+    "sentence": "I have two ___.",
+    "options": [
+      "book",
+      "books",
+      "bookes"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "Regular plurals add -s: books.",
+      "ru": "Обычное множественное число: -s.",
+      "vi": "Số nhiều thông thường thêm -s."
+    }
+  },
+  {
+    "id": "g036",
+    "level": "A1",
+    "topic": "plurals",
+    "type": "choose",
+    "sentence": "There are three ___ in the garden.",
+    "options": [
+      "child",
+      "childs",
+      "children"
+    ],
+    "answer": 2,
+    "explain": {
+      "en": "Child is irregular: children.",
+      "ru": "Child неправильное слово: children.",
+      "vi": "Child là danh từ bất quy tắc: children."
+    }
+  },
+  {
+    "id": "g037",
+    "level": "A2",
+    "topic": "plurals",
+    "type": "choose",
+    "sentence": "She has two ___ at home.",
+    "options": [
+      "mouse",
+      "mouses",
+      "mice"
+    ],
+    "answer": 2,
+    "explain": {
+      "en": "Mouse is irregular: mice.",
+      "ru": "Mouse неправильное слово: mice.",
+      "vi": "Mouse là danh từ bất quy tắc: mice."
+    }
+  },
+  {
+    "id": "g038",
+    "level": "A1",
+    "topic": "plurals",
+    "type": "choose",
+    "sentence": "How many ___ do you have?",
+    "options": [
+      "box",
+      "boxes",
+      "boxs"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "Words ending in -x add -es.",
+      "ru": "Слова на -x получают -es.",
+      "vi": "Từ kết thúc bằng -x thêm -es."
+    }
+  },
+  {
+    "id": "g039",
+    "level": "A2",
+    "topic": "plurals",
+    "type": "choose",
+    "sentence": "There are many ___ swimming in the lake.",
+    "options": [
+      "fish",
+      "fishes",
+      "fishs"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Fish stays the same in the plural.",
+      "ru": "Fish не меняется во множественном числе.",
+      "vi": "Fish không đổi ở số nhiều."
+    }
+  },
+  {
+    "id": "g040",
+    "level": "A1",
+    "topic": "plurals",
+    "type": "choose",
+    "sentence": "We saw two ___ in the park.",
+    "options": [
+      "dog",
+      "dogs",
+      "dogies"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "Regular plurals just add -s.",
+      "ru": "Обычное множественное число просто добавляет -s.",
+      "vi": "Số nhiều thông thường chỉ thêm -s."
+    }
+  },
+  {
+    "id": "g041",
+    "level": "A1",
+    "topic": "pronouns",
+    "type": "choose",
+    "sentence": "___ is my sister. She is ten.",
+    "options": [
+      "He",
+      "She",
+      "This"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "Use she for a female person.",
+      "ru": "She используется для женского лица.",
+      "vi": "Dùng she cho người giống nữ."
+    }
+  },
+  {
+    "id": "g042",
+    "level": "A1",
+    "topic": "pronouns",
+    "type": "choose",
+    "sentence": "This book is ___.",
+    "options": [
+      "I",
+      "me",
+      "mine"
+    ],
+    "answer": 2,
+    "explain": {
+      "en": "After is, use the possessive pronoun.",
+      "ru": "После is используем притяжательное местоимение.",
+      "vi": "Sau is dùng đại từ sở hữu."
+    }
+  },
+  {
+    "id": "g043",
+    "level": "A2",
+    "topic": "pronouns",
+    "type": "choose",
+    "sentence": "Give the pen to ___.",
+    "options": [
+      "I",
+      "me",
+      "my"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "After a preposition, use an object pronoun.",
+      "ru": "После предлога используем объектное местоимение.",
+      "vi": "Sau giới từ dùng đại từ tân ngữ."
+    }
+  },
+  {
+    "id": "g044",
+    "level": "A1",
+    "topic": "pronouns",
+    "type": "choose",
+    "sentence": "___ car is red and fast.",
+    "options": [
+      "Their",
+      "They",
+      "Them"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Before a noun, use a possessive adjective.",
+      "ru": "Перед существительным — притяжательное прилагательное.",
+      "vi": "Trước danh từ dùng tính từ sở hữu."
+    }
+  },
+  {
+    "id": "g045",
+    "level": "A2",
+    "topic": "pronouns",
+    "type": "choose",
+    "sentence": "She washed ___ hands before lunch.",
+    "options": [
+      "her",
+      "she",
+      "hers"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Before a noun, use her not hers.",
+      "ru": "Перед существительным her, а не hers.",
+      "vi": "Trước danh từ dùng her, không phải hers."
+    }
+  },
+  {
+    "id": "g046",
+    "level": "B1",
+    "topic": "pronouns",
+    "type": "choose",
+    "sentence": "The students helped ___ with the project.",
+    "options": [
+      "theirselves",
+      "themselves",
+      "them"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "The reflexive form is themselves.",
+      "ru": "Возвратная форма: themselves.",
+      "vi": "Dạng phản thân là themselves."
+    }
+  },
+  {
+    "id": "g047",
+    "level": "A1",
+    "topic": "prepositions",
+    "type": "choose",
+    "sentence": "The cat is ___ the table.",
+    "options": [
+      "in",
+      "on",
+      "at"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "On means touching the surface.",
+      "ru": "On означает на поверхности.",
+      "vi": "On nghĩa là ở trên bề mặt."
+    }
+  },
+  {
+    "id": "g048",
+    "level": "A1",
+    "topic": "prepositions",
+    "type": "choose",
+    "sentence": "We arrived ___ 8 o'clock.",
+    "options": [
+      "in",
+      "on",
+      "at"
+    ],
+    "answer": 2,
+    "explain": {
+      "en": "Use at with exact clock times.",
+      "ru": "At используется с точным временем.",
+      "vi": "Dùng at với giờ cụ thể."
+    }
+  },
+  {
+    "id": "g049",
+    "level": "A2",
+    "topic": "prepositions",
+    "type": "choose",
+    "sentence": "She was born ___ 2010.",
+    "options": [
+      "in",
+      "on",
+      "at"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Use in with years and months.",
+      "ru": "In используется с годами и месяцами.",
+      "vi": "Dùng in với năm và tháng."
+    }
+  },
+  {
+    "id": "g050",
+    "level": "A1",
+    "topic": "prepositions",
+    "type": "choose",
+    "sentence": "The book is ___ the box.",
+    "options": [
+      "in",
+      "on",
+      "under"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "In means inside a container.",
+      "ru": "In означает внутри чего-то.",
+      "vi": "In nghĩa là ở trong."
+    }
+  },
+  {
+    "id": "g051",
+    "level": "A2",
+    "topic": "prepositions",
+    "type": "choose",
+    "sentence": "He is waiting ___ the bus stop.",
+    "options": [
+      "at",
+      "in",
+      "on"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "At marks a specific point or place.",
+      "ru": "At отмечает конкретное место.",
+      "vi": "At đánh dấu một địa điểm cụ thể."
+    }
+  },
+  {
+    "id": "g052",
+    "level": "B1",
+    "topic": "prepositions",
+    "type": "choose",
+    "sentence": "She has worked here ___ five years.",
+    "options": [
+      "since",
+      "for",
+      "at"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "For + a length of time.",
+      "ru": "For + продолжительность времени.",
+      "vi": "For, khoảng thời gian."
+    }
+  },
+  {
+    "id": "g053",
+    "level": "B1",
+    "topic": "prepositions",
+    "type": "choose",
+    "sentence": "I haven't seen him ___ Monday.",
+    "options": [
+      "for",
+      "since",
+      "at"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "Since + a starting point in time.",
+      "ru": "Since + начальная точка времени.",
+      "vi": "Since, điểm bắt đầu thời gian."
+    }
+  },
+  {
+    "id": "g054",
+    "level": "A1",
+    "topic": "comparatives",
+    "type": "choose",
+    "sentence": "This bag is ___ than that one.",
+    "options": [
+      "big",
+      "bigger",
+      "biggest"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "Short adjectives add -er to compare.",
+      "ru": "Короткие прилагательные получают -er.",
+      "vi": "Tính từ ngắn thêm -er."
+    }
+  },
+  {
+    "id": "g055",
+    "level": "A2",
+    "topic": "comparatives",
+    "type": "choose",
+    "sentence": "She is the ___ student in class.",
+    "options": [
+      "smart",
+      "smarter",
+      "smartest"
+    ],
+    "answer": 2,
+    "explain": {
+      "en": "The superlative uses the + -est.",
+      "ru": "Превосходная степень: the + -est.",
+      "vi": "Dạng so sánh nhất dùng the, -est."
+    }
+  },
+  {
+    "id": "g056",
+    "level": "A2",
+    "topic": "comparatives",
+    "type": "choose",
+    "sentence": "This film is ___ than the last one.",
+    "options": [
+      "interesting",
+      "more interesting",
+      "most interesting"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "Long adjectives use more + adjective.",
+      "ru": "Длинные прилагательные: more + слово.",
+      "vi": "Tính từ dài dùng more, tính từ."
+    }
+  },
+  {
+    "id": "g057",
+    "level": "A1",
+    "topic": "comparatives",
+    "type": "choose",
+    "sentence": "My hair is ___ than yours.",
+    "options": [
+      "long",
+      "longer",
+      "longest"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "Short adjectives add -er for comparison.",
+      "ru": "Короткие прилагательные получают -er.",
+      "vi": "Tính từ ngắn thêm -er để so sánh."
+    }
+  },
+  {
+    "id": "g058",
+    "level": "B1",
+    "topic": "comparatives",
+    "type": "choose",
+    "sentence": "This is ___ book I have ever read.",
+    "options": [
+      "the good",
+      "the best",
+      "the better"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "Good is irregular: best is the superlative.",
+      "ru": "Good неправильное слово: best.",
+      "vi": "Good là tính từ bất quy tắc: best."
+    }
+  },
+  {
+    "id": "g059",
+    "level": "A2",
+    "topic": "comparatives",
+    "type": "choose",
+    "sentence": "Her new phone is ___ than the old one.",
+    "options": [
+      "good",
+      "better",
+      "best"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "Good is irregular: better for comparing two.",
+      "ru": "Good неправильное слово: better для сравнения двух.",
+      "vi": "Good là tính từ bất quy tắc: better khi so sánh hai."
+    }
+  },
+  {
+    "id": "g060",
+    "level": "A2",
+    "topic": "modal verbs",
+    "type": "choose",
+    "sentence": "You ___ wear a seatbelt in the car.",
+    "options": [
+      "must",
+      "can",
+      "would"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Must expresses a strong obligation.",
+      "ru": "Must выражает сильную необходимость.",
+      "vi": "Must diễn tả sự bắt buộc mạnh."
+    }
+  },
+  {
+    "id": "g061",
+    "level": "A1",
+    "topic": "modal verbs",
+    "type": "choose",
+    "sentence": "___ you help me with this bag?",
+    "options": [
+      "Can",
+      "Must",
+      "Shall"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Can is common for polite requests.",
+      "ru": "Can часто используется для просьб.",
+      "vi": "Can thường dùng để nhờ vả lịch sự."
+    }
+  },
+  {
+    "id": "g062",
+    "level": "A2",
+    "topic": "modal verbs",
+    "type": "choose",
+    "sentence": "You ___ smoke inside this building.",
+    "options": [
+      "mustn't",
+      "don't must",
+      "not must"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Mustn't shows something is forbidden.",
+      "ru": "Mustn't показывает запрет.",
+      "vi": "Mustn't thể hiện điều bị cấm."
+    }
+  },
+  {
+    "id": "g063",
+    "level": "B1",
+    "topic": "modal verbs",
+    "type": "choose",
+    "sentence": "It ___ rain later, take an umbrella.",
+    "options": [
+      "might",
+      "must",
+      "can"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Might shows a possibility, not certainty.",
+      "ru": "Might выражает возможность, не уверенность.",
+      "vi": "Might diễn tả khả năng, không chắc chắn."
+    }
+  },
+  {
+    "id": "g064",
+    "level": "A2",
+    "topic": "modal verbs",
+    "type": "choose",
+    "sentence": "When I was young, I ___ climb trees.",
+    "options": [
+      "could",
+      "must",
+      "shall"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Could expresses past ability.",
+      "ru": "Could выражает способность в прошлом.",
+      "vi": "Could diễn tả khả năng trong quá khứ."
+    }
+  },
+  {
+    "id": "g065",
+    "level": "B1",
+    "topic": "modal verbs",
+    "type": "choose",
+    "sentence": "You ___ ask your teacher for advice.",
+    "options": [
+      "should",
+      "must not",
+      "can't"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Should gives friendly advice.",
+      "ru": "Should дает дружеский совет.",
+      "vi": "Should đưa ra lời khuyên nhẹ nhàng."
+    }
+  },
+  {
+    "id": "g066",
+    "level": "B1",
+    "topic": "present perfect",
+    "type": "choose",
+    "sentence": "I ___ never been to Japan.",
+    "options": [
+      "have",
+      "has",
+      "had"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "With I, use have + past participle.",
+      "ru": "С I используем have + причастие.",
+      "vi": "Với I dùng have, phân từ."
+    }
+  },
+  {
+    "id": "g067",
+    "level": "B1",
+    "topic": "present perfect",
+    "type": "choose",
+    "sentence": "She ___ already finished her homework.",
+    "options": [
+      "have",
+      "has",
+      "had"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "With she, use has + past participle.",
+      "ru": "С she используем has + причастие.",
+      "vi": "Với she dùng has, phân từ."
+    }
+  },
+  {
+    "id": "g068",
+    "level": "A2",
+    "topic": "present perfect",
+    "type": "choose",
+    "sentence": "___ you ever eaten sushi?",
+    "options": [
+      "Have",
+      "Did",
+      "Do"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Life experience questions use have + ever.",
+      "ru": "Опыт в жизни: have + ever.",
+      "vi": "Câu hỏi kinh nghiệm dùng have, ever."
+    }
+  },
+  {
+    "id": "g069",
+    "level": "B1",
+    "topic": "present perfect",
+    "type": "choose",
+    "sentence": "We ___ lived here since 2015.",
+    "options": [
+      "have",
+      "has",
+      "did"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "We takes have + past participle.",
+      "ru": "We требует have + причастие.",
+      "vi": "We dùng have, phân từ."
+    }
+  },
+  {
+    "id": "g070",
+    "level": "B1",
+    "topic": "present perfect",
+    "type": "choose",
+    "sentence": "He ___ just left the office.",
+    "options": [
+      "has",
+      "have",
+      "had"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "He/she takes has + past participle.",
+      "ru": "He/she требует has + причастие.",
+      "vi": "He/she dùng has, phân từ."
+    }
+  },
+  {
+    "id": "g071",
+    "level": "B2",
+    "topic": "present perfect",
+    "type": "choose",
+    "sentence": "They ___ been working here for years.",
+    "options": [
+      "have",
+      "has",
+      "were"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "They takes have for present perfect continuous.",
+      "ru": "They требует have в present perfect continuous.",
+      "vi": "They dùng have trong thể hoàn thành tiếp diễn."
+    }
+  },
+  {
+    "id": "g072",
+    "level": "B1",
+    "topic": "first conditional",
+    "type": "choose",
+    "sentence": "If it rains, we ___ stay home.",
+    "options": [
+      "will",
+      "would",
+      "are"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "First conditional: if + present, will + verb.",
+      "ru": "Первое условное: if + present, will + глагол.",
+      "vi": "Câu điều kiện loại 1: if, hiện tại, will, động từ."
+    }
+  },
+  {
+    "id": "g073",
+    "level": "B1",
+    "topic": "first conditional",
+    "type": "choose",
+    "sentence": "If you ___ hard, you will pass.",
+    "options": [
+      "study",
+      "will study",
+      "studied"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "The if-clause uses present simple.",
+      "ru": "Придаточное с if — present simple.",
+      "vi": "Mệnh đề if dùng hiện tại đơn."
+    }
+  },
+  {
+    "id": "g074",
+    "level": "B1",
+    "topic": "first conditional",
+    "type": "choose",
+    "sentence": "She will call you if she ___ time.",
+    "options": [
+      "has",
+      "will have",
+      "had"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "The if-clause stays in present simple.",
+      "ru": "Придаточное с if остается в present simple.",
+      "vi": "Mệnh đề if giữ ở hiện tại đơn."
+    }
+  },
+  {
+    "id": "g075",
+    "level": "B2",
+    "topic": "first conditional",
+    "type": "choose",
+    "sentence": "If we leave now, we ___ the train.",
+    "options": [
+      "will catch",
+      "catch",
+      "caught"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "The result clause uses will + verb.",
+      "ru": "Главное предложение: will + глагол.",
+      "vi": "Mệnh đề kết quả dùng will, động từ."
+    }
+  },
+  {
+    "id": "g076",
+    "level": "B1",
+    "topic": "first conditional",
+    "type": "choose",
+    "sentence": "If he ___ late, the boss will be angry.",
+    "options": [
+      "is",
+      "will be",
+      "was"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "The if-clause uses present simple, not will.",
+      "ru": "Придаточное с if в present simple, не will.",
+      "vi": "Mệnh đề if dùng hiện tại đơn, không dùng will."
+    }
+  },
+  {
+    "id": "g077",
+    "level": "B2",
+    "topic": "first conditional",
+    "type": "choose",
+    "sentence": "If she ___ me, I will be very surprised.",
+    "options": [
+      "calls",
+      "will call",
+      "called"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "The if-clause stays in present simple.",
+      "ru": "Придаточное с if остается в present simple.",
+      "vi": "Mệnh đề if giữ ở hiện tại đơn."
+    }
+  },
+  {
+    "id": "g078",
+    "level": "B2",
+    "topic": "present perfect",
+    "type": "choose",
+    "sentence": "By the time you arrive, I ___ dinner.",
+    "options": [
+      "will have cooked",
+      "cook",
+      "cooked"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Future perfect shows a finished action later.",
+      "ru": "Future perfect показывает завершенное действие позже.",
+      "vi": "Tương lai hoàn thành chỉ hành động xong sau đó."
+    }
+  },
+  {
+    "id": "g079",
+    "level": "B2",
+    "topic": "present perfect",
+    "type": "choose",
+    "sentence": "She ___ working here since she graduated.",
+    "options": [
+      "has been",
+      "is",
+      "was"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Present perfect continuous needs has been.",
+      "ru": "Present perfect continuous требует has been.",
+      "vi": "Hoàn thành tiếp diễn cần has been."
+    }
+  },
+  {
+    "id": "g080",
+    "level": "B2",
+    "topic": "modal verbs",
+    "type": "choose",
+    "sentence": "You ___ have told me the news earlier.",
+    "options": [
+      "should",
+      "must",
+      "can"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Should have shows regret about the past.",
+      "ru": "Should have выражает сожаление о прошлом.",
+      "vi": "Should have thể hiện sự hối tiếc về quá khứ."
+    }
+  },
+  {
+    "id": "g081",
+    "level": "B2",
+    "topic": "modal verbs",
+    "type": "choose",
+    "sentence": "He ___ have left already; his coat is gone.",
+    "options": [
+      "must",
+      "should",
+      "can"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Must have shows a strong logical guess.",
+      "ru": "Must have выражает уверенную догадку.",
+      "vi": "Must have thể hiện suy đoán chắc chắn."
+    }
+  },
+  {
+    "id": "g082",
+    "level": "B2",
+    "topic": "comparatives",
+    "type": "choose",
+    "sentence": "The more you practice, ___ you become.",
+    "options": [
+      "the better",
+      "better",
+      "the best"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "The more... the better is a fixed pattern.",
+      "ru": "The more... the better — устойчивая конструкция.",
+      "vi": "The more... the better là cấu trúc cố định."
+    }
+  },
+  {
+    "id": "g083",
+    "level": "A1",
+    "topic": "word order",
+    "type": "choose",
+    "sentence": "___ do you live?",
+    "options": [
+      "Where",
+      "What",
+      "Who"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Where asks about a place.",
+      "ru": "Where спрашивает о месте.",
+      "vi": "Where hỏi về địa điểm."
+    }
+  },
+  {
+    "id": "g084",
+    "level": "A2",
+    "topic": "word order",
+    "type": "choose",
+    "sentence": "She always ___ her bed in the morning.",
+    "options": [
+      "makes",
+      "always makes",
+      "does make"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Adverbs of frequency go before the verb.",
+      "ru": "Наречия частоты стоят перед глаголом.",
+      "vi": "Trạng từ chỉ tần suất đứng trước động từ."
+    }
+  },
+  {
+    "id": "g085",
+    "level": "A1",
+    "topic": "word order",
+    "type": "choose",
+    "sentence": "I like pizza ___.",
+    "options": [
+      "very much",
+      "much very",
+      "very"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Very much comes after the object.",
+      "ru": "Very much стоит после дополнения.",
+      "vi": "Very much đứng sau tân ngữ."
+    }
+  },
+  {
+    "id": "g086",
+    "level": "B1",
+    "topic": "word order",
+    "type": "choose",
+    "sentence": "Never ___ I seen such a mess.",
+    "options": [
+      "have",
+      "has",
+      "had"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "After never, invert subject and have.",
+      "ru": "После never меняем порядок: have + подлежащее.",
+      "vi": "Sau never, đảo have lên trước chủ ngữ."
+    }
+  },
+  {
+    "id": "g087",
+    "level": "A1",
+    "topic": "word order",
+    "type": "reorder",
+    "words": [
+      "much",
+      "very",
+      "pizza",
+      "I",
+      "like"
+    ],
+    "correct": "I like pizza very much",
+    "explain": {
+      "en": "Subject + verb + object + adverb phrase.",
+      "ru": "Подлежащее + глагол + дополнение + наречие.",
+      "vi": "Chủ ngữ, động từ, tân ngữ, trạng từ."
+    }
+  },
+  {
+    "id": "g088",
+    "level": "A1",
+    "topic": "present simple",
+    "type": "reorder",
+    "words": [
+      "every",
+      "school",
+      "day",
+      "She",
+      "goes",
+      "to"
+    ],
+    "correct": "She goes to school every day",
+    "explain": {
+      "en": "Subject + verb-s + place + time.",
+      "ru": "Подлежащее + глагол-s + место + время.",
+      "vi": "Chủ ngữ, động từ-s, nơi, thời gian."
+    }
+  },
+  {
+    "id": "g089",
+    "level": "A1",
+    "topic": "word order",
+    "type": "reorder",
+    "words": [
+      "on",
+      "football",
+      "Sundays",
+      "My",
+      "brother",
+      "plays"
+    ],
+    "correct": "My brother plays football on Sundays",
+    "explain": {
+      "en": "Subject + verb + object + time.",
+      "ru": "Подлежащее + глагол + дополнение + время.",
+      "vi": "Chủ ngữ, động từ, tân ngữ, thời gian."
+    }
+  },
+  {
+    "id": "g090",
+    "level": "A1",
+    "topic": "past simple",
+    "type": "reorder",
+    "words": [
+      "beach",
+      "the",
+      "yesterday",
+      "We",
+      "went",
+      "to"
+    ],
+    "correct": "We went to the beach yesterday",
+    "explain": {
+      "en": "Subject + past verb + place + time.",
+      "ru": "Подлежащее + глагол в прошедшем + место + время.",
+      "vi": "Chủ ngữ, động từ quá khứ, nơi, thời gian."
+    }
+  },
+  {
+    "id": "g091",
+    "level": "A1",
+    "topic": "present continuous",
+    "type": "reorder",
+    "words": [
+      "beautiful",
+      "a",
+      "song",
+      "She",
+      "is",
+      "singing"
+    ],
+    "correct": "She is singing a beautiful song",
+    "explain": {
+      "en": "Subject + is + verb-ing + object.",
+      "ru": "Подлежащее + is + глагол-ing + дополнение.",
+      "vi": "Chủ ngữ, is, động từ-ing, tân ngữ."
+    }
+  },
+  {
+    "id": "g092",
+    "level": "A2",
+    "topic": "future",
+    "type": "reorder",
+    "words": [
+      "visit",
+      "to",
+      "Paris",
+      "We",
+      "are",
+      "going"
+    ],
+    "correct": "We are going to visit Paris",
+    "explain": {
+      "en": "Subject + be + going to + verb.",
+      "ru": "Подлежащее + be + going to + глагол.",
+      "vi": "Chủ ngữ, be, going to, động từ."
+    }
+  },
+  {
+    "id": "g093",
+    "level": "A1",
+    "topic": "articles",
+    "type": "reorder",
+    "words": [
+      "at",
+      "hospital",
+      "the",
+      "She",
+      "is",
+      "a",
+      "doctor"
+    ],
+    "correct": "She is a doctor at the hospital",
+    "explain": {
+      "en": "Subject + be + article + noun + place.",
+      "ru": "Подлежащее + be + артикль + сущ. + место.",
+      "vi": "Chủ ngữ, be, mạo từ, danh từ, nơi."
+    }
+  },
+  {
+    "id": "g094",
+    "level": "A2",
+    "topic": "comparatives",
+    "type": "reorder",
+    "words": [
+      "last",
+      "the",
+      "one",
+      "This",
+      "film",
+      "is",
+      "more",
+      "interesting",
+      "than"
+    ],
+    "correct": "This film is more interesting than the last one",
+    "explain": {
+      "en": "Subject + be + more + adjective + than.",
+      "ru": "Подлежащее + be + more + прил. + than.",
+      "vi": "Chủ ngữ, be, more, tính từ, than."
+    }
+  },
+  {
+    "id": "g095",
+    "level": "A1",
+    "topic": "word order",
+    "type": "reorder",
+    "words": [
+      "seven",
+      "at",
+      "o'clock",
+      "We",
+      "have",
+      "dinner"
+    ],
+    "correct": "We have dinner at seven o'clock",
+    "explain": {
+      "en": "Subject + verb + object + time.",
+      "ru": "Подлежащее + глагол + дополнение + время.",
+      "vi": "Chủ ngữ, động từ, tân ngữ, thời gian."
+    }
+  },
+  {
+    "id": "g096",
+    "level": "A2",
+    "topic": "modal verbs",
+    "type": "reorder",
+    "words": [
+      "seatbelt",
+      "a",
+      "here",
+      "You",
+      "must",
+      "wear"
+    ],
+    "correct": "You must wear a seatbelt here",
+    "explain": {
+      "en": "Subject + modal + verb + object + place.",
+      "ru": "Подлежащее + модальный + глагол + доп. + место.",
+      "vi": "Chủ ngữ, động từ khuyết thiếu, động từ, tân ngữ, nơi."
+    }
+  },
+  {
+    "id": "g097",
+    "level": "B1",
+    "topic": "present perfect",
+    "type": "reorder",
+    "words": [
+      "to",
+      "been",
+      "Japan",
+      "I",
+      "have",
+      "never"
+    ],
+    "correct": "I have never been to Japan",
+    "explain": {
+      "en": "Subject + have + never + past participle.",
+      "ru": "Подлежащее + have + never + причастие.",
+      "vi": "Chủ ngữ, have, never, phân từ."
+    }
+  },
+  {
+    "id": "g098",
+    "level": "B1",
+    "topic": "first conditional",
+    "type": "reorder",
+    "words": [
+      "will",
+      "home",
+      "stay",
+      "If",
+      "it",
+      "rains",
+      "we"
+    ],
+    "correct": "If it rains we will stay home",
+    "explain": {
+      "en": "If-clause + main clause with will.",
+      "ru": "Придаточное if + главное с will.",
+      "vi": "Mệnh đề if, mệnh đề chính với will."
+    }
+  },
+  {
+    "id": "g099",
+    "level": "A2",
+    "topic": "prepositions",
+    "type": "reorder",
+    "words": [
+      "the",
+      "stop",
+      "bus",
+      "He",
+      "is",
+      "waiting",
+      "at"
+    ],
+    "correct": "He is waiting at the bus stop",
+    "explain": {
+      "en": "Subject + be + verb-ing + preposition + place.",
+      "ru": "Подлежащее + be + verb-ing + предлог + место.",
+      "vi": "Chủ ngữ, be, động từ-ing, giới từ, nơi."
+    }
+  },
+  {
+    "id": "g100",
+    "level": "A1",
+    "topic": "pronouns",
+    "type": "reorder",
+    "words": [
+      "not",
+      "mine",
+      "yours",
+      "This",
+      "book",
+      "is"
+    ],
+    "correct": "This book is mine not yours",
+    "explain": {
+      "en": "Subject + be + possessive pronoun + negation.",
+      "ru": "Подлежащее + be + притяж. местоимение + отрицание.",
+      "vi": "Chủ ngữ, be, đại từ sở hữu, phần phủ định."
+    }
+  },
+  {
+    "id": "g101",
+    "level": "A2",
+    "topic": "plurals",
+    "type": "reorder",
+    "words": [
+      "in",
+      "lake",
+      "the",
+      "There",
+      "are",
+      "many",
+      "fish"
+    ],
+    "correct": "There are many fish in the lake",
+    "explain": {
+      "en": "There + be + quantity + noun + place.",
+      "ru": "There + be + количество + сущ. + место.",
+      "vi": "There, be, số lượng, danh từ, nơi."
+    }
+  },
+  {
+    "id": "g102",
+    "level": "B1",
+    "topic": "comparatives",
+    "type": "reorder",
+    "words": [
+      "read",
+      "have",
+      "I",
+      "This",
+      "is",
+      "the",
+      "best",
+      "book"
+    ],
+    "correct": "This is the best book I have read",
+    "explain": {
+      "en": "Subject + be + the + superlative + clause.",
+      "ru": "Подлежащее + be + the + превосходная степень + предложение.",
+      "vi": "Chủ ngữ, be, the, so sánh nhất, mệnh đề."
+    }
+  },
+  {
+    "id": "g103",
+    "level": "A1",
+    "topic": "present simple",
+    "type": "reorder",
+    "words": [
+      "every",
+      "apple",
+      "day",
+      "I",
+      "eat",
+      "an"
+    ],
+    "correct": "I eat an apple every day",
+    "explain": {
+      "en": "Subject + verb + article + object + time.",
+      "ru": "Подлежащее + глагол + артикль + доп. + время.",
+      "vi": "Chủ ngữ, động từ, mạo từ, tân ngữ, thời gian."
+    }
+  },
+  {
+    "id": "g104",
+    "level": "A1",
+    "topic": "word order",
+    "type": "reorder",
+    "words": [
+      "years",
+      "ten",
+      "old",
+      "My",
+      "sister",
+      "is"
+    ],
+    "correct": "My sister is ten years old",
+    "explain": {
+      "en": "Subject + be + number + noun + adjective.",
+      "ru": "Подлежащее + be + число + сущ. + прилагательное.",
+      "vi": "Chủ ngữ, be, số, danh từ, tính từ."
+    }
+  },
+  {
+    "id": "g105",
+    "level": "A1",
+    "topic": "past simple",
+    "type": "reorder",
+    "words": [
+      "trip",
+      "month",
+      "last",
+      "We",
+      "had",
+      "a",
+      "great"
+    ],
+    "correct": "We had a great trip last month",
+    "explain": {
+      "en": "Subject + past verb + object + time.",
+      "ru": "Подлежащее + глагол в прошедшем + доп. + время.",
+      "vi": "Chủ ngữ, động từ quá khứ, tân ngữ, thời gian."
+    }
+  },
+  {
+    "id": "g106",
+    "level": "A1",
+    "topic": "word order",
+    "type": "reorder",
+    "words": [
+      "kind",
+      "us",
+      "to",
+      "Our",
+      "teacher",
+      "is",
+      "very"
+    ],
+    "correct": "Our teacher is very kind to us",
+    "explain": {
+      "en": "Subject + be + adverb + adjective + object.",
+      "ru": "Подлежащее + be + наречие + прил. + доп.",
+      "vi": "Chủ ngữ, be, trạng từ, tính từ, tân ngữ."
+    }
+  },
+  {
+    "id": "g107",
+    "level": "A1",
+    "topic": "present simple",
+    "type": "reorder",
+    "words": [
+      "every",
+      "guitar",
+      "weekend",
+      "She",
+      "plays",
+      "the"
+    ],
+    "correct": "She plays the guitar every weekend",
+    "explain": {
+      "en": "Subject + verb + object + time phrase.",
+      "ru": "Подлежащее + глагол + доп. + время.",
+      "vi": "Chủ ngữ, động từ, tân ngữ, cụm thời gian."
+    }
+  },
+  {
+    "id": "g108",
+    "level": "A1",
+    "topic": "present simple",
+    "type": "reorder",
+    "words": [
+      "the",
+      "in",
+      "east",
+      "The",
+      "sun",
+      "rises"
+    ],
+    "correct": "The sun rises in the east",
+    "explain": {
+      "en": "Subject + verb + preposition + place.",
+      "ru": "Подлежащее + глагол + предлог + место.",
+      "vi": "Chủ ngữ, động từ, giới từ, nơi."
+    }
+  },
+  {
+    "id": "g109",
+    "level": "A2",
+    "topic": "present simple",
+    "type": "reorder",
+    "words": [
+      "crowded",
+      "very",
+      "today",
+      "The",
+      "market",
+      "is"
+    ],
+    "correct": "The market is very crowded today",
+    "explain": {
+      "en": "Subject + be + adverb + adjective + time.",
+      "ru": "Подлежащее + be + наречие + прил. + время.",
+      "vi": "Chủ ngữ, be, trạng từ, tính từ, thời gian."
+    }
+  },
+  {
+    "id": "g110",
+    "level": "B1",
+    "topic": "past simple",
+    "type": "reorder",
+    "words": [
+      "price",
+      "better",
+      "together",
+      "We",
+      "negotiated",
+      "a"
+    ],
+    "correct": "We negotiated a better price together",
+    "explain": {
+      "en": "Subject + past verb + object + adverb.",
+      "ru": "Подлежащее + глагол в прошедшем + доп. + наречие.",
+      "vi": "Chủ ngữ, động từ quá khứ, tân ngữ, trạng từ."
+    }
+  },
+  {
+    "id": "g111",
+    "level": "A2",
+    "topic": "past simple",
+    "type": "reorder",
+    "words": [
+      "deserved",
+      "well",
+      "promotion",
+      "She",
+      "got",
+      "a"
+    ],
+    "correct": "She got a well deserved promotion",
+    "explain": {
+      "en": "Subject + past verb + article + object.",
+      "ru": "Подлежащее + глагол в прошедшем + артикль + доп.",
+      "vi": "Chủ ngữ, động từ quá khứ, mạo từ, tân ngữ."
+    }
+  },
+  {
+    "id": "g112",
+    "level": "A1",
+    "topic": "past simple",
+    "type": "reorder",
+    "words": [
+      "app",
+      "new",
+      "yesterday",
+      "I",
+      "downloaded",
+      "a"
+    ],
+    "correct": "I downloaded a new app yesterday",
+    "explain": {
+      "en": "Subject + past verb + article + object + time.",
+      "ru": "Подлежащее + прош. время + артикль + доп. + время.",
+      "vi": "Chủ ngữ, động từ quá khứ, mạo từ, tân ngữ, thời gian."
+    }
+  },
+  {
+    "id": "g113",
+    "level": "A1",
+    "topic": "present simple",
+    "type": "reorder",
+    "words": [
+      "today",
+      "happy",
+      "very",
+      "I",
+      "feel"
+    ],
+    "correct": "I feel very happy today",
+    "explain": {
+      "en": "Subject + verb + adverb + adjective + time.",
+      "ru": "Подлежащее + глагол + наречие + прил. + время.",
+      "vi": "Chủ ngữ, động từ, trạng từ, tính từ, thời gian."
+    }
+  },
+  {
+    "id": "g114",
+    "level": "B2",
+    "topic": "present perfect",
+    "type": "reorder",
+    "words": [
+      "here",
+      "years",
+      "for",
+      "They",
+      "have",
+      "been",
+      "working"
+    ],
+    "correct": "They have been working here for years",
+    "explain": {
+      "en": "Subject + have been + verb-ing + duration.",
+      "ru": "Подлежащее + have been + verb-ing + продолжительность.",
+      "vi": "Chủ ngữ, have been, động từ-ing, khoảng thời gian."
+    }
+  },
+  {
+    "id": "g115",
+    "level": "A2",
+    "topic": "future",
+    "type": "reorder",
+    "words": [
+      "meet",
+      "soon",
+      "him",
+      "I",
+      "am",
+      "going",
+      "to"
+    ],
+    "correct": "I am going to meet him soon",
+    "explain": {
+      "en": "Subject + be + going to + verb + time.",
+      "ru": "Подлежащее + be + going to + глагол + время.",
+      "vi": "Chủ ngữ, be, going to, động từ, thời gian."
+    }
+  },
+  {
+    "id": "g116",
+    "level": "B1",
+    "topic": "modal verbs",
+    "type": "reorder",
+    "words": [
+      "teacher",
+      "advice",
+      "for",
+      "You",
+      "should",
+      "ask",
+      "your"
+    ],
+    "correct": "You should ask your teacher for advice",
+    "explain": {
+      "en": "Subject + modal + verb + object + preposition.",
+      "ru": "Подлежащее + модальный + глагол + доп. + предлог.",
+      "vi": "Chủ ngữ, động từ khuyết thiếu, động từ, tân ngữ, giới từ."
+    }
+  },
+  {
+    "id": "g117",
+    "level": "A2",
+    "topic": "past simple",
+    "type": "reorder",
+    "words": [
+      "airport",
+      "the",
+      "early",
+      "He",
+      "arrived",
+      "at"
+    ],
+    "correct": "He arrived at the airport early",
+    "explain": {
+      "en": "Subject + past verb + preposition + place + adverb.",
+      "ru": "Подлежащее + прош. время + предлог + место + наречие.",
+      "vi": "Chủ ngữ, động từ quá khứ, giới từ, nơi, trạng từ."
+    }
+  },
+  {
+    "id": "g118",
+    "level": "B2",
+    "topic": "first conditional",
+    "type": "reorder",
+    "words": [
+      "surprised",
+      "be",
+      "will",
+      "If",
+      "she",
+      "calls",
+      "me",
+      "I"
+    ],
+    "correct": "If she calls me I will be surprised",
+    "explain": {
+      "en": "If-clause in present simple, then will + verb.",
+      "ru": "Придаточное if в present simple, затем will + глагол.",
+      "vi": "Mệnh đề if ở hiện tại đơn, sau đó will, động từ."
+    }
+  },
+  {
+    "id": "g119",
+    "level": "B2",
+    "topic": "modal verbs",
+    "type": "reorder",
+    "words": [
+      "me",
+      "news",
+      "the",
+      "You",
+      "should",
+      "have",
+      "told"
+    ],
+    "correct": "You should have told me the news",
+    "explain": {
+      "en": "Modal + have + past participle shows regret.",
+      "ru": "Модальный + have + причастие выражает сожаление.",
+      "vi": "Động từ khuyết thiếu, have, phân từ thể hiện hối tiếc."
+    }
+  },
+  {
+    "id": "g120",
+    "level": "A1",
+    "topic": "articles",
+    "type": "findError",
+    "sentence": "I saw a elephant at the zoo",
+    "errorIndex": 2,
+    "correction": "an",
+    "explain": {
+      "en": "Use an before a vowel sound.",
+      "ru": "Перед гласным звуком — an.",
+      "vi": "Dùng an trước âm nguyên âm."
+    }
+  },
+  {
+    "id": "g121",
+    "level": "A1",
+    "topic": "present simple",
+    "type": "findError",
+    "sentence": "She go to school every day",
+    "errorIndex": 1,
+    "correction": "goes",
+    "explain": {
+      "en": "He/she/it needs -s: goes.",
+      "ru": "He/she/it требует -s: goes.",
+      "vi": "He/she/it cần -s: goes."
+    }
+  },
+  {
+    "id": "g122",
+    "level": "A2",
+    "topic": "plurals",
+    "type": "findError",
+    "sentence": "I have three childs at home",
+    "errorIndex": 3,
+    "correction": "children",
+    "explain": {
+      "en": "Child is irregular: children.",
+      "ru": "Child неправильное слово: children.",
+      "vi": "Child là danh từ bất quy tắc: children."
+    }
+  },
+  {
+    "id": "g123",
+    "level": "A1",
+    "topic": "pronouns",
+    "type": "findError",
+    "sentence": "Him is my best friend",
+    "errorIndex": 0,
+    "correction": "He",
+    "explain": {
+      "en": "Subject pronoun needed here: He.",
+      "ru": "Здесь нужно подлежащее: He.",
+      "vi": "Cần đại từ chủ ngữ ở đây: He."
+    }
+  },
+  {
+    "id": "g124",
+    "level": "A1",
+    "topic": "past simple",
+    "type": "findError",
+    "sentence": "We goed to the beach last week",
+    "errorIndex": 1,
+    "correction": "went",
+    "explain": {
+      "en": "Go is irregular: went, not goed.",
+      "ru": "Go неправильный: went, не goed.",
+      "vi": "Go bất quy tắc: went, không phải goed."
+    }
+  },
+  {
+    "id": "g125",
+    "level": "A2",
+    "topic": "prepositions",
+    "type": "findError",
+    "sentence": "She was born on 2010",
+    "errorIndex": 3,
+    "correction": "in",
+    "explain": {
+      "en": "Use in with a year.",
+      "ru": "С годом используем in.",
+      "vi": "Dùng in với năm."
+    }
+  },
+  {
+    "id": "g126",
+    "level": "A1",
+    "topic": "present continuous",
+    "type": "findError",
+    "sentence": "They is playing in the garden",
+    "errorIndex": 1,
+    "correction": "are",
+    "explain": {
+      "en": "They needs are, not is.",
+      "ru": "They требует are, а не is.",
+      "vi": "They cần are, không phải is."
+    }
+  },
+  {
+    "id": "g127",
+    "level": "A2",
+    "topic": "comparatives",
+    "type": "findError",
+    "sentence": "This film is more good than the last one",
+    "errorIndex": 4,
+    "correction": "better",
+    "explain": {
+      "en": "Good is irregular: better, not more good.",
+      "ru": "Good неправильный: better, не more good.",
+      "vi": "Good bất quy tắc: better, không phải more good."
+    }
+  },
+  {
+    "id": "g128",
+    "level": "B1",
+    "topic": "present perfect",
+    "type": "findError",
+    "sentence": "She have already finished her homework",
+    "errorIndex": 1,
+    "correction": "has",
+    "explain": {
+      "en": "With she use has, not have.",
+      "ru": "С she используем has, не have.",
+      "vi": "Với she dùng has, không phải have."
+    }
+  },
+  {
+    "id": "g129",
+    "level": "A1",
+    "topic": "articles",
+    "type": "findError",
+    "sentence": "He is teacher at our school",
+    "errorIndex": 2,
+    "correction": "a teacher",
+    "explain": {
+      "en": "Singular jobs need an article: a teacher.",
+      "ru": "Профессии в единственном числе нужен артикль.",
+      "vi": "Nghề nghiệp số ít cần mạo từ: a teacher."
+    }
+  },
+  {
+    "id": "g130",
+    "level": "A2",
+    "topic": "modal verbs",
+    "type": "findError",
+    "sentence": "You must not smoked here",
+    "errorIndex": 3,
+    "correction": "smoke",
+    "explain": {
+      "en": "Modal verbs take the base form: smoke.",
+      "ru": "После модального глагола — база: smoke.",
+      "vi": "Sau động từ khuyết thiếu dùng dạng gốc: smoke."
+    }
+  },
+  {
+    "id": "g131",
+    "level": "A1",
+    "topic": "present simple",
+    "type": "findError",
+    "sentence": "She eat an apple every morning",
+    "errorIndex": 1,
+    "correction": "eats",
+    "explain": {
+      "en": "She needs -s: eats.",
+      "ru": "She требует -s: eats.",
+      "vi": "She cần -s: eats."
+    }
+  },
+  {
+    "id": "g132",
+    "level": "A2",
+    "topic": "future",
+    "type": "findError",
+    "sentence": "It will raining tomorrow",
+    "errorIndex": 2,
+    "correction": "rain",
+    "explain": {
+      "en": "Will is followed by the base verb: rain.",
+      "ru": "После will идет база глагола: rain.",
+      "vi": "Sau will là động từ gốc: rain."
+    }
+  },
+  {
+    "id": "g133",
+    "level": "B1",
+    "topic": "first conditional",
+    "type": "findError",
+    "sentence": "If it will rain, we will stay home",
+    "errorIndex": 2,
+    "correction": "rains",
+    "explain": {
+      "en": "The if-clause uses present simple, not will.",
+      "ru": "Придаточное с if — present simple, не will.",
+      "vi": "Mệnh đề if dùng hiện tại đơn, không will."
+    }
+  },
+  {
+    "id": "g134",
+    "level": "A1",
+    "topic": "past simple",
+    "type": "findError",
+    "sentence": "We arrive at the airport yesterday",
+    "errorIndex": 1,
+    "correction": "arrived",
+    "explain": {
+      "en": "Yesterday needs the past tense: arrived.",
+      "ru": "Yesterday требует прошедшее время: arrived.",
+      "vi": "Yesterday cần thì quá khứ: arrived."
+    }
+  },
+  {
+    "id": "g135",
+    "level": "A1",
+    "topic": "present simple",
+    "type": "findError",
+    "sentence": "Our class start at nine o'clock",
+    "errorIndex": 2,
+    "correction": "starts",
+    "explain": {
+      "en": "Our class is singular, so add -s.",
+      "ru": "Our class — единственное число, добавляем -s.",
+      "vi": "Our class là số ít, thêm -s."
+    }
+  },
+  {
+    "id": "g136",
+    "level": "B1",
+    "topic": "word order",
+    "type": "findError",
+    "sentence": "My sister sings very good",
+    "errorIndex": 4,
+    "correction": "well",
+    "explain": {
+      "en": "After a verb, use the adverb well.",
+      "ru": "После глагола нужно наречие well.",
+      "vi": "Sau động từ dùng trạng từ well."
+    }
+  },
+  {
+    "id": "g137",
+    "level": "A1",
+    "topic": "past simple",
+    "type": "findError",
+    "sentence": "A leaf falled from the tree",
+    "errorIndex": 2,
+    "correction": "fell",
+    "explain": {
+      "en": "Fall is irregular: fell, not falled.",
+      "ru": "Fall неправильный: fell, не falled.",
+      "vi": "Fall bất quy tắc: fell, không phải falled."
+    }
+  },
+  {
+    "id": "g138",
+    "level": "A2",
+    "topic": "plurals",
+    "type": "findError",
+    "sentence": "The shop opens at nine every days",
+    "errorIndex": 6,
+    "correction": "day",
+    "explain": {
+      "en": "Every takes a singular noun: every day.",
+      "ru": "Every требует единственное число: every day.",
+      "vi": "Every đi với danh từ số ít: every day."
+    }
+  },
+  {
+    "id": "g139",
+    "level": "A2",
+    "topic": "comparatives",
+    "type": "findError",
+    "sentence": "This bag is cheap than that one",
+    "errorIndex": 3,
+    "correction": "cheaper",
+    "explain": {
+      "en": "Short adjectives add -er before than: cheaper.",
+      "ru": "Короткие прилагательные получают -er перед than.",
+      "vi": "Tính từ ngắn thêm -er trước than: cheaper."
+    }
+  },
+  {
+    "id": "g140",
+    "level": "A1",
+    "topic": "present simple",
+    "type": "findError",
+    "sentence": "She work in a big office",
+    "errorIndex": 1,
+    "correction": "works",
+    "explain": {
+      "en": "She needs -s: works.",
+      "ru": "She требует -s: works.",
+      "vi": "She cần -s: works."
+    }
+  },
+  {
+    "id": "g141",
+    "level": "B1",
+    "topic": "present perfect",
+    "type": "findError",
+    "sentence": "I have download a new app",
+    "errorIndex": 2,
+    "correction": "downloaded",
+    "explain": {
+      "en": "Present perfect needs a past participle.",
+      "ru": "Present perfect требует причастие прошедшего времени.",
+      "vi": "Hoàn thành cần phân từ."
+    }
+  },
+  {
+    "id": "g142",
+    "level": "A1",
+    "topic": "present simple",
+    "type": "findError",
+    "sentence": "She feel very happy today",
+    "errorIndex": 1,
+    "correction": "feels",
+    "explain": {
+      "en": "She needs -s: feels.",
+      "ru": "She требует -s: feels.",
+      "vi": "She cần -s: feels."
+    }
+  },
+  {
+    "id": "g143",
+    "level": "B1",
+    "topic": "present perfect",
+    "type": "findError",
+    "sentence": "I have saw that movie twice",
+    "errorIndex": 2,
+    "correction": "seen",
+    "explain": {
+      "en": "Present perfect uses the past participle seen.",
+      "ru": "Present perfect требует причастие seen.",
+      "vi": "Hoàn thành dùng phân từ seen."
+    }
+  },
+  {
+    "id": "g144",
+    "level": "A2",
+    "topic": "pronouns",
+    "type": "findError",
+    "sentence": "Give the book to I",
+    "errorIndex": 4,
+    "correction": "me",
+    "explain": {
+      "en": "After a preposition, use me not I.",
+      "ru": "После предлога — me, а не I.",
+      "vi": "Sau giới từ dùng me, không phải I."
+    }
+  },
+  {
+    "id": "g145",
+    "level": "B2",
+    "topic": "present perfect",
+    "type": "findError",
+    "sentence": "I have never saw such a mess",
+    "errorIndex": 3,
+    "correction": "seen",
+    "explain": {
+      "en": "Present perfect needs the past participle seen.",
+      "ru": "Present perfect требует причастие seen.",
+      "vi": "Hoàn thành cần phân từ seen."
+    }
+  },
+  {
+    "id": "g146",
+    "level": "A2",
+    "topic": "pronouns",
+    "type": "findError",
+    "sentence": "This is my book, that is your",
+    "errorIndex": 6,
+    "correction": "yours",
+    "explain": {
+      "en": "Without a noun, use the pronoun yours.",
+      "ru": "Без существительного используем yours.",
+      "vi": "Không có danh từ, dùng yours."
+    }
+  },
+  {
+    "id": "g147",
+    "level": "A1",
+    "topic": "past simple",
+    "type": "findError",
+    "sentence": "They was late for the flight",
+    "errorIndex": 1,
+    "correction": "were",
+    "explain": {
+      "en": "They needs were, not was.",
+      "ru": "They требует were, а не was.",
+      "vi": "They cần were, không phải was."
+    }
+  },
+  {
+    "id": "g148",
+    "level": "B2",
+    "topic": "modal verbs",
+    "type": "findError",
+    "sentence": "She should have went to the doctor",
+    "errorIndex": 3,
+    "correction": "gone",
+    "explain": {
+      "en": "Should have needs the past participle gone.",
+      "ru": "Should have требует причастие gone.",
+      "vi": "Should have cần phân từ gone."
+    }
+  },
+  {
+    "id": "g149",
+    "level": "A1",
+    "topic": "present simple",
+    "type": "findError",
+    "sentence": "My parents is very supportive",
+    "errorIndex": 2,
+    "correction": "are",
+    "explain": {
+      "en": "Parents is plural, so use are.",
+      "ru": "Parents — множественное число, используем are.",
+      "vi": "Parents là số nhiều, dùng are."
+    }
+  },
+  {
+    "id": "g150",
+    "level": "B1",
+    "topic": "comparatives",
+    "type": "findError",
+    "sentence": "She is tall than her older brother",
+    "errorIndex": 2,
+    "correction": "taller",
+    "explain": {
+      "en": "Comparing two things needs -er: taller.",
+      "ru": "При сравнении двух нужно -er: taller.",
+      "vi": "So sánh hai đối tượng cần -er: taller."
+    }
+  },
+  {
+    "id": "g151",
+    "level": "A2",
+    "topic": "plurals",
+    "type": "findError",
+    "sentence": "There is many trees in the forest",
+    "errorIndex": 1,
+    "correction": "are",
+    "explain": {
+      "en": "Many trees is plural, so use are.",
+      "ru": "Many trees — множественное число, are.",
+      "vi": "Many trees là số nhiều, dùng are."
+    }
+  },
+  {
+    "id": "g152",
+    "level": "B2",
+    "topic": "present perfect",
+    "type": "findError",
+    "sentence": "She has been work here for years",
+    "errorIndex": 3,
+    "correction": "working",
+    "explain": {
+      "en": "Present perfect continuous needs -ing.",
+      "ru": "Present perfect continuous требует -ing.",
+      "vi": "Hoàn thành tiếp diễn cần -ing."
+    }
+  },
+  {
+    "id": "g153",
+    "level": "B1",
+    "topic": "past perfect",
+    "type": "findError",
+    "sentence": "She had never saw a real tiger before that day",
+    "errorIndex": 3,
+    "correction": "seen",
+    "explain": {
+      "en": "Had + past participle: had seen, not saw.",
+      "ru": "Had + причастие: had seen, не saw.",
+      "vi": "Had + phân từ: had seen, không phải saw."
+    }
+  },
+  {
+    "id": "g154",
+    "level": "B1",
+    "topic": "present perfect continuous",
+    "type": "findError",
+    "sentence": "I have been work here since 2020",
+    "errorIndex": 3,
+    "correction": "working",
+    "explain": {
+      "en": "Have been + -ing: working, not work.",
+      "ru": "Have been + -ing: working, не work.",
+      "vi": "Have been + -ing: working, không phải work."
+    }
+  },
+  {
+    "id": "g155",
+    "level": "B1",
+    "topic": "passive voice",
+    "type": "findError",
+    "sentence": "The movie was directed by she",
+    "errorIndex": 4,
+    "correction": "her",
+    "explain": {
+      "en": "After by, use object pronoun: her.",
+      "ru": "После by используем объектное местоимение: her.",
+      "vi": "Sau by dùng đại từ tân ngữ: her."
+    }
+  },
+  {
+    "id": "g156",
+    "level": "B1",
+    "topic": "reported speech",
+    "type": "findError",
+    "sentence": "She said she is happy about the news",
+    "errorIndex": 2,
+    "correction": "was",
+    "explain": {
+      "en": "Reported speech shifts is to was.",
+      "ru": "Косвенная речь: is меняется на was.",
+      "vi": "Tường thuật: is chuyển thành was."
+    }
+  },
+  {
+    "id": "g157",
+    "level": "B1",
+    "topic": "second conditional",
+    "type": "findError",
+    "sentence": "If I was you I would say sorry",
+    "errorIndex": 2,
+    "correction": "were",
+    "explain": {
+      "en": "Second conditional traditionally uses were with I.",
+      "ru": "Второй тип обычно требует were с I.",
+      "vi": "Điều kiện loại 2 thường dùng were với I."
+    }
+  },
+  {
+    "id": "g158",
+    "level": "B2",
+    "topic": "third conditional",
+    "type": "findError",
+    "sentence": "If I would have known I would have come",
+    "errorIndex": 2,
+    "correction": "had",
+    "explain": {
+      "en": "Condition clause needs had, not would have.",
+      "ru": "Условие требует had, а не would have.",
+      "vi": "Mệnh đề điều kiện cần had, không phải would have."
+    }
+  },
+  {
+    "id": "g159",
+    "level": "B1",
+    "topic": "relative clauses",
+    "type": "findError",
+    "sentence": "The girl which won the prize is my sister",
+    "errorIndex": 2,
+    "correction": "who",
+    "explain": {
+      "en": "Use who for people, not which.",
+      "ru": "Для людей используем who, а не which.",
+      "vi": "Dùng who cho người, không dùng which."
+    }
+  },
+  {
+    "id": "g160",
+    "level": "B1",
+    "topic": "gerund or infinitive",
+    "type": "findError",
+    "sentence": "I look forward to meet you soon",
+    "errorIndex": 4,
+    "correction": "meeting",
+    "explain": {
+      "en": "Look forward to is followed by the gerund.",
+      "ru": "После look forward to используем герундий.",
+      "vi": "Sau look forward to dùng danh động từ."
+    }
+  },
+  {
+    "id": "g161",
+    "level": "B1",
+    "topic": "phrasal verbs",
+    "type": "findError",
+    "sentence": "He looked at the word in the dictionary quickly",
+    "errorIndex": 1,
+    "correction": "up",
+    "explain": {
+      "en": "Look up means to search for information.",
+      "ru": "Look up значит найти информацию.",
+      "vi": "Look up nghĩa là tìm kiếm thông tin."
+    }
+  },
+  {
+    "id": "g162",
+    "level": "B1",
+    "topic": "used to",
+    "type": "findError",
+    "sentence": "She is used to get up early",
+    "errorIndex": 3,
+    "correction": "getting",
+    "explain": {
+      "en": "Be used to is followed by the gerund.",
+      "ru": "После be used to используем герундий.",
+      "vi": "Sau be used to dùng danh động từ."
+    }
+  },
+  {
+    "id": "g163",
+    "level": "B1",
+    "topic": "question tags",
+    "type": "findError",
+    "sentence": "He doesn't like tea, does he not",
+    "errorIndex": 4,
+    "correction": "does he",
+    "explain": {
+      "en": "Tag question should be short: does he.",
+      "ru": "Хвостик должен быть коротким: does he.",
+      "vi": "Câu hỏi đuôi nên ngắn: does he."
+    }
+  },
+  {
+    "id": "g164",
+    "level": "B2",
+    "topic": "modals of deduction",
+    "type": "findError",
+    "sentence": "He must has left already because his coat is gone",
+    "errorIndex": 2,
+    "correction": "have",
+    "explain": {
+      "en": "Must have + past participle for past deduction.",
+      "ru": "Must have + причастие для вывода о прошлом.",
+      "vi": "Must have + phân từ cho suy luận về quá khứ."
+    }
+  },
+  {
+    "id": "g165",
+    "level": "B2",
+    "topic": "wish clauses",
+    "type": "findError",
+    "sentence": "I wish I am taller than my brother",
+    "errorIndex": 3,
+    "correction": "were",
+    "explain": {
+      "en": "Wish about a state uses were, not am.",
+      "ru": "Wish о состоянии требует were, не am.",
+      "vi": "Wish về trạng thái dùng were, không phải am."
+    }
+  },
+  {
+    "id": "g166",
+    "level": "B2",
+    "topic": "advanced comparatives",
+    "type": "findError",
+    "sentence": "She is much more taller than her sister",
+    "errorIndex": 2,
+    "correction": "more",
+    "explain": {
+      "en": "Do not use more with a comparative -er form together.",
+      "ru": "Не используем more вместе со сравнительным -er.",
+      "vi": "Không dùng more cùng với dạng so sánh -er."
+    }
+  },
+  {
+    "id": "g167",
+    "level": "B1",
+    "topic": "past perfect",
+    "type": "findError",
+    "sentence": "By six the guests had already leave",
+    "errorIndex": 4,
+    "correction": "left",
+    "explain": {
+      "en": "Past perfect needs the past participle: had left.",
+      "ru": "Past perfect: had left, не leave.",
+      "vi": "Quá khứ hoàn thành cần phân từ: had left."
+    }
+  },
+  {
+    "id": "g168",
+    "level": "B2",
+    "topic": "present perfect continuous",
+    "type": "findError",
+    "sentence": "She has been study for the exam all week",
+    "errorIndex": 3,
+    "correction": "studying",
+    "explain": {
+      "en": "Continuous form needs -ing: studying.",
+      "ru": "Continuous форма требует -ing: studying.",
+      "vi": "Dạng tiếp diễn cần -ing: studying."
+    }
+  },
+  {
+    "id": "g169",
+    "level": "B2",
+    "topic": "passive voice",
+    "type": "findError",
+    "sentence": "The house is building right now by workers",
+    "errorIndex": 2,
+    "correction": "being built",
+    "explain": {
+      "en": "Continuous passive: is being built.",
+      "ru": "Пассив continuous: is being built.",
+      "vi": "Bị động tiếp diễn: is being built."
+    }
+  },
+  {
+    "id": "g170",
+    "level": "B2",
+    "topic": "reported speech",
+    "type": "findError",
+    "sentence": "He asked me did I like the film",
+    "errorIndex": 3,
+    "correction": "if",
+    "explain": {
+      "en": "Reported yes/no questions need if, not did.",
+      "ru": "Косвенный вопрос требует if, не did.",
+      "vi": "Câu hỏi tường thuật cần if, không phải did."
+    }
+  },
+  {
+    "id": "g171",
+    "level": "B1",
+    "topic": "second conditional",
+    "type": "findError",
+    "sentence": "If we win the lottery we would buy a house",
+    "errorIndex": 3,
+    "correction": "won",
+    "explain": {
+      "en": "After if in second conditional, use past simple.",
+      "ru": "После if во втором типе — past simple.",
+      "vi": "Sau if ở loại 2, dùng quá khứ đơn."
+    }
+  },
+  {
+    "id": "g172",
+    "level": "B2",
+    "topic": "third conditional",
+    "type": "findError",
+    "sentence": "If she had asked I will have helped",
+    "errorIndex": 5,
+    "correction": "would",
+    "explain": {
+      "en": "Result clause needs would have, not will have.",
+      "ru": "Результат требует would have, не will have.",
+      "vi": "Mệnh đề kết quả cần would have, không phải will have."
+    }
+  },
+  {
+    "id": "g173",
+    "level": "B1",
+    "topic": "past perfect",
+    "type": "reorder",
+    "words": [
+      "when",
+      "she",
+      "already",
+      "he",
+      "called",
+      "left",
+      "had"
+    ],
+    "correct": "she had already left when he called",
+    "explain": {
+      "en": "Past perfect: had + past participle for earlier action.",
+      "ru": "Had + причастие для более раннего действия.",
+      "vi": "Had + phân từ cho hành động trước đó."
+    }
+  },
+  {
+    "id": "g174",
+    "level": "B1",
+    "topic": "present perfect continuous",
+    "type": "reorder",
+    "words": [
+      "hour",
+      "they",
+      "waiting",
+      "an",
+      "for",
+      "have",
+      "been"
+    ],
+    "correct": "they have been waiting for an hour",
+    "explain": {
+      "en": "Have been + -ing for ongoing duration.",
+      "ru": "Have been + -ing для длительности.",
+      "vi": "Have been + -ing cho khoảng thời gian kéo dài."
+    }
+  },
+  {
+    "id": "g175",
+    "level": "B2",
+    "topic": "passive voice",
+    "type": "reorder",
+    "words": [
+      "tomorrow",
+      "will",
+      "email",
+      "sent",
+      "the",
+      "morning",
+      "be"
+    ],
+    "correct": "the email will be sent tomorrow morning",
+    "explain": {
+      "en": "Future passive: will be + past participle.",
+      "ru": "Future passive: will be + причастие.",
+      "vi": "Bị động tương lai: will be + phân từ."
+    }
+  },
+  {
+    "id": "g176",
+    "level": "B1",
+    "topic": "reported speech",
+    "type": "reorder",
+    "words": [
+      "was",
+      "he",
+      "tired",
+      "said",
+      "he"
+    ],
+    "correct": "he said he was tired",
+    "explain": {
+      "en": "Reported speech: present shifts to past.",
+      "ru": "Косвенная речь: настоящее становится прошедшим.",
+      "vi": "Tường thuật: hiện tại lùi thành quá khứ."
+    }
+  },
+  {
+    "id": "g177",
+    "level": "B1",
+    "topic": "second conditional",
+    "type": "reorder",
+    "words": [
+      "you",
+      "time",
+      "had",
+      "I",
+      "if",
+      "I",
+      "help",
+      "would"
+    ],
+    "correct": "if I had time I would help you",
+    "explain": {
+      "en": "Second conditional: if + past simple, would clause.",
+      "ru": "Второй тип: if + past simple, would.",
+      "vi": "Điều kiện loại 2: if + quá khứ đơn, would."
+    }
+  },
+  {
+    "id": "g178",
+    "level": "B2",
+    "topic": "third conditional",
+    "type": "reorder",
+    "words": [
+      "I",
+      "known",
+      "have",
+      "if",
+      "had",
+      "come",
+      "I",
+      "would"
+    ],
+    "correct": "if I had known I would have come",
+    "explain": {
+      "en": "Third conditional: had known, would have come.",
+      "ru": "Третий тип: had known, would have come.",
+      "vi": "Điều kiện loại 3: had known, would have come."
+    }
+  },
+  {
+    "id": "g179",
+    "level": "B2",
+    "topic": "relative clauses",
+    "type": "reorder",
+    "words": [
+      "where",
+      "the",
+      "we",
+      "place",
+      "is",
+      "this",
+      "first",
+      "met"
+    ],
+    "correct": "this is the place where we first met",
+    "explain": {
+      "en": "Where introduces a relative clause about place.",
+      "ru": "Where вводит придаточное о месте.",
+      "vi": "Where giới thiệu mệnh đề quan hệ về nơi chốn."
+    }
+  },
+  {
+    "id": "g180",
+    "level": "B1",
+    "topic": "gerund or infinitive",
+    "type": "reorder",
+    "words": [
+      "finished",
+      "she",
+      "the",
+      "writing",
+      "last",
+      "report",
+      "night"
+    ],
+    "correct": "she finished writing the report last night",
+    "explain": {
+      "en": "Finish is followed by the gerund form.",
+      "ru": "После finish используем герундий.",
+      "vi": "Sau finish dùng dạng danh động từ."
+    }
+  },
+  {
+    "id": "g181",
+    "level": "B1",
+    "topic": "phrasal verbs",
+    "type": "reorder",
+    "words": [
+      "up",
+      "sugar",
+      "month",
+      "last",
+      "gave",
+      "she"
+    ],
+    "correct": "she gave up sugar last month",
+    "explain": {
+      "en": "Give up + object means to quit something.",
+      "ru": "Give up + объект значит бросить что-то.",
+      "vi": "Give up + tân ngữ nghĩa là bỏ cái gì đó."
+    }
+  },
+  {
+    "id": "g182",
+    "level": "B1",
+    "topic": "used to",
+    "type": "reorder",
+    "words": [
+      "hours",
+      "to",
+      "is",
+      "used",
+      "working",
+      "long",
+      "she"
+    ],
+    "correct": "she is used to working long hours",
+    "explain": {
+      "en": "Be used to + -ing means accustomed to something.",
+      "ru": "Be used to + -ing значит привыкнуть к чему-то.",
+      "vi": "Be used to + -ing nghĩa là quen với điều gì."
+    }
+  },
+  {
+    "id": "g183",
+    "level": "B1",
+    "topic": "question tags",
+    "type": "reorder",
+    "words": [
+      "can",
+      "she",
+      "she",
+      "swim",
+      "can't"
+    ],
+    "correct": "she can't swim can she",
+    "explain": {
+      "en": "Negative statement takes a positive tag.",
+      "ru": "Отрицание берёт положительный хвостик.",
+      "vi": "Câu phủ định lấy đuôi khẳng định."
+    }
+  },
+  {
+    "id": "g184",
+    "level": "B2",
+    "topic": "modals of deduction",
+    "type": "reorder",
+    "words": [
+      "about",
+      "forgotten",
+      "the",
+      "meeting",
+      "she",
+      "must",
+      "have"
+    ],
+    "correct": "she must have forgotten about the meeting",
+    "explain": {
+      "en": "Must have + past participle for a past deduction.",
+      "ru": "Must have + причастие для вывода о прошлом.",
+      "vi": "Must have + phân từ cho suy luận về quá khứ."
+    }
+  },
+  {
+    "id": "g185",
+    "level": "B2",
+    "topic": "wish clauses",
+    "type": "reorder",
+    "words": [
+      "time",
+      "wish",
+      "free",
+      "had",
+      "more",
+      "I",
+      "I"
+    ],
+    "correct": "I wish I had more free time",
+    "explain": {
+      "en": "Wish about the present uses past simple.",
+      "ru": "Wish о настоящем требует past simple.",
+      "vi": "Wish về hiện tại dùng quá khứ đơn."
+    }
+  },
+  {
+    "id": "g186",
+    "level": "B2",
+    "topic": "advanced comparatives",
+    "type": "reorder",
+    "words": [
+      "than",
+      "expensive",
+      "mine",
+      "this",
+      "is",
+      "phone",
+      "more",
+      "far"
+    ],
+    "correct": "this phone is far more expensive than mine",
+    "explain": {
+      "en": "Far more intensifies the comparative form.",
+      "ru": "Far more усиливает сравнительную форму.",
+      "vi": "Far more nhấn mạnh dạng so sánh."
+    }
+  },
+  {
+    "id": "g187",
+    "level": "B1",
+    "topic": "past perfect",
+    "type": "reorder",
+    "words": [
+      "had",
+      "his",
+      "before",
+      "homework",
+      "he",
+      "dinner",
+      "finished"
+    ],
+    "correct": "he had finished his homework before dinner",
+    "explain": {
+      "en": "Had finished shows completion before dinner.",
+      "ru": "Had finished — завершение до ужина.",
+      "vi": "Had finished chỉ hoàn tất trước bữa tối."
+    }
+  },
+  {
+    "id": "g188",
+    "level": "B2",
+    "topic": "present perfect continuous",
+    "type": "reorder",
+    "words": [
+      "here",
+      "since",
+      "have",
+      "April",
+      "living",
+      "we",
+      "been"
+    ],
+    "correct": "we have been living here since April",
+    "explain": {
+      "en": "Since + present perfect continuous for ongoing state.",
+      "ru": "Since + present perfect continuous.",
+      "vi": "Since + hiện tại hoàn thành tiếp diễn."
+    }
+  },
+  {
+    "id": "g189",
+    "level": "B1",
+    "topic": "passive voice",
+    "type": "reorder",
+    "words": [
+      "by",
+      "the",
+      "cake",
+      "baked",
+      "mother",
+      "my",
+      "was"
+    ],
+    "correct": "the cake was baked by my mother",
+    "explain": {
+      "en": "Passive: subject + was + past participle + by.",
+      "ru": "Пассив: подлежащее + was + причастие + by.",
+      "vi": "Bị động: chủ ngữ + was + phân từ + by."
+    }
+  },
+  {
+    "id": "g190",
+    "level": "B2",
+    "topic": "reported speech",
+    "type": "reorder",
+    "words": [
+      "asked",
+      "station",
+      "was",
+      "where",
+      "he",
+      "the"
+    ],
+    "correct": "he asked where the station was",
+    "explain": {
+      "en": "Reported question: no inversion, verb after subject.",
+      "ru": "Косвенный вопрос: без инверсии.",
+      "vi": "Câu hỏi tường thuật: không đảo ngữ."
+    }
+  },
+  {
+    "id": "g191",
+    "level": "B1",
+    "topic": "second conditional",
+    "type": "reorder",
+    "words": [
+      "were",
+      "here",
+      "would",
+      "she",
+      "if",
+      "help",
+      "she"
+    ],
+    "correct": "if she were here she would help",
+    "explain": {
+      "en": "Unreal present with were + would clause.",
+      "ru": "Нереальное настоящее: were + would.",
+      "vi": "Hiện tại không thực: were + would."
+    }
+  },
+  {
+    "id": "g192",
+    "level": "B2",
+    "topic": "third conditional",
+    "type": "reorder",
+    "words": [
+      "you",
+      "would",
+      "asked",
+      "she",
+      "helped",
+      "if",
+      "have",
+      "had"
+    ],
+    "correct": "she would have helped if you had asked",
+    "explain": {
+      "en": "Would have helped is the unreal past result.",
+      "ru": "Would have helped — нереальный прошлый результат.",
+      "vi": "Would have helped là kết quả không thực ở quá khứ."
+    }
+  },
+  {
+    "id": "g193",
+    "level": "B1",
+    "topic": "relative clauses",
+    "type": "reorder",
+    "words": [
+      "who",
+      "is",
+      "you",
+      "called",
+      "boss",
+      "man",
+      "the",
+      "my"
+    ],
+    "correct": "the man who called you is my boss",
+    "explain": {
+      "en": "Who introduces info about the subject.",
+      "ru": "Who вводит информацию о подлежащем.",
+      "vi": "Who giới thiệu thông tin về chủ ngữ."
+    }
+  },
+  {
+    "id": "g194",
+    "level": "A2",
+    "topic": "gerund or infinitive",
+    "type": "reorder",
+    "words": [
+      "plan",
+      "we",
+      "to",
+      "London",
+      "next",
+      "visit",
+      "summer"
+    ],
+    "correct": "we plan to visit London next summer",
+    "explain": {
+      "en": "Plan is followed by the infinitive with to.",
+      "ru": "После plan используем инфинитив с to.",
+      "vi": "Sau plan dùng động từ nguyên thể có to."
+    }
+  },
+  {
+    "id": "g195",
+    "level": "A2",
+    "topic": "phrasal verbs",
+    "type": "reorder",
+    "words": [
+      "lights",
+      "the",
+      "now",
+      "turn",
+      "off",
+      "please"
+    ],
+    "correct": "please turn off the lights now",
+    "explain": {
+      "en": "Turn off + object: switch something off.",
+      "ru": "Turn off + объект: выключить что-то.",
+      "vi": "Turn off + tân ngữ: tắt cái gì đó."
+    }
+  },
+  {
+    "id": "g196",
+    "level": "A2",
+    "topic": "used to",
+    "type": "reorder",
+    "words": [
+      "to",
+      "in",
+      "live",
+      "used",
+      "a",
+      "village",
+      "we"
+    ],
+    "correct": "we used to live in a village",
+    "explain": {
+      "en": "Used to + verb for a past habit.",
+      "ru": "Used to + глагол для прошлой привычки.",
+      "vi": "Used to + động từ cho thói quen cũ."
+    }
+  },
+  {
+    "id": "g197",
+    "level": "A2",
+    "topic": "question tags",
+    "type": "reorder",
+    "words": [
+      "you",
+      "you",
+      "aren't",
+      "coming",
+      "tonight",
+      "are"
+    ],
+    "correct": "you are coming tonight aren't you",
+    "explain": {
+      "en": "Positive statement takes a negative tag.",
+      "ru": "Утверждение берёт отрицательный хвостик.",
+      "vi": "Câu khẳng định lấy đuôi phủ định."
+    }
+  },
+  {
+    "id": "g198",
+    "level": "A2",
+    "topic": "past perfect",
+    "type": "choose",
+    "sentence": "I ___ never seen snow before that trip.",
+    "options": [
+      "have",
+      "had",
+      "was"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "Past perfect: had + never + past participle.",
+      "ru": "Past perfect: had + never + причастие.",
+      "vi": "Quá khứ hoàn thành: had never + phân từ."
+    }
+  },
+  {
+    "id": "g199",
+    "level": "B2",
+    "topic": "present perfect continuous",
+    "type": "choose",
+    "sentence": "How long ___ you ___ for that job?",
+    "options": [
+      "have / been waiting",
+      "do / wait",
+      "are / waiting"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Ongoing duration question: have you been waiting.",
+      "ru": "Вопрос о длительности: have you been waiting.",
+      "vi": "Câu hỏi độ dài: have you been waiting."
+    }
+  },
+  {
+    "id": "g200",
+    "level": "B2",
+    "topic": "passive voice",
+    "type": "choose",
+    "sentence": "The report ___ by tomorrow morning.",
+    "options": [
+      "will finish",
+      "will be finished",
+      "finishes"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "Future passive: will be + past participle.",
+      "ru": "Пассив в future: will be + причастие.",
+      "vi": "Bị động tương lai: will be + phân từ."
+    }
+  },
+  {
+    "id": "g201",
+    "level": "B1",
+    "topic": "reported speech",
+    "type": "choose",
+    "sentence": "He said he ___ tired.",
+    "options": [
+      "is",
+      "was",
+      "be"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "Reported speech shifts present to past: was.",
+      "ru": "В косвенной речи present меняется на past.",
+      "vi": "Câu tường thuật chuyển hiện tại thành quá khứ."
+    }
+  },
+  {
+    "id": "g202",
+    "level": "B2",
+    "topic": "second conditional",
+    "type": "choose",
+    "sentence": "If they lived closer, we ___ each other more often.",
+    "options": [
+      "would see",
+      "will see",
+      "see"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Imagined present result uses would + verb.",
+      "ru": "Воображаемый результат: would + глагол.",
+      "vi": "Kết quả tưởng tượng: would + động từ."
+    }
+  },
+  {
+    "id": "g203",
+    "level": "B2",
+    "topic": "third conditional",
+    "type": "choose",
+    "sentence": "If I had known, I ___ have come earlier.",
+    "options": [
+      "would",
+      "will",
+      "would have"
+    ],
+    "answer": 2,
+    "explain": {
+      "en": "Third conditional result: would have + past participle.",
+      "ru": "Третий тип: would have + причастие.",
+      "vi": "Điều kiện loại 3: would have + phân từ."
+    }
+  },
+  {
+    "id": "g204",
+    "level": "B1",
+    "topic": "relative clauses",
+    "type": "choose",
+    "sentence": "The man ___ lives next door is a doctor.",
+    "options": [
+      "who",
+      "which",
+      "whose"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Who refers to people as the subject.",
+      "ru": "Who используется для людей как подлежащее.",
+      "vi": "Who dùng cho người làm chủ ngữ."
+    }
+  },
+  {
+    "id": "g205",
+    "level": "A2",
+    "topic": "gerund or infinitive",
+    "type": "choose",
+    "sentence": "She enjoys ___ books in her free time.",
+    "options": [
+      "read",
+      "reading",
+      "to read"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "Enjoy is followed by the gerund (-ing).",
+      "ru": "После enjoy используем герундий (-ing).",
+      "vi": "Sau enjoy dùng danh động từ (-ing)."
+    }
+  },
+  {
+    "id": "g206",
+    "level": "A2",
+    "topic": "phrasal verbs",
+    "type": "choose",
+    "sentence": "Can you ___ the lights before you leave?",
+    "options": [
+      "turn off",
+      "turn up",
+      "turn into"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Turn off means to switch something off.",
+      "ru": "Turn off значит выключить что-то.",
+      "vi": "Turn off nghĩa là tắt cái gì đó."
+    }
+  },
+  {
+    "id": "g207",
+    "level": "A2",
+    "topic": "used to",
+    "type": "choose",
+    "sentence": "I ___ play football when I was a child.",
+    "options": [
+      "use to",
+      "used to",
+      "using to"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "Used to + verb describes a past habit.",
+      "ru": "Used to + глагол описывает прошлую привычку.",
+      "vi": "Used to + động từ diễn tả thói quen cũ."
+    }
+  },
+  {
+    "id": "g208",
+    "level": "A2",
+    "topic": "question tags",
+    "type": "choose",
+    "sentence": "You like coffee, ___?",
+    "options": [
+      "don't you",
+      "do you",
+      "aren't you"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Positive statement, negative tag: don't you.",
+      "ru": "Утверждение — отрицательный хвостик: don't you.",
+      "vi": "Câu khẳng định dùng đuôi phủ định: don't you."
+    }
+  },
+  {
+    "id": "g209",
+    "level": "B1",
+    "topic": "modals of deduction",
+    "type": "choose",
+    "sentence": "The lights are off, so they ___ be at home.",
+    "options": [
+      "can't",
+      "must",
+      "should"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Can't shows a logical impossibility.",
+      "ru": "Can't выражает логическую невозможность.",
+      "vi": "Can't diễn tả sự không thể xảy ra."
+    }
+  },
+  {
+    "id": "g210",
+    "level": "B2",
+    "topic": "wish clauses",
+    "type": "choose",
+    "sentence": "I wish I ___ more time to finish this.",
+    "options": [
+      "have",
+      "had",
+      "will have"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "Wish about the present uses past simple.",
+      "ru": "Wish о настоящем требует past simple.",
+      "vi": "Wish về hiện tại dùng quá khứ đơn."
+    }
+  },
+  {
+    "id": "g211",
+    "level": "B1",
+    "topic": "advanced comparatives",
+    "type": "choose",
+    "sentence": "The more you practice, ___ you become.",
+    "options": [
+      "the better",
+      "better",
+      "the best"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "The + comparative, the + comparative pattern.",
+      "ru": "Конструкция the + сравнит., the + сравнит.",
+      "vi": "Cấu trúc the + so sánh, the + so sánh."
+    }
+  },
+  {
+    "id": "g212",
+    "level": "B1",
+    "topic": "past perfect",
+    "type": "choose",
+    "sentence": "By the time we arrived, the film ___ already started.",
+    "options": [
+      "has",
+      "had",
+      "have"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "Earlier past action: use had + past participle.",
+      "ru": "Действие раньше другого: had + причастие.",
+      "vi": "Hành động trước đó: had + quá khứ phân từ."
+    }
+  },
+  {
+    "id": "g213",
+    "level": "B2",
+    "topic": "present perfect continuous",
+    "type": "choose",
+    "sentence": "My eyes hurt because I ___ at the screen all day.",
+    "options": [
+      "have been staring",
+      "stared",
+      "stare"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Continuous action explaining a present result.",
+      "ru": "Длительное действие как причина результата.",
+      "vi": "Hành động kéo dài giải thích kết quả hiện tại."
+    }
+  },
+  {
+    "id": "g214",
+    "level": "B2",
+    "topic": "passive voice",
+    "type": "choose",
+    "sentence": "The new hospital ___ next year.",
+    "options": [
+      "is opening",
+      "will be opened",
+      "opens"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "Planned future action in passive form.",
+      "ru": "Будущее действие в пассивной форме.",
+      "vi": "Hành động tương lai ở dạng bị động."
+    }
+  },
+  {
+    "id": "g215",
+    "level": "B1",
+    "topic": "reported speech",
+    "type": "choose",
+    "sentence": "She told me she ___ to Paris the next day.",
+    "options": [
+      "is going",
+      "was going",
+      "go"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "Reported speech: is going becomes was going.",
+      "ru": "Косвенная речь: is going становится was going.",
+      "vi": "Tường thuật: is going thành was going."
+    }
+  },
+  {
+    "id": "g216",
+    "level": "B1",
+    "topic": "second conditional",
+    "type": "choose",
+    "sentence": "If I ___ rich, I would travel the world.",
+    "options": [
+      "am",
+      "were",
+      "will be"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "Second conditional: If + past simple, would + verb.",
+      "ru": "Второй тип: If + past simple, would + глагол.",
+      "vi": "Loại 2: If + quá khứ đơn, would + động từ."
+    }
+  },
+  {
+    "id": "g217",
+    "level": "B2",
+    "topic": "third conditional",
+    "type": "choose",
+    "sentence": "If she had studied, she ___ passed the test.",
+    "options": [
+      "would have",
+      "would",
+      "will have"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Unreal past result: would have + past participle.",
+      "ru": "Нереальный результат: would have + причастие.",
+      "vi": "Kết quả không thực ở quá khứ: would have + phân từ."
+    }
+  },
+  {
+    "id": "g218",
+    "level": "B2",
+    "topic": "relative clauses",
+    "type": "choose",
+    "sentence": "The city ___ I was born has changed a lot.",
+    "options": [
+      "where",
+      "which",
+      "who"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Where refers to a place.",
+      "ru": "Where используется для места.",
+      "vi": "Where dùng cho địa điểm."
+    }
+  },
+  {
+    "id": "g219",
+    "level": "A2",
+    "topic": "gerund or infinitive",
+    "type": "choose",
+    "sentence": "I want ___ a new phone this year.",
+    "options": [
+      "buying",
+      "buy",
+      "to buy"
+    ],
+    "answer": 2,
+    "explain": {
+      "en": "Want is followed by the infinitive with to.",
+      "ru": "После want используем инфинитив с to.",
+      "vi": "Sau want dùng động từ nguyên thể có to."
+    }
+  },
+  {
+    "id": "g220",
+    "level": "A2",
+    "topic": "phrasal verbs",
+    "type": "choose",
+    "sentence": "She had to ___ the meeting because she was sick.",
+    "options": [
+      "put off",
+      "put on",
+      "put up"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Put off means to postpone.",
+      "ru": "Put off значит отложить.",
+      "vi": "Put off nghĩa là trì hoãn."
+    }
+  },
+  {
+    "id": "g221",
+    "level": "A2",
+    "topic": "used to",
+    "type": "choose",
+    "sentence": "She ___ live in Rome, but now she lives in Paris.",
+    "options": [
+      "used to",
+      "use to",
+      "is used to"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Used to shows a past state that changed.",
+      "ru": "Used to показывает изменившееся прошлое состояние.",
+      "vi": "Used to chỉ trạng thái quá khứ đã thay đổi."
+    }
+  },
+  {
+    "id": "g222",
+    "level": "A2",
+    "topic": "question tags",
+    "type": "choose",
+    "sentence": "She isn't coming to the party, ___?",
+    "options": [
+      "is she",
+      "isn't she",
+      "does she"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Negative statement, positive tag: is she.",
+      "ru": "Отрицание — положительный хвостик: is she.",
+      "vi": "Câu phủ định dùng đuôi khẳng định: is she."
+    }
+  },
+  {
+    "id": "g223",
+    "level": "B1",
+    "topic": "modals of deduction",
+    "type": "choose",
+    "sentence": "He got a perfect score, so he ___ have studied hard.",
+    "options": [
+      "must",
+      "can't",
+      "should"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Must have shows a confident conclusion.",
+      "ru": "Must have выражает уверенный вывод.",
+      "vi": "Must have thể hiện kết luận chắc chắn."
+    }
+  },
+  {
+    "id": "g224",
+    "level": "B2",
+    "topic": "wish clauses",
+    "type": "choose",
+    "sentence": "She wishes she ___ studied harder at school.",
+    "options": [
+      "has",
+      "had",
+      "have"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "Wish about the past uses past perfect.",
+      "ru": "Wish о прошлом требует past perfect.",
+      "vi": "Wish về quá khứ dùng quá khứ hoàn thành."
+    }
+  },
+  {
+    "id": "g225",
+    "level": "B1",
+    "topic": "advanced comparatives",
+    "type": "choose",
+    "sentence": "This test is ___ than I expected.",
+    "options": [
+      "far more difficult",
+      "far difficult",
+      "far difficulter"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Far intensifies a comparative adjective.",
+      "ru": "Far усиливает сравнительное прилагательное.",
+      "vi": "Far nhấn mạnh tính từ so sánh."
+    }
+  },
+  {
+    "id": "g226",
+    "level": "B1",
+    "topic": "past perfect",
+    "type": "choose",
+    "sentence": "She ___ her keys before she left the house.",
+    "options": [
+      "lost",
+      "had lost",
+      "loses"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "Past perfect shows an action before another past action.",
+      "ru": "Past perfect — действие до другого прошлого.",
+      "vi": "Quá khứ hoàn thành: trước một hành động khác."
+    }
+  },
+  {
+    "id": "g227",
+    "level": "B1",
+    "topic": "present perfect continuous",
+    "type": "choose",
+    "sentence": "I ___ for two hours and I need a break.",
+    "options": [
+      "study",
+      "have been studying",
+      "am studying"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "Duration up to now: have been + -ing.",
+      "ru": "Длительность до сейчас: have been + -ing.",
+      "vi": "Kéo dài đến hiện tại: have been + -ing."
+    }
+  },
+  {
+    "id": "g228",
+    "level": "B2",
+    "topic": "passive voice",
+    "type": "choose",
+    "sentence": "The problem ___ before we noticed it.",
+    "options": [
+      "had been solved",
+      "solved",
+      "has solved"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Past perfect passive: had been + past participle.",
+      "ru": "Пассив past perfect: had been + причастие.",
+      "vi": "Bị động quá khứ hoàn thành: had been + phân từ."
+    }
+  },
+  {
+    "id": "g229",
+    "level": "B2",
+    "topic": "reported speech",
+    "type": "choose",
+    "sentence": "He asked me where I ___ living.",
+    "options": [
+      "was",
+      "am",
+      "is"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Reported questions also shift tense back.",
+      "ru": "В косвенных вопросах время также смещается.",
+      "vi": "Câu hỏi tường thuật cũng lùi thì."
+    }
+  },
+  {
+    "id": "g230",
+    "level": "B1",
+    "topic": "second conditional",
+    "type": "choose",
+    "sentence": "If she ___ more, she would pass the exam.",
+    "options": [
+      "studied",
+      "studies",
+      "will study"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Unreal present condition uses past simple.",
+      "ru": "Нереальное условие в present — past simple.",
+      "vi": "Điều kiện không thực ở hiện tại dùng quá khứ đơn."
+    }
+  },
+  {
+    "id": "g231",
+    "level": "B2",
+    "topic": "third conditional",
+    "type": "choose",
+    "sentence": "If it had rained, the match ___ cancelled.",
+    "options": [
+      "would have been",
+      "would be",
+      "was"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Passive third conditional: would have been + participle.",
+      "ru": "Пассив третий тип: would have been.",
+      "vi": "Bị động loại 3: would have been."
+    }
+  },
+  {
+    "id": "g232",
+    "level": "B2",
+    "topic": "relative clauses",
+    "type": "choose",
+    "sentence": "I don't remember the reason ___ she left.",
+    "options": [
+      "why",
+      "where",
+      "which"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Why introduces a reason clause.",
+      "ru": "Why вводит причину.",
+      "vi": "Why dùng để giới thiệu lý do."
+    }
+  },
+  {
+    "id": "g233",
+    "level": "B1",
+    "topic": "gerund or infinitive",
+    "type": "choose",
+    "sentence": "He suggested ___ a taxi instead of walking.",
+    "options": [
+      "take",
+      "taking",
+      "to take"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "Suggest is followed by the gerund.",
+      "ru": "После suggest используем герундий.",
+      "vi": "Sau suggest dùng danh động từ."
+    }
+  },
+  {
+    "id": "g234",
+    "level": "A2",
+    "topic": "phrasal verbs",
+    "type": "choose",
+    "sentence": "I need to ___ my sister at the airport.",
+    "options": [
+      "pick up",
+      "pick on",
+      "pick out"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Pick up means to collect someone.",
+      "ru": "Pick up значит забрать кого-то.",
+      "vi": "Pick up nghĩa là đón ai đó."
+    }
+  },
+  {
+    "id": "g235",
+    "level": "B1",
+    "topic": "used to",
+    "type": "choose",
+    "sentence": "Did you ___ eat meat before you became vegetarian?",
+    "options": [
+      "used to",
+      "use to",
+      "using"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "Questions with used to use \"did you use to\".",
+      "ru": "В вопросах: did you use to.",
+      "vi": "Câu hỏi dùng: did you use to."
+    }
+  },
+  {
+    "id": "g236",
+    "level": "A2",
+    "topic": "question tags",
+    "type": "choose",
+    "sentence": "This isn't your bag, ___?",
+    "options": [
+      "is it",
+      "isn't it",
+      "does it"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Negative statement needs a positive tag.",
+      "ru": "Отрицание требует положительный хвостик.",
+      "vi": "Câu phủ định cần đuôi khẳng định."
+    }
+  },
+  {
+    "id": "g237",
+    "level": "B2",
+    "topic": "modals of deduction",
+    "type": "choose",
+    "sentence": "She isn't answering, so she ___ be busy.",
+    "options": [
+      "might",
+      "must not",
+      "can't"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Might expresses a possible reason.",
+      "ru": "Might выражает возможную причину.",
+      "vi": "Might diễn tả một khả năng."
+    }
+  },
+  {
+    "id": "g238",
+    "level": "B2",
+    "topic": "wish clauses",
+    "type": "choose",
+    "sentence": "I wish you ___ so much noise right now.",
+    "options": [
+      "wouldn't make",
+      "don't make",
+      "won't make"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Wish about an annoying habit uses would.",
+      "ru": "Wish о раздражающей привычке требует would.",
+      "vi": "Wish về thói quen gây khó chịu dùng would."
+    }
+  },
+  {
+    "id": "g239",
+    "level": "B2",
+    "topic": "advanced comparatives",
+    "type": "choose",
+    "sentence": "Her new book is ___ as good as her first one.",
+    "options": [
+      "just",
+      "more",
+      "much"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Just as good as means equally good.",
+      "ru": "Just as good as значит одинаково хорошо.",
+      "vi": "Just as good as nghĩa là ngang bằng tốt."
+    }
+  },
+  {
+    "id": "g240",
+    "level": "B1",
+    "topic": "past perfect",
+    "type": "choose",
+    "sentence": "When I got to the station, the train ___.",
+    "options": [
+      "had left",
+      "has left",
+      "left"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "The train left before you arrived: had left.",
+      "ru": "Поезд ушёл раньше: had left.",
+      "vi": "Tàu đã chạy trước đó: had left."
+    }
+  },
+  {
+    "id": "g241",
+    "level": "B1",
+    "topic": "present perfect continuous",
+    "type": "choose",
+    "sentence": "It ___ all morning, so the streets are wet.",
+    "options": [
+      "has been raining",
+      "rained",
+      "is raining"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Result now from a continuous past action.",
+      "ru": "Результат сейчас от длительного действия.",
+      "vi": "Kết quả hiện tại từ hành động kéo dài."
+    }
+  },
+  {
+    "id": "g242",
+    "level": "B1",
+    "topic": "passive voice",
+    "type": "choose",
+    "sentence": "The letter ___ by my sister yesterday.",
+    "options": [
+      "was written",
+      "wrote",
+      "writes"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Passive: object + be + past participle.",
+      "ru": "Пассив: объект + be + причастие.",
+      "vi": "Bị động: tân ngữ + be + phân từ."
+    }
+  },
+  {
+    "id": "g243",
+    "level": "B2",
+    "topic": "reported speech",
+    "type": "choose",
+    "sentence": "She said she ___ call me later that day.",
+    "options": [
+      "will",
+      "would",
+      "shall"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "Will shifts to would in reported speech.",
+      "ru": "Will меняется на would в косвенной речи.",
+      "vi": "Will chuyển thành would trong tường thuật."
+    }
+  },
+  {
+    "id": "g244",
+    "level": "B1",
+    "topic": "second conditional",
+    "type": "choose",
+    "sentence": "If we had a car, we ___ drive to the coast.",
+    "options": [
+      "would",
+      "will",
+      "would have"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Second conditional result: would + base verb.",
+      "ru": "Результат: would + базовый глагол.",
+      "vi": "Kết quả: would + động từ gốc."
+    }
+  },
+  {
+    "id": "g245",
+    "level": "B2",
+    "topic": "third conditional",
+    "type": "choose",
+    "sentence": "We would have missed the train if we ___ later.",
+    "options": [
+      "left",
+      "had left",
+      "leave"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "Condition clause needs past perfect: had left.",
+      "ru": "Условие требует past perfect: had left.",
+      "vi": "Mệnh đề điều kiện cần quá khứ hoàn thành: had left."
+    }
+  },
+  {
+    "id": "g246",
+    "level": "B2",
+    "topic": "relative clauses",
+    "type": "choose",
+    "sentence": "This is the reason ___ I called you.",
+    "options": [
+      "why",
+      "who",
+      "whose"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Why introduces the reason for an action.",
+      "ru": "Why объясняет причину действия.",
+      "vi": "Why giới thiệu lý do của hành động."
+    }
+  },
+  {
+    "id": "g247",
+    "level": "B1",
+    "topic": "gerund or infinitive",
+    "type": "choose",
+    "sentence": "They decided ___ early to catch the train.",
+    "options": [
+      "leaving",
+      "leave",
+      "to leave"
+    ],
+    "answer": 2,
+    "explain": {
+      "en": "Decide is followed by the infinitive with to.",
+      "ru": "После decide используем инфинитив с to.",
+      "vi": "Sau decide dùng động từ nguyên thể có to."
+    }
+  },
+  {
+    "id": "g248",
+    "level": "B1",
+    "topic": "phrasal verbs",
+    "type": "choose",
+    "sentence": "He decided to ___ smoking last year.",
+    "options": [
+      "give up",
+      "give in",
+      "give away"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Give up means to quit or stop.",
+      "ru": "Give up значит бросить, прекратить.",
+      "vi": "Give up nghĩa là bỏ, dừng lại."
+    }
+  },
+  {
+    "id": "g249",
+    "level": "B1",
+    "topic": "used to",
+    "type": "choose",
+    "sentence": "He didn't ___ like coffee, but now he loves it.",
+    "options": [
+      "use to",
+      "used to",
+      "uses to"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Negative form: didn't use to.",
+      "ru": "Отрицательная форма: didn't use to.",
+      "vi": "Dạng phủ định: didn't use to."
+    }
+  },
+  {
+    "id": "g250",
+    "level": "B1",
+    "topic": "question tags",
+    "type": "choose",
+    "sentence": "They have finished the project, ___?",
+    "options": [
+      "haven't they",
+      "don't they",
+      "didn't they"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Have as auxiliary needs haven't they.",
+      "ru": "Have как вспомогательный: haven't they.",
+      "vi": "Have là trợ động từ: haven't they."
+    }
+  },
+  {
+    "id": "g251",
+    "level": "B2",
+    "topic": "modals of deduction",
+    "type": "choose",
+    "sentence": "They ___ have left already; their car isn't here.",
+    "options": [
+      "must",
+      "should",
+      "can"
+    ],
+    "answer": 0,
+    "explain": {
+      "en": "Must have shows strong deduction about the past.",
+      "ru": "Must have — сильный вывод о прошлом.",
+      "vi": "Must have thể hiện suy luận mạnh về quá khứ."
+    }
+  },
+  {
+    "id": "g252",
+    "level": "B2",
+    "topic": "wish clauses",
+    "type": "choose",
+    "sentence": "He wishes he ___ taller.",
+    "options": [
+      "is",
+      "were",
+      "will be"
+    ],
+    "answer": 1,
+    "explain": {
+      "en": "Wish about an unreal state uses were.",
+      "ru": "Wish о нереальном состоянии требует were.",
+      "vi": "Wish về trạng thái không thực dùng were."
+    }
+  }
+]

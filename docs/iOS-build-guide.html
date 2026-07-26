@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Сборка iOS через Capacitor — AI English Teacher</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pur:#7c3aed; --pur2:#a855f7; --fuchsia:#d946ef;
+    --ink:#0f1222; --ink2:#3a3f55; --mut:#6b7192; --line:#e7e6f0;
+    --bg:#faf9fe; --card:#ffffff; --code:#171326; --code2:#221b3a;
+    --green:#10b981; --amber:#f59e0b; --rose:#f43f5e; --sky:#0ea5e9;
+    --radius:16px; --shadow:0 1px 3px rgba(20,10,50,.06),0 12px 30px rgba(80,40,160,.07);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,sans-serif;line-height:1.65;-webkit-font-smoothing:antialiased}
+  code,pre,kbd{font-family:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace}
+
+  /* ---------- header ---------- */
+  header.hero{
+    background:
+      radial-gradient(1100px 480px at 88% -12%,rgba(217,70,239,.28),transparent 60%),
+      radial-gradient(900px 460px at 8% 0%,rgba(124,58,237,.34),transparent 62%),
+      linear-gradient(160deg,#120a2b 0%,#1c1044 52%,#241056 100%);
+    color:#fff;padding:64px clamp(20px,5vw,72px) 56px;position:relative;overflow:hidden;
+  }
+  header.hero::after{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1px);background-size:22px 22px;opacity:.5;pointer-events:none}
+  .hero-inner{max-width:1180px;margin:0 auto;position:relative;z-index:1}
+  .eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:12.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#e9d8ff;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);padding:7px 15px;border-radius:999px}
+  h1.title{font-size:clamp(2.2rem,5.4vw,4rem);line-height:1.02;font-weight:900;margin:22px 0 0;letter-spacing:-.02em}
+  h1.title .grad{background:linear-gradient(100deg,#f0abfc,#c4b5fd 60%,#7dd3fc);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{font-size:clamp(1.02rem,2vw,1.28rem);color:#d6ccf5;max-width:720px;margin:20px 0 0;font-weight:500}
+  .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
+  .pill{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#f3eaff;font-size:13px;font-weight:600;padding:9px 15px;border-radius:12px}
+  .pill b{color:#fff;font-weight:800}
+  .pill .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green)}
+
+  /* ---------- layout ---------- */
+  .wrap{max-width:1180px;margin:0 auto;padding:0 clamp(20px,5vw,72px);display:grid;grid-template-columns:236px 1fr;gap:44px;align-items:start}
+  @media(max-width:920px){.wrap{grid-template-columns:1fr;gap:0}}
+
+  /* ---------- TOC ---------- */
+  nav.toc{position:sticky;top:22px;align-self:start;padding:26px 0 40px}
+  @media(max-width:920px){nav.toc{position:static;padding:22px 0 4px}}
+  .toc h4{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--mut);margin:0 0 12px;font-weight:800}
+  .toc ol{list-style:none;margin:0;padding:0;counter-reset:toc}
+  .toc a{counter-increment:toc;display:flex;gap:11px;align-items:baseline;text-decoration:none;color:var(--ink2);font-size:13.5px;font-weight:600;padding:8px 12px;border-radius:10px;border-left:2px solid transparent;transition:all .15s}
+  .toc a::before{content:counter(toc,decimal-leading-zero);font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--pur2);font-weight:700;min-width:22px}
+  .toc a:hover{background:#f2edfe;color:var(--ink)}
+  .toc a.active{background:#f0e9fe;color:var(--pur);border-left-color:var(--pur)}
+  @media(max-width:920px){.toc ol{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px}}
+  @media(max-width:560px){.toc ol{grid-template-columns:1fr}}
+
+  main{padding:26px 0 40px;min-width:0}
+  section{scroll-margin-top:22px;margin-bottom:14px}
+  .step{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:30px clamp(20px,3.4vw,38px);margin-bottom:26px}
+  .step-head{display:flex;align-items:center;gap:16px;margin:0 0 6px}
+  .num{flex-shrink:0;width:44px;height:44px;border-radius:13px;display:grid;place-items:center;font-weight:900;font-size:18px;color:#fff;background:linear-gradient(135deg,var(--pur),var(--fuchsia));box-shadow:0 8px 20px rgba(124,58,237,.32);font-family:'JetBrains Mono',monospace}
+  h2{font-size:clamp(1.35rem,2.6vw,1.72rem);font-weight:850;margin:0;letter-spacing:-.015em;font-weight:800}
+  h3{font-size:1.06rem;font-weight:800;margin:26px 0 10px;color:var(--ink)}
+  p{margin:12px 0;color:var(--ink2)}
+  a.inline{color:var(--pur);font-weight:600;text-decoration:none;border-bottom:1.5px solid #d8c8fb}
+  a.inline:hover{border-bottom-color:var(--pur)}
+  ul,ol.list{margin:12px 0;padding-left:2px;list-style:none}
+  ul li,ol.list li{position:relative;padding-left:28px;margin:9px 0;color:var(--ink2)}
+  ul li::before{content:"";position:absolute;left:6px;top:11px;width:7px;height:7px;border-radius:2px;background:var(--pur2);transform:rotate(45deg)}
+  ol.list{counter-reset:sub}
+  ol.list li{counter-increment:sub}
+  ol.list li::before{content:counter(sub);position:absolute;left:0;top:1px;width:20px;height:20px;border-radius:6px;background:#efe8fd;color:var(--pur);font-size:11px;font-weight:800;display:grid;place-items:center;font-family:'JetBrains Mono',monospace}
+  b,strong{color:var(--ink);font-weight:700}
+  kbd{background:#efe8fd;border:1px solid #d8c8fb;border-bottom-width:2px;border-radius:6px;padding:1px 7px;font-size:12px;font-weight:600;color:var(--pur)}
+
+  /* ---------- code blocks ---------- */
+  .code{position:relative;margin:16px 0;border-radius:13px;overflow:hidden;background:var(--code);border:1px solid #2b2247}
+  .code-bar{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;background:var(--code2);border-bottom:1px solid #2b2247}
+  .code-bar .lbl{font-size:11.5px;font-weight:700;color:#b9a8e6;letter-spacing:.04em;display:flex;align-items:center;gap:8px}
+  .code-bar .lbl .fdot{width:9px;height:9px;border-radius:50%;background:#4b3d75}
+  .copy{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.13);color:#d9ccff;font-size:11.5px;font-weight:700;padding:5px 12px;border-radius:8px;cursor:pointer;transition:all .15s;font-family:Inter,sans-serif}
+  .copy:hover{background:var(--pur);border-color:var(--pur);color:#fff}
+  .copy.ok{background:var(--green);border-color:var(--green);color:#fff}
+  pre{margin:0;padding:16px 18px;overflow-x:auto;font-size:13px;line-height:1.72;color:#e9e3fb}
+  pre .c{color:#7d76a8;font-style:italic}
+  pre .k{color:#c4b5fd;font-weight:600}
+  pre .s{color:#7dd3fc}
+  pre .g{color:#86efac}
+  pre .v{color:#fca5f5}
+
+  /* ---------- callouts ---------- */
+  .note{border-radius:13px;padding:15px 18px 15px 16px;margin:18px 0;display:flex;gap:13px;font-size:14px;border:1px solid;line-height:1.6}
+  .note .ic{flex-shrink:0;font-size:19px;line-height:1.4}
+  .note p{margin:0;color:inherit}
+  .note.info{background:#eff7ff;border-color:#bae0fd;color:#0b4a72}
+  .note.warn{background:#fff7ed;border-color:#fed7aa;color:#9a3412}
+  .note.tip{background:#ecfdf5;border-color:#a7f3d0;color:#065f46}
+  .note.danger{background:#fff1f2;border-color:#fecdd3;color:#9f1239}
+  .note b{color:inherit}
+
+  /* ---------- table ---------- */
+  .tbl{width:100%;border-collapse:collapse;margin:16px 0;font-size:13.5px;background:var(--card);border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+  .tbl th{background:#f4effe;text-align:left;padding:12px 15px;font-weight:800;color:var(--ink);font-size:12px;letter-spacing:.03em;text-transform:uppercase}
+  .tbl td{padding:12px 15px;border-top:1px solid var(--line);color:var(--ink2);vertical-align:top}
+  .tbl td code{background:#f3eefe;padding:2px 6px;border-radius:5px;font-size:12px;color:var(--pur)}
+  .tbl tr:hover td{background:#fbf9ff}
+
+  .out{display:flex;align-items:center;gap:11px;background:linear-gradient(100deg,#f0fdf4,#ecfdf5);border:1px solid #a7f3d0;border-radius:12px;padding:13px 16px;margin:16px 0;font-size:13.5px;color:#065f46;font-weight:600}
+  .out .ic{font-size:18px}
+  .out code{background:#fff;border:1px solid #a7f3d0;padding:3px 9px;border-radius:7px;color:#047857;font-weight:700}
+
+  footer{background:#0f0a24;color:#cbb9f2;padding:44px clamp(20px,5vw,72px);margin-top:20px}
+  .foot-inner{max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;gap:24px;justify-content:space-between;align-items:center}
+  .foot-inner .devs{font-size:14px}
+  .foot-inner .devs b{color:#fff}
+  .foot-inner .brand{font-weight:900;font-size:16px;color:#fff;display:flex;align-items:center;gap:9px}
+  .foot-small{max-width:1180px;margin:22px auto 0;font-size:12px;color:#8b7fb5;border-top:1px solid #2a2148;padding-top:18px}
+  .anchor-h{color:inherit;text-decoration:none}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <span class="eyebrow">🍎 iOS Build Guide · Capacitor 6</span>
+    <h1 class="title">Сборка <span class="grad">iOS</span>-приложения<br>AI English Teacher</h1>
+    <p class="sub">Пошагово: что установить на Mac, как открыть проект в Xcode, настроить подпись и выложить сборку в TestFlight и App Store. Команды выверены по реальной конфигурации проекта.</p>
+    <div class="meta">
+      <span class="pill"><span class="dot"></span> <b>Готово к сборке</b></span>
+      <span class="pill">только&nbsp;<b>macOS</b></span>
+      <span class="pill">appId&nbsp;<b>com.aiteacher.app</b></span>
+      <span class="pill">Capacitor&nbsp;<b>v6.1</b></span>
+      <span class="pill">⏱ ~60–90&nbsp;мин первый раз</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <nav class="toc">
+    <h4>Содержание</h4>
+    <ol id="toc">
+      <li><a href="#req">Требования</a></li>
+      <li><a href="#tools">CocoaPods и CLT</a></li>
+      <li><a href="#setup">Инициализация проекта</a></li>
+      <li><a href="#run">Запуск в симуляторе / на iPhone</a></li>
+      <li><a href="#icons">Иконки и сплэш</a></li>
+      <li><a href="#sign">Подпись: Apple Developer</a></li>
+      <li><a href="#release">Archive → TestFlight → App Store</a></li>
+      <li><a href="#server">Онлайн-режим (сервер)</a></li>
+      <li><a href="#trouble">Ошибки и решения</a></li>
+      <li><a href="#cheat">Шпаргалка команд</a></li>
+    </ol>
+  </nav>
+
+  <main>
+
+    <!-- 1 -->
+    <section id="req"><div class="step">
+      <div class="step-head"><div class="num">1</div><h2><a class="anchor-h" href="#req">Требования</a></h2></div>
+      <p>Собрать iOS-приложение можно <b>только на Mac</b> — это требование Apple, обойти его нельзя (в отличие от Android, который собирается на любой ОС). Понадобится:</p>
+      <ul>
+        <li><b>macOS</b> — актуальная версия (Ventura 13+ или новее, под требования Xcode 15).</li>
+        <li><b>Xcode 15+</b> — из <a class="inline" href="https://apps.apple.com/app/xcode/id497799835" target="_blank" rel="noopener noreferrer">Mac App Store</a>. Это требование Capacitor&nbsp;6. Запустите его один раз, чтобы догрузились компоненты.</li>
+        <li><b>Node.js 18+</b> — <a class="inline" href="https://nodejs.org/" target="_blank" rel="noopener noreferrer">nodejs.org</a>. Проверка: <kbd>node -v</kbd></li>
+        <li><b>CocoaPods</b> — менеджер нативных зависимостей iOS (ставим в шаге&nbsp;2).</li>
+        <li><b>Apple Developer Program</b> — <a class="inline" href="https://developer.apple.com/programs/" target="_blank" rel="noopener noreferrer">$99/год</a>. Нужен для запуска на реальном iPhone, TestFlight и публикации. Для теста в симуляторе аккаунт не обязателен.</li>
+      </ul>
+      <div class="note warn"><span class="ic">🍏</span><p><b>Нет Mac?</b> iOS-сборку нельзя выполнить на Windows/Linux. Варианты: облачный Mac (MacStadium, Scaleport), CI (Xcode Cloud, Codemagic, GitHub Actions с macOS-раннером) или Mac у коллеги. Для быстрой установки на iPhone без App Store подойдёт <b>PWA</b> («Поделиться → На экран „Домой“»).</p></div>
+    </div></section>
+
+    <!-- 2 -->
+    <section id="tools"><div class="step">
+      <div class="step-head"><div class="num">2</div><h2><a class="anchor-h" href="#tools">CocoaPods и Command Line Tools</a></h2></div>
+      <p>Установите инструменты командной строки Xcode и CocoaPods.</p>
+      <div class="code"><div class="code-bar"><span class="lbl"><span class="fdot"></span>терминал</span><button class="copy">Копировать</button></div>
+<pre><span class="c"># инструменты командной строки Xcode</span>
+xcode-select <span class="k">--install</span>
+
+<span class="c"># принять лицензию Xcode (один раз)</span>
+sudo xcodebuild <span class="k">-license</span> accept
+
+<span class="c"># CocoaPods (через встроенный Ruby)</span>
+sudo gem install cocoapods
+
+<span class="c"># проверка версий</span>
+xcodebuild <span class="k">-version</span>      <span class="c"># Xcode 15.x</span>
+pod <span class="k">--version</span>            <span class="c"># 1.11+</span></pre></div>
+      <div class="note tip"><span class="ic">💡</span><p>На Apple Silicon (M1/M2/M3), если <code>pod install</code> капризничает, поставьте CocoaPods через Homebrew: <kbd>brew install cocoapods</kbd>. Это часто стабильнее системного Ruby.</p></div>
+    </div></section>
+
+    <!-- 3 -->
+    <section id="setup"><div class="step">
+      <div class="step-head"><div class="num">3</div><h2><a class="anchor-h" href="#setup">Инициализация проекта</a></h2></div>
+      <p>Capacitor уже в зависимостях (<code>@capacitor/ios</code> v6.1), конфиг <code>apps/web/capacitor.config.json</code> заполнен (<code>appId com.aiteacher.app</code>, <code>webDir dist</code>, <code>contentInset: "always"</code>). Установите зависимости, соберите веб-билд и создайте нативный iOS-проект.</p>
+      <div class="code"><div class="code-bar"><span class="lbl"><span class="fdot"></span>из корня репозитория</span><button class="copy">Копировать</button></div>
+<pre><span class="k">cd</span> apps/web
+
+npm install                 <span class="c"># зависимости, включая Capacitor 6</span>
+npm run build               <span class="c"># Vite собирает веб-приложение в apps/web/dist</span>
+
+npx cap add ios             <span class="c"># создаёт папку ios/ и запускает pod install (один раз)</span>
+npx cap sync ios            <span class="c"># копирует dist/ в нативный проект + pod install</span>
+npx cap open ios            <span class="c"># открывает проект в Xcode</span></pre></div>
+      <p>Что происходит:</p>
+      <ul>
+        <li><code>npx cap add ios</code> — разворачивает Xcode-проект в папке <code>ios/</code> с вашим <code>appId</code> и ставит нативные зависимости через CocoaPods.</li>
+        <li><code>npx cap sync ios</code> — переносит свежий <code>dist/</code> внутрь iOS-проекта и обновляет поды. <b>Запускайте после каждого</b> <code>npm run build</code> (или ярлык <kbd>npm run cap:sync</kbd>).</li>
+        <li><code>npx cap open ios</code> — открывает <code>ios/App/App.xcworkspace</code> в Xcode.</li>
+      </ul>
+      <div class="note danger"><span class="ic">⚠️</span><p>Всегда открывайте <b><code>App.xcworkspace</code></b> (это делает <code>cap open</code>), а <b>не</b> <code>App.xcodeproj</code> — иначе Xcode не увидит зависимости CocoaPods и сборка упадёт.</p></div>
+    </div></section>
+
+    <!-- 4 -->
+    <section id="run"><div class="step">
+      <div class="step-head"><div class="num">4</div><h2><a class="anchor-h" href="#run">Запуск в симуляторе и на iPhone</a></h2></div>
+      <h3>Симулятор (без аккаунта разработчика)</h3>
+      <ol class="list">
+        <li>В Xcode вверху выберите схему <b>App</b> и любой симулятор (напр. <b>iPhone 15</b>).</li>
+        <li>Нажмите ▶ <b>Run</b> (или <kbd>Cmd</kbd>+<kbd>R</kbd>). Приложение соберётся и откроется в симуляторе.</li>
+      </ol>
+      <h3>Реальный iPhone</h3>
+      <ol class="list">
+        <li>Подключите iPhone кабелем, разблокируйте, нажмите «Доверять этому компьютеру».</li>
+        <li>Настройте подпись (шаг&nbsp;6), выберите устройство в списке и нажмите ▶ <b>Run</b>.</li>
+        <li>Первый запуск: на iPhone откройте <b>Настройки → Основные → VPN и управление устройством</b> → доверьте профилю разработчика.</li>
+      </ol>
+      <div class="note info"><span class="ic">🖥️</span><p>Открыть проект из терминала в любой момент: <kbd>npx cap open ios</kbd> или ярлык <kbd>npm run cap:ios</kbd>.</p></div>
+    </div></section>
+
+    <!-- 5 -->
+    <section id="icons"><div class="step">
+      <div class="step-head"><div class="num">5</div><h2><a class="anchor-h" href="#icons">Иконки и сплэш-экран</a></h2></div>
+      <p>Официальный инструмент <code>@capacitor/assets</code> сгенерирует иконку приложения и заставку из одной картинки.</p>
+      <div class="code"><div class="code-bar"><span class="lbl"><span class="fdot"></span>генерация ассетов для iOS</span><button class="copy">Копировать</button></div>
+<pre><span class="c"># положите исходники в apps/web/resources/</span>
+<span class="c">#   icon.png    — 1024×1024 (иконка App Store)</span>
+<span class="c">#   splash.png  — 2732×2732 (заставка)</span>
+
+npm i <span class="k">-D</span> @capacitor/assets
+
+npx capacitor-assets generate <span class="k">--ios</span> \
+  <span class="k">--splashBackgroundColor</span> <span class="s">'#7c3aed'</span> \
+  <span class="k">--splashBackgroundColorDark</span> <span class="s">'#4c1d95'</span></pre></div>
+      <p>После генерации: <kbd>npm run build</kbd> → <kbd>npx cap sync ios</kbd>. Цвета совпадают с фирменным фиолетовым приложения (<code>#7c3aed</code>).</p>
+    </div></section>
+
+    <!-- 6 -->
+    <section id="sign"><div class="step">
+      <div class="step-head"><div class="num">6</div><h2><a class="anchor-h" href="#sign">Подпись: Apple Developer</a></h2></div>
+      <p>Apple требует подписывать любое приложение для устройства/публикации. Проще всего — <b>автоматическая подпись</b> в Xcode.</p>
+      <ol class="list">
+        <li>Добавьте свой Apple ID в Xcode: <b>Xcode → Settings → Accounts → «+» → Apple ID</b>. Войдите под аккаунтом Apple Developer Program.</li>
+        <li>В навигаторе выберите проект <b>App</b> → таргет <b>App</b> → вкладка <b>Signing &amp; Capabilities</b>.</li>
+        <li>Включите <b>«Automatically manage signing»</b>.</li>
+        <li>В поле <b>Team</b> выберите вашу команду разработчика.</li>
+        <li>В <b>Bundle Identifier</b> укажите <code>com.aiteacher.app</code> (должен совпадать с <code>appId</code> и быть уникальным в App Store — при конфликте добавьте суффикс, напр. <code>com.вашакомпания.aiteacher</code>).</li>
+      </ol>
+      <div class="note info"><span class="ic">🔐</span><p>При автоматической подписи Xcode сам создаёт и обновляет сертификаты (Development / Distribution) и provisioning-профили. Ручной режим (Manual signing) нужен только для сложных CI-сценариев.</p></div>
+      <div class="note danger"><span class="ic">🔒</span><p><b>Сохраните доступ к аккаунту Apple Developer.</b> При включённом <b>App Store Connect</b>-хранении ключей потеря доступа к аккаунту = невозможность выпускать обновления. Держите под рукой Team ID и данные для входа.</p></div>
+    </div></section>
+
+    <!-- 7 -->
+    <section id="release"><div class="step">
+      <div class="step-head"><div class="num">7</div><h2><a class="anchor-h" href="#release">Archive → TestFlight → App Store</a></h2></div>
+      <h3>7.1 &nbsp;Версия и номер сборки</h3>
+      <p>Во вкладке таргета <b>General</b> задайте <b>Version</b> (напр. <code>1.0.0</code>, видна пользователям) и <b>Build</b> (напр. <code>1</code>, увеличивайте на +1 при каждой загрузке в App Store Connect).</p>
+      <h3>7.2 &nbsp;Создать архив</h3>
+      <ol class="list">
+        <li>Вверху Xcode выберите цель <b>«Any iOS Device (arm64)»</b> — <b>не симулятор</b> (иначе пункт Archive будет неактивен).</li>
+        <li>Меню <b>Product → Archive</b>. Xcode соберёт релизную сборку и откроет окно <b>Organizer</b>.</li>
+      </ol>
+      <h3>7.3 &nbsp;Загрузить в App Store Connect</h3>
+      <ol class="list">
+        <li>Заранее создайте запись приложения в <a class="inline" href="https://appstoreconnect.apple.com/" target="_blank" rel="noopener noreferrer">App Store Connect</a> → <b>My Apps → «+» → New App</b> с тем же <b>Bundle ID</b> <code>com.aiteacher.app</code>.</li>
+        <li>В Organizer выберите архив → <b>Distribute App</b> → <b>App Store Connect</b> → <b>Upload</b>. Xcode проверит и зальёт сборку.</li>
+        <li>Сборка обрабатывается ~5–30 мин, затем появляется во вкладке <b>TestFlight</b>.</li>
+      </ol>
+      <h3>7.4 &nbsp;TestFlight (бета-тест)</h3>
+      <ul>
+        <li><b>Internal Testing</b> — до 100 членов команды, доступ почти сразу.</li>
+        <li><b>External Testing</b> — до 10&nbsp;000 тестеров по ссылке/почте; требуется краткая проверка Apple (Beta App Review).</li>
+      </ul>
+      <h3>7.5 &nbsp;Публикация в App Store</h3>
+      <ol class="list">
+        <li>В App Store Connect заполните карточку: название, описание, ключевые слова, <b>скриншоты</b> для нужных размеров экрана, значок 1024×1024.</li>
+        <li>Заполните <b>App Privacy</b> (какие данные собираются), <b>возрастной рейтинг</b>, категорию и цену (Free).</li>
+        <li>Выберите загруженную сборку → <b>Add for Review</b> → <b>Submit for Review</b>.</li>
+      </ol>
+      <div class="out"><span class="ic">📦</span><span>Проект для сборки:&nbsp; <code>ios/App/App.xcworkspace</code> · схема <code>App</code></span></div>
+    </div></section>
+
+    <!-- 8 -->
+    <section id="server"><div class="step">
+      <div class="step-head"><div class="num">8</div><h2><a class="anchor-h" href="#server">Онлайн-режим с вашим сервером (опционально)</a></h2></div>
+      <p>По умолчанию приложение упаковывает <b>офлайн-демо</b> (данные на устройстве). Чтобы работать с вашим backend (Node&nbsp;+&nbsp;PostgreSQL: логин по JWT, кабинеты, дневник онлайн) — соберите веб-часть с адресом API и пересинхронизируйте.</p>
+      <div class="code"><div class="code-bar"><span class="lbl"><span class="fdot"></span>сборка в серверном режиме</span><button class="copy">Копировать</button></div>
+<pre><span class="k">cd</span> apps/web
+
+<span class="v">VITE_API_URL</span>=<span class="s">https://api.вашдомен.com</span> npm run build
+npx cap sync ios
+
+<span class="c"># дальше — обычный Run или Archive из Xcode</span></pre></div>
+      <div class="note warn"><span class="ic">⚠️</span><p>iOS по умолчанию (App Transport Security) требует <b>HTTPS</b> с валидным сертификатом. Обычный TLS-домен работает без правок; для самоподписанных сертификатов пришлось бы менять <code>Info.plist</code> (не рекомендуется для релиза). Настройка сервера — в <code>DEPLOY.md</code>.</p></div>
+    </div></section>
+
+    <!-- 9 -->
+    <section id="trouble"><div class="step">
+      <div class="step-head"><div class="num">9</div><h2><a class="anchor-h" href="#trouble">Частые ошибки и решения</a></h2></div>
+      <table class="tbl">
+        <thead><tr><th>Ошибка</th><th>Причина и решение</th></tr></thead>
+        <tbody>
+          <tr><td><code>Signing for "App" requires a development team</code></td><td>Не выбрана команда. Вкладка <b>Signing &amp; Capabilities</b> → включить Automatically manage signing → выбрать <b>Team</b> (шаг&nbsp;6).</td></tr>
+          <tr><td><code>No account for team ... / Failed to register bundle identifier</code></td><td>Apple ID не добавлен или Bundle ID занят. Добавьте аккаунт в <b>Xcode → Settings → Accounts</b>; при конфликте смените Bundle ID на уникальный.</td></tr>
+          <tr><td><code>Command PhaseScriptExecution failed</code> (node not found)</td><td>Xcode не находит Node. Создайте <code>ios/App/.xcode.env</code> со строкой <code>export NODE_BINARY=$(command -v node)</code>.</td></tr>
+          <tr><td><code>pod install</code> падает / <code>Unable to find a specification</code></td><td>Обновите репозиторий подов: <code>cd ios/App &amp;&amp; pod repo update &amp;&amp; pod install</code>. На M-чипах помогает <code>brew install cocoapods</code>.</td></tr>
+          <tr><td>Пункт <b>Archive</b> неактивен (серый)</td><td>Выбран симулятор. Смените цель на <b>«Any iOS Device (arm64)»</b> (шаг&nbsp;7.2).</td></tr>
+          <tr><td>Белый экран после запуска</td><td>Не синхронизирован свежий билд. Выполните <code>npm run build &amp;&amp; npx cap sync ios</code>.</td></tr>
+          <tr><td>«Untrusted Developer» на iPhone</td><td>Настройки → Основные → <b>VPN и управление устройством</b> → доверьте профилю (шаг&nbsp;4).</td></tr>
+          <tr><td>Открыли <code>.xcodeproj</code> — нет зависимостей</td><td>Нужно открывать <b><code>App.xcworkspace</code></b>. Запустите <code>npx cap open ios</code>.</td></tr>
+        </tbody>
+      </table>
+    </div></section>
+
+    <!-- 10 -->
+    <section id="cheat"><div class="step">
+      <div class="step-head"><div class="num">10</div><h2><a class="anchor-h" href="#cheat">Шпаргалка команд</a></h2></div>
+      <p>Полный цикл от нуля до загрузки в App Store Connect:</p>
+      <div class="code"><div class="code-bar"><span class="lbl"><span class="fdot"></span>всё вместе</span><button class="copy">Копировать</button></div>
+<pre><span class="c"># --- разовая настройка ---</span>
+xcode-select <span class="k">--install</span>
+sudo gem install cocoapods
+
+<span class="k">cd</span> apps/web
+npm install
+npm run build
+npx cap add ios
+
+<span class="c"># --- каждая новая сборка ---</span>
+<span class="k">cd</span> apps/web
+npm run build &amp;&amp; npx cap sync ios
+npx cap open ios              <span class="c"># → в Xcode: подпись, Run или Archive</span>
+
+<span class="c"># в Xcode:</span>
+<span class="c">#   Run (Cmd+R)                — симулятор / устройство</span>
+<span class="c">#   Product → Archive          — релизная сборка (цель = Any iOS Device)</span>
+<span class="c">#   Organizer → Distribute App — загрузка в App Store Connect / TestFlight</span></pre></div>
+      <table class="tbl">
+        <thead><tr><th>Объект</th><th>Путь / место</th></tr></thead>
+        <tbody>
+          <tr><td>Xcode-проект</td><td><code>ios/App/App.xcworkspace</code></td></tr>
+          <tr><td>Podfile (нативные зависимости)</td><td><code>ios/App/Podfile</code></td></tr>
+          <tr><td>Архив (.xcarchive)</td><td>Xcode → Window → Organizer</td></tr>
+          <tr><td>Бета и релиз</td><td><a class="inline" href="https://appstoreconnect.apple.com/" target="_blank" rel="noopener noreferrer">appstoreconnect.apple.com</a> → TestFlight / App Store</td></tr>
+        </tbody>
+      </table>
+      <div class="note tip"><span class="ic">📱</span><p><b>Быстрый путь на iPhone без App Store</b> — PWA: приложение уже содержит manifest + service worker, ставится через Safari «Поделиться → На экран „Домой“» и работает офлайн. Capacitor нужен именно для TestFlight и App Store. Android-версия — в отдельной инструкции по сборке APK.</p></div>
+    </div></section>
+
+  </main>
+</div>
+
+<footer>
+  <div class="foot-inner">
+    <div class="brand">🎓 AI English Teacher</div>
+    <div class="devs">Разработка: <b>Pavel Afanasev</b> · <b>Sergei Mikhailov</b></div>
+  </div>
+  <div class="foot-small">
+    Инструкция по сборке iOS-приложения через Capacitor 6. Команды выверены по конфигурации проекта: <code>appId com.aiteacher.app</code>, <code>webDir dist</code>, <code>contentInset always</code>. Android-версия (APK/AAB) — в отдельной инструкции; см. также <code>MOBILE.md</code>.
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('.code').forEach(function(block){
+    var btn=block.querySelector('.copy'), pre=block.querySelector('pre');
+    if(!btn||!pre)return;
+    btn.addEventListener('click',function(){
+      var txt=pre.innerText.replace(/ /g,' ');
+      navigator.clipboard.writeText(txt).then(function(){
+        var old=btn.textContent;btn.textContent='✓ Скопировано';btn.classList.add('ok');
+        setTimeout(function(){btn.textContent=old;btn.classList.remove('ok');},1600);
+      }).catch(function(){});
+    });
+  });
+  var links=[].slice.call(document.querySelectorAll('#toc a'));
+  var map={};links.forEach(function(a){var id=a.getAttribute('href').slice(1);map[id]=a;});
+  var obs=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        links.forEach(function(a){a.classList.remove('active');});
+        var a=map[e.target.id];if(a)a.classList.add('active');
+      }
+    });
+  },{rootMargin:'-20% 0px -70% 0px',threshold:0});
+  document.querySelectorAll('main section').forEach(function(s){obs.observe(s);});
+</script>
+</body>
+</html>

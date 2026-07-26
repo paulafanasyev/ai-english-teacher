@@ -1,0 +1,898 @@
+[
+  {
+    "id": "l001",
+    "level": "A1",
+    "title": {
+      "en": "Meeting a New Friend",
+      "ru": "Знакомство с новым другом",
+      "vi": "Gặp một người bạn mới"
+    },
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Hi! My name is Tom. What's your name?"
+      },
+      {
+        "speaker": "B",
+        "en": "Hi Tom! I'm Anna. Nice to meet you."
+      },
+      {
+        "speaker": "A",
+        "en": "Nice to meet you too. Are you new here?"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes, this is my first day at school."
+      },
+      {
+        "speaker": "A",
+        "en": "Welcome! Do you want to sit with me at lunch?"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes, please! Thank you very much."
+      }
+    ],
+    "questions": [
+      {
+        "en": "What is the girl's name?",
+        "ru": "Как зовут девочку?",
+        "vi": "Tên của cô gái là gì?",
+        "options": [
+          "Tom",
+          "Anna",
+          "Lucy"
+        ],
+        "answer": 1
+      },
+      {
+        "en": "Is it Anna's first day at school?",
+        "ru": "Это первый день Анны в школе?",
+        "vi": "Đây có phải là ngày đầu tiên của Anna ở trường không?",
+        "options": [
+          "No, it isn't",
+          "Yes, it is",
+          "She doesn't say"
+        ],
+        "answer": 1
+      },
+      {
+        "en": "What does Tom offer to Anna?",
+        "ru": "Что Том предлагает Анне?",
+        "vi": "Tom đề nghị gì với Anna?",
+        "options": [
+          "To sit together at lunch",
+          "To walk home together",
+          "To do homework together"
+        ],
+        "answer": 0
+      }
+    ]
+  },
+  {
+    "id": "l002",
+    "level": "A1",
+    "title": {
+      "en": "At the Cafe",
+      "ru": "В кафе",
+      "vi": "Ở quán cà phê"
+    },
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Good morning! What would you like to order?"
+      },
+      {
+        "speaker": "B",
+        "en": "Good morning. Can I have a sandwich and a juice, please?"
+      },
+      {
+        "speaker": "A",
+        "en": "Sure. Cheese or chicken sandwich?"
+      },
+      {
+        "speaker": "B",
+        "en": "Chicken, please."
+      },
+      {
+        "speaker": "A",
+        "en": "Okay. That's five dollars, please."
+      },
+      {
+        "speaker": "B",
+        "en": "Here you are. Thank you!"
+      }
+    ],
+    "questions": [
+      {
+        "en": "What does the customer order to eat?",
+        "ru": "Что заказывает клиент из еды?",
+        "vi": "Khách hàng gọi món ăn gì?",
+        "options": [
+          "A sandwich",
+          "A salad",
+          "A pizza"
+        ],
+        "answer": 0
+      },
+      {
+        "en": "What kind of sandwich does she choose?",
+        "ru": "Какой сэндвич она выбирает?",
+        "vi": "Cô ấy chọn loại sandwich nào?",
+        "options": [
+          "Cheese",
+          "Chicken",
+          "Fish"
+        ],
+        "answer": 1
+      },
+      {
+        "en": "How much does the order cost?",
+        "ru": "Сколько стоит заказ?",
+        "vi": "Đơn hàng có giá bao nhiêu?",
+        "options": [
+          "Three dollars",
+          "Five dollars",
+          "Ten dollars"
+        ],
+        "answer": 1
+      }
+    ]
+  },
+  {
+    "id": "l003",
+    "level": "A1",
+    "title": {
+      "en": "Asking for Directions",
+      "ru": "Спрашиваем дорогу",
+      "vi": "Hỏi đường"
+    },
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Excuse me, where is the library?"
+      },
+      {
+        "speaker": "B",
+        "en": "It's near the park. Go straight, then turn left."
+      },
+      {
+        "speaker": "A",
+        "en": "Is it far from here?"
+      },
+      {
+        "speaker": "B",
+        "en": "No, it's only five minutes on foot."
+      },
+      {
+        "speaker": "A",
+        "en": "Thank you so much!"
+      },
+      {
+        "speaker": "B",
+        "en": "You're welcome. Have a nice day!"
+      }
+    ],
+    "questions": [
+      {
+        "en": "Where is the library?",
+        "ru": "Где находится библиотека?",
+        "vi": "Thư viện ở đâu?",
+        "options": [
+          "Near the park",
+          "Near the school",
+          "Near the station"
+        ],
+        "answer": 0
+      },
+      {
+        "en": "How far is the library?",
+        "ru": "Как далеко библиотека?",
+        "vi": "Thư viện xa bao nhiêu?",
+        "options": [
+          "Ten minutes by bus",
+          "Five minutes on foot",
+          "One hour by car"
+        ],
+        "answer": 1
+      },
+      {
+        "en": "Which way should the person turn?",
+        "ru": "В какую сторону нужно повернуть?",
+        "vi": "Người đó nên rẽ theo hướng nào?",
+        "options": [
+          "Turn right",
+          "Turn left",
+          "Go back"
+        ],
+        "answer": 1
+      }
+    ]
+  },
+  {
+    "id": "l004",
+    "level": "A1",
+    "title": {
+      "en": "My Family",
+      "ru": "Моя семья",
+      "vi": "Gia đình của tôi"
+    },
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Do you have any brothers or sisters?"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes, I have one brother. He is twelve."
+      },
+      {
+        "speaker": "A",
+        "en": "Is he older or younger than you?"
+      },
+      {
+        "speaker": "B",
+        "en": "He is younger. I am fourteen."
+      },
+      {
+        "speaker": "A",
+        "en": "That's nice. Do you play together often?"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes, we play video games every weekend."
+      }
+    ],
+    "questions": [
+      {
+        "en": "How old is the brother?",
+        "ru": "Сколько лет брату?",
+        "vi": "Người anh/em trai bao nhiêu tuổi?",
+        "options": [
+          "Ten",
+          "Twelve",
+          "Fourteen"
+        ],
+        "answer": 1
+      },
+      {
+        "en": "Who is older?",
+        "ru": "Кто старше?",
+        "vi": "Ai lớn tuổi hơn?",
+        "options": [
+          "The brother",
+          "The speaker",
+          "They are the same age"
+        ],
+        "answer": 1
+      },
+      {
+        "en": "What do they do together?",
+        "ru": "Что они делают вместе?",
+        "vi": "Họ làm gì cùng nhau?",
+        "options": [
+          "Play video games",
+          "Watch movies",
+          "Read books"
+        ],
+        "answer": 0
+      }
+    ]
+  },
+  {
+    "id": "l005",
+    "level": "A1",
+    "title": {
+      "en": "Shopping for Clothes",
+      "ru": "Покупка одежды",
+      "vi": "Mua sắm quần áo"
+    },
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Can I help you find something?"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes, I'm looking for a blue T-shirt."
+      },
+      {
+        "speaker": "A",
+        "en": "We have this one. It's small, medium, and large."
+      },
+      {
+        "speaker": "B",
+        "en": "Can I try the medium one, please?"
+      },
+      {
+        "speaker": "A",
+        "en": "Of course. The fitting room is over there."
+      },
+      {
+        "speaker": "B",
+        "en": "Thanks! I'll go try it on now."
+      }
+    ],
+    "questions": [
+      {
+        "en": "What is the customer looking for?",
+        "ru": "Что ищет покупатель?",
+        "vi": "Khách hàng đang tìm gì?",
+        "options": [
+          "A blue T-shirt",
+          "A red dress",
+          "A pair of shoes"
+        ],
+        "answer": 0
+      },
+      {
+        "en": "Which size does she want to try?",
+        "ru": "Какой размер она хочет примерить?",
+        "vi": "Cô ấy muốn thử cỡ nào?",
+        "options": [
+          "Small",
+          "Medium",
+          "Large"
+        ],
+        "answer": 1
+      },
+      {
+        "en": "Where does she go to try on the T-shirt?",
+        "ru": "Куда она идет, чтобы примерить футболку?",
+        "vi": "Cô ấy đi đâu để thử áo?",
+        "options": [
+          "The fitting room",
+          "The cash desk",
+          "The exit"
+        ],
+        "answer": 0
+      }
+    ]
+  },
+  {
+    "id": "l006",
+    "level": "A2",
+    "title": {
+      "en": "Weekend Plans",
+      "ru": "Планы на выходные",
+      "vi": "Kế hoạch cuối tuần"
+    },
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "What are you doing this weekend?"
+      },
+      {
+        "speaker": "B",
+        "en": "I'm going hiking with my cousin on Saturday."
+      },
+      {
+        "speaker": "A",
+        "en": "That sounds fun! Where are you going?"
+      },
+      {
+        "speaker": "B",
+        "en": "We're going to the mountains near the lake."
+      },
+      {
+        "speaker": "A",
+        "en": "Can I come with you? I love hiking too."
+      },
+      {
+        "speaker": "B",
+        "en": "Sure! We're leaving at eight in the morning."
+      },
+      {
+        "speaker": "A",
+        "en": "Great, I'll set an alarm so I don't oversleep."
+      },
+      {
+        "speaker": "B",
+        "en": "Perfect. See you on Saturday, then!"
+      }
+    ],
+    "questions": [
+      {
+        "en": "Who is going hiking with the speaker?",
+        "ru": "С кем идет в поход собеседник?",
+        "vi": "Người nói đi leo núi với ai?",
+        "options": [
+          "A cousin",
+          "A brother",
+          "A classmate"
+        ],
+        "answer": 0
+      },
+      {
+        "en": "Where are they going hiking?",
+        "ru": "Куда они идут в поход?",
+        "vi": "Họ đi leo núi ở đâu?",
+        "options": [
+          "To the mountains near the lake",
+          "To the city park",
+          "To the beach"
+        ],
+        "answer": 0
+      },
+      {
+        "en": "What time are they leaving?",
+        "ru": "В какое время они уезжают?",
+        "vi": "Họ khởi hành lúc mấy giờ?",
+        "options": [
+          "Seven in the morning",
+          "Eight in the morning",
+          "Nine in the evening"
+        ],
+        "answer": 1
+      }
+    ]
+  },
+  {
+    "id": "l007",
+    "level": "A2",
+    "title": {
+      "en": "At the Doctor's",
+      "ru": "У врача",
+      "vi": "Ở phòng khám"
+    },
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Good morning. What's the problem today?"
+      },
+      {
+        "speaker": "B",
+        "en": "I have a sore throat and a headache."
+      },
+      {
+        "speaker": "A",
+        "en": "How long have you had these symptoms?"
+      },
+      {
+        "speaker": "B",
+        "en": "Since yesterday evening, I think."
+      },
+      {
+        "speaker": "A",
+        "en": "Do you have a fever as well?"
+      },
+      {
+        "speaker": "B",
+        "en": "A little. I checked this morning."
+      },
+      {
+        "speaker": "A",
+        "en": "Okay, I'll give you some medicine. Rest for two days."
+      },
+      {
+        "speaker": "B",
+        "en": "Thank you, doctor."
+      }
+    ],
+    "questions": [
+      {
+        "en": "What symptoms does the patient have?",
+        "ru": "Какие симптомы у пациента?",
+        "vi": "Bệnh nhân có triệu chứng gì?",
+        "options": [
+          "A sore throat and headache",
+          "A broken arm",
+          "A stomachache"
+        ],
+        "answer": 0
+      },
+      {
+        "en": "Since when has the patient felt sick?",
+        "ru": "С какого момента пациент чувствует себя плохо?",
+        "vi": "Bệnh nhân cảm thấy ốm từ khi nào?",
+        "options": [
+          "Since last week",
+          "Since yesterday evening",
+          "Since this morning"
+        ],
+        "answer": 1
+      },
+      {
+        "en": "What does the doctor tell the patient to do?",
+        "ru": "Что доктор советует пациенту делать?",
+        "vi": "Bác sĩ khuyên bệnh nhân làm gì?",
+        "options": [
+          "Go to the hospital",
+          "Rest for two days",
+          "Come back tomorrow"
+        ],
+        "answer": 1
+      }
+    ]
+  },
+  {
+    "id": "l008",
+    "level": "A2",
+    "title": {
+      "en": "My Favorite Hobby",
+      "ru": "Мое любимое хобби",
+      "vi": "Sở thích yêu thích của tôi"
+    },
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "What do you like to do in your free time?"
+      },
+      {
+        "speaker": "B",
+        "en": "I really enjoy painting. I paint almost every day."
+      },
+      {
+        "speaker": "A",
+        "en": "Wow! What do you usually paint?"
+      },
+      {
+        "speaker": "B",
+        "en": "Mostly nature — trees, flowers, and mountains."
+      },
+      {
+        "speaker": "A",
+        "en": "Have you ever sold any of your paintings?"
+      },
+      {
+        "speaker": "B",
+        "en": "Not yet, but I want to try next year."
+      },
+      {
+        "speaker": "A",
+        "en": "That's a great goal. I'd love to see your work!"
+      },
+      {
+        "speaker": "B",
+        "en": "Sure, I can show you some photos later."
+      }
+    ],
+    "questions": [
+      {
+        "en": "What is the hobby of the second speaker?",
+        "ru": "Какое хобби у второго собеседника?",
+        "vi": "Sở thích của người nói thứ hai là gì?",
+        "options": [
+          "Painting",
+          "Singing",
+          "Cooking"
+        ],
+        "answer": 0
+      },
+      {
+        "en": "What does she usually paint?",
+        "ru": "Что она обычно рисует?",
+        "vi": "Cô ấy thường vẽ gì?",
+        "options": [
+          "Buildings",
+          "Nature",
+          "Animals"
+        ],
+        "answer": 1
+      },
+      {
+        "en": "Has she sold any paintings yet?",
+        "ru": "Она уже продавала свои картины?",
+        "vi": "Cô ấy đã bán tranh nào chưa?",
+        "options": [
+          "Yes, many",
+          "No, not yet",
+          "Only one"
+        ],
+        "answer": 1
+      }
+    ]
+  },
+  {
+    "id": "l009",
+    "level": "A2",
+    "title": {
+      "en": "Planning a Birthday Party",
+      "ru": "Планирование дня рождения",
+      "vi": "Lên kế hoạch tiệc sinh nhật"
+    },
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "My birthday is next Friday. Can you help me plan a party?"
+      },
+      {
+        "speaker": "B",
+        "en": "Of course! How many people are you inviting?"
+      },
+      {
+        "speaker": "A",
+        "en": "About fifteen friends from school and the neighborhood."
+      },
+      {
+        "speaker": "B",
+        "en": "Should we order a cake or make one ourselves?"
+      },
+      {
+        "speaker": "A",
+        "en": "Let's order one — I don't have time to bake."
+      },
+      {
+        "speaker": "B",
+        "en": "Good idea. What about music and games?"
+      },
+      {
+        "speaker": "A",
+        "en": "I'll make a playlist, and you can bring some games."
+      },
+      {
+        "speaker": "B",
+        "en": "Deal! This is going to be a great party."
+      }
+    ],
+    "questions": [
+      {
+        "en": "When is the birthday?",
+        "ru": "Когда день рождения?",
+        "vi": "Sinh nhật là khi nào?",
+        "options": [
+          "Next Monday",
+          "Next Friday",
+          "Next Sunday"
+        ],
+        "answer": 1
+      },
+      {
+        "en": "How many friends are invited?",
+        "ru": "Сколько друзей приглашено?",
+        "vi": "Có bao nhiêu người bạn được mời?",
+        "options": [
+          "About five",
+          "About fifteen",
+          "About thirty"
+        ],
+        "answer": 1
+      },
+      {
+        "en": "Who will bring the games?",
+        "ru": "Кто принесет игры?",
+        "vi": "Ai sẽ mang trò chơi đến?",
+        "options": [
+          "The birthday person",
+          "The friend",
+          "Both of them"
+        ],
+        "answer": 1
+      }
+    ]
+  },
+  {
+    "id": "l010",
+    "level": "B1",
+    "title": {
+      "en": "Job Interview Practice",
+      "ru": "Практика собеседования",
+      "vi": "Luyện tập phỏng vấn việc làm"
+    },
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Thank you for coming today. Can you tell me about yourself?"
+      },
+      {
+        "speaker": "B",
+        "en": "Sure. I'm a student studying business, and I've worked part-time at a bookstore for a year."
+      },
+      {
+        "speaker": "A",
+        "en": "What did you learn from that job?"
+      },
+      {
+        "speaker": "B",
+        "en": "I learned how to manage my time and deal with difficult customers politely."
+      },
+      {
+        "speaker": "A",
+        "en": "Why do you want to work with us specifically?"
+      },
+      {
+        "speaker": "B",
+        "en": "I admire your company's focus on customer service and teamwork."
+      },
+      {
+        "speaker": "A",
+        "en": "Do you have any questions for me?"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes, what does a typical training period look like here?"
+      }
+    ],
+    "questions": [
+      {
+        "en": "What is the interviewee currently studying?",
+        "ru": "Что изучает собеседуемый в настоящее время?",
+        "vi": "Người được phỏng vấn hiện đang học gì?",
+        "options": [
+          "Business",
+          "Medicine",
+          "Engineering"
+        ],
+        "answer": 0
+      },
+      {
+        "en": "What skill did she gain from her part-time job?",
+        "ru": "Какой навык она приобрела на работе с частичной занятостью?",
+        "vi": "Cô ấy học được kỹ năng gì từ công việc bán thời gian?",
+        "options": [
+          "Cooking skills",
+          "Time management",
+          "Driving skills"
+        ],
+        "answer": 1
+      },
+      {
+        "en": "What does she ask the interviewer at the end?",
+        "ru": "Что она спрашивает у интервьюера в конце?",
+        "vi": "Cô ấy hỏi người phỏng vấn điều gì ở cuối?",
+        "options": [
+          "About the salary",
+          "About the training period",
+          "About the office location"
+        ],
+        "answer": 1
+      }
+    ]
+  },
+  {
+    "id": "l011",
+    "level": "B1",
+    "title": {
+      "en": "Talking About the Environment",
+      "ru": "Разговор об окружающей среде",
+      "vi": "Nói về môi trường"
+    },
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Have you noticed how much plastic waste there is near the river lately?"
+      },
+      {
+        "speaker": "B",
+        "en": "Yes, it's getting worse every month. Something needs to change."
+      },
+      {
+        "speaker": "A",
+        "en": "I read that our school is starting a recycling program next term."
+      },
+      {
+        "speaker": "B",
+        "en": "That's great news! Do you know how it will work?"
+      },
+      {
+        "speaker": "A",
+        "en": "Students will separate plastic, paper, and food waste into different bins."
+      },
+      {
+        "speaker": "B",
+        "en": "I think we should also organize a river cleanup on weekends."
+      },
+      {
+        "speaker": "A",
+        "en": "That's a wonderful idea. Let's suggest it to the student council."
+      },
+      {
+        "speaker": "B",
+        "en": "Agreed. The sooner we act, the better for everyone."
+      }
+    ],
+    "questions": [
+      {
+        "en": "What problem are the speakers discussing?",
+        "ru": "Какую проблему обсуждают собеседники?",
+        "vi": "Người nói đang thảo luận về vấn đề gì?",
+        "options": [
+          "Plastic waste near the river",
+          "Traffic in the city",
+          "Air pollution from factories"
+        ],
+        "answer": 0
+      },
+      {
+        "en": "What is the school planning to start?",
+        "ru": "Что школа планирует начать?",
+        "vi": "Nhà trường có kế hoạch bắt đầu điều gì?",
+        "options": [
+          "A recycling program",
+          "A sports club",
+          "A music festival"
+        ],
+        "answer": 0
+      },
+      {
+        "en": "What extra idea does the second speaker suggest?",
+        "ru": "Какую дополнительную идею предлагает второй собеседник?",
+        "vi": "Người nói thứ hai đề xuất ý tưởng gì thêm?",
+        "options": [
+          "A river cleanup on weekends",
+          "A new school subject",
+          "A fundraising concert"
+        ],
+        "answer": 0
+      }
+    ]
+  },
+  {
+    "id": "l012",
+    "level": "B2",
+    "title": {
+      "en": "Technology in Education",
+      "ru": "Технологии в образовании",
+      "vi": "Công nghệ trong giáo dục"
+    },
+    "lines": [
+      {
+        "speaker": "A",
+        "en": "Do you think students should be allowed to use phones during lessons?"
+      },
+      {
+        "speaker": "B",
+        "en": "In moderation, yes. Phones can be useful for research and quick translations."
+      },
+      {
+        "speaker": "A",
+        "en": "I understand that, but they're also a huge distraction for many students."
+      },
+      {
+        "speaker": "B",
+        "en": "True, but banning them completely might not solve the real problem."
+      },
+      {
+        "speaker": "A",
+        "en": "What would you suggest instead?"
+      },
+      {
+        "speaker": "B",
+        "en": "Teachers could set clear rules about when phones are allowed and when they're not."
+      },
+      {
+        "speaker": "A",
+        "en": "That sounds reasonable, as long as the rules are enforced consistently."
+      },
+      {
+        "speaker": "B",
+        "en": "Exactly. Consistency is probably more important than the rule itself."
+      }
+    ],
+    "questions": [
+      {
+        "en": "What is the main topic of the debate?",
+        "ru": "Какая главная тема дебатов?",
+        "vi": "Chủ đề chính của cuộc tranh luận là gì?",
+        "options": [
+          "Whether phones should be used in lessons",
+          "Whether homework should be reduced",
+          "Whether school hours should change"
+        ],
+        "answer": 0
+      },
+      {
+        "en": "What does the second speaker believe about banning phones completely?",
+        "ru": "Что второй собеседник думает о полном запрете телефонов?",
+        "vi": "Người nói thứ hai nghĩ gì về việc cấm hoàn toàn điện thoại?",
+        "options": [
+          "It would solve the problem",
+          "It might not solve the real problem",
+          "It is the only good solution"
+        ],
+        "answer": 1
+      },
+      {
+        "en": "What does the second speaker say is more important than the rule itself?",
+        "ru": "Что, по словам второго собеседника, важнее самого правила?",
+        "vi": "Người nói thứ hai cho rằng điều gì quan trọng hơn quy tắc?",
+        "options": [
+          "The number of rules",
+          "Consistency in enforcing rules",
+          "The age of the students"
+        ],
+        "answer": 1
+      }
+    ]
+  }
+]

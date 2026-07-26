@@ -1,0 +1,23 @@
+{
+  "introVideo": {
+    "en": "https://pub.hyperagent.com/api/published/pbf01KY7MEQQE_TZM8KD76ZD9HJP0N/60e270ca74f941ccb19b14a3d27d4419.mp4",
+    "ru": "https://pub.hyperagent.com/api/published/pbf01KY7MYQHA_2SFSTWZEVMST4P1Z/a3eacd318d444bafad61be8611b7b14f.mp4",
+    "vi": "https://pub.hyperagent.com/api/published/pbf01KY7MYQW5_N0YDDASQF0XJWYZH/3588d6cd6b72471184bb12144e1afbfe.mp4"
+  },
+  "avatars": {
+    "emma": "https://pub.hyperagent.com/api/published/pbf01KYA7Y7MF_75H2F3WC7EH4RVNJ/emma.webp",
+    "james": "https://pub.hyperagent.com/api/published/pbf01KYA7YAMZ_40P1STMX037SEW82/james.webp",
+    "sofia": "https://pub.hyperagent.com/api/published/pbf01KYA7Y84X_7D6H3A98DKSD5TDS/sofia.webp",
+    "alex": "https://pub.hyperagent.com/api/published/pbf01KYA7Y8ZM_6HB0MYK21MQD9AE3/alex.webp",
+    "linh": "https://pub.hyperagent.com/api/published/pbf01KYA7Y8HH_VVM6AP5YMCCR875H/linh.webp",
+    "minh": "https://pub.hyperagent.com/api/published/pbf01KYA7YA14_DX3QZ1FFN2673F5V/minh.webp"
+  },
+  "voices": {
+    "emma": "https://pub.hyperagent.com/api/published/pbf01KY7G3JSC_W8SXWDSMMC3MX5JS/emma.mp3",
+    "james": "https://pub.hyperagent.com/api/published/pbf01KY7G3K7H_76X7PJEYVGCDNN3Z/james.mp3",
+    "sofia": "https://pub.hyperagent.com/api/published/pbf01KY7G3MN9_EC7NWC9A9PP9RSWW/sofia.mp3",
+    "alex": "https://pub.hyperagent.com/api/published/pbf01KY7G3PXH_9MQ7RCJW6NZSRZCQ/alex.mp3",
+    "linh": "https://pub.hyperagent.com/api/published/pbf01KY7G3RMG_N0KZZYC1ANCCQWR5/linh.mp3",
+    "minh": "https://pub.hyperagent.com/api/published/pbf01KYA7YAZQ_NFDMSGM9HP0MB0RD/minh.mp3"
+  }
+}

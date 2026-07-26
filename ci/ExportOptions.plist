@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Шаблон опций экспорта IPA для CI (шаг "Export IPA" в mobile-build.yml).
+  Плейсхолдер __TEAM_ID__ подставляется в workflow из секрета APPLE_TEAM_ID.
+  method: app-store — сборка для TestFlight/App Store.
+          Для внутренней раздачи по устройствам замените на ad-hoc или development.
+-->
+<plist version="1.0">
+<dict>
+  <key>method</key>
+  <string>app-store</string>
+  <key>teamID</key>
+  <string>__TEAM_ID__</string>
+  <key>signingStyle</key>
+  <string>automatic</string>
+  <key>uploadSymbols</key>
+  <true/>
+  <key>uploadBitcode</key>
+  <false/>
+  <key>destination</key>
+  <string>export</string>
+</dict>
+</plist>

@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root, [data-theme='candy'] {
+  --c-primary: 124 58 237;   /* violet-600 */
+  --c-primary2: 168 85 247;  /* purple-500 */
+  --c-accent: 245 158 11;    /* amber-500 */
+  --c-page: 245 243 255;     /* violet-50 */
+  --c-surface: 255 255 255;
+  --c-ink: 30 27 55;
+  --c-soft: 237 233 254;
+}
+[data-theme='ocean'] {
+  --c-primary: 2 132 199; --c-primary2: 6 182 212; --c-accent: 249 115 22;
+  --c-page: 236 249 255; --c-surface: 255 255 255; --c-ink: 12 42 63; --c-soft: 224 242 254;
+}
+[data-theme='sunset'] {
+  --c-primary: 225 29 72; --c-primary2: 249 115 22; --c-accent: 250 204 21;
+  --c-page: 255 241 242; --c-surface: 255 255 255; --c-ink: 60 18 30; --c-soft: 255 228 230;
+}
+[data-theme='forest'] {
+  --c-primary: 5 150 105; --c-primary2: 132 204 22; --c-accent: 245 158 11;
+  --c-page: 236 253 245; --c-surface: 255 255 255; --c-ink: 15 45 35; --c-soft: 209 250 229;
+}
+[data-theme='galaxy'] {
+  --c-primary: 139 92 246; --c-primary2: 34 211 238; --c-accent: 250 204 21;
+  --c-page: 17 15 35; --c-surface: 30 27 55; --c-ink: 235 233 254; --c-soft: 44 40 80;
+}
+
+html, body, #root { height: 100%; }
+body { @apply bg-page text-ink font-sans antialiased; }
+
+@layer components {
+  .card { @apply bg-surface rounded-3xl shadow-[0_6px_24px_-8px_rgb(0_0_0/0.12)] border border-black/5; }
+  [data-theme='galaxy'] .card { @apply border-white/10; }
+  .btn, .btn-primary, .btn-ghost, .btn-outline { @apply inline-flex items-center justify-center gap-2 font-extrabold rounded-2xl px-5 py-3 transition active:scale-95 select-none cursor-pointer disabled:opacity-40 disabled:pointer-events-none; }
+  .btn-primary { @apply text-white shadow-lg shadow-primary/30; background: linear-gradient(135deg, rgb(var(--c-primary)), rgb(var(--c-primary2))); }
+  .btn-ghost { @apply bg-soft text-ink hover:brightness-95; }
+  .btn-outline { @apply border-2 border-primary/30 text-primary hover:bg-primary/5; }
+  .chip { @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-bold bg-soft; }
+  .input { @apply w-full rounded-2xl border-2 border-black/10 bg-surface px-4 py-3 font-semibold outline-none focus:border-primary/60 placeholder:text-ink/30; }
+  [data-theme='galaxy'] .input { @apply border-white/15; }
+  .h1 { @apply text-3xl md:text-4xl font-black tracking-tight; }
+  .h2 { @apply text-xl md:text-2xl font-black tracking-tight; }
+  .label { @apply text-xs font-extrabold uppercase tracking-wider text-ink/50; }
+}
+
+@keyframes breathe { 0%,100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-4px) scale(1.012); } }
+@keyframes talkbob { 0%,100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-2px) scale(1.006); } }
+@keyframes pop { 0% { transform: scale(0.6); opacity: 0; } 70% { transform: scale(1.06); } 100% { transform: scale(1); opacity: 1; } }
+@keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+@keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@keyframes riseFade { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-46px); opacity: 0; } }
+@keyframes bubbleIn { 0% { transform: translateY(6px) scale(0.97); opacity: 0; } 100% { transform: none; opacity: 1; } }
+
+.anim-pop { animation: pop 0.25s ease-out both; }
+.anim-shake { animation: shake 0.3s ease-in-out; }
+.anim-floaty { animation: floaty 3.2s ease-in-out infinite; }
+.anim-bubble { animation: bubbleIn 0.22s ease-out both; }
+.xp-float { animation: riseFade 0.9s ease-out both; }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: rgb(var(--c-primary) / 0.25); border-radius: 8px; }
+::-webkit-scrollbar-track { background: transparent; }

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Подписанный APK через GitHub Actions — AI English & Math Teacher</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@600;700;800;900&family=Nunito:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--pur:#7c3aed;--pur2:#a855f7;--fuchsia:#d946ef;--ink:#0f1222;--ink2:#3a3f55;--mut:#6b7192;--line:#e7e6f0;--bg:#faf9fe;--card:#fff;--code:#171326;--code2:#221b3a;--green:#10b981;--shadow:0 1px 3px rgba(20,10,50,.06),0 12px 30px rgba(80,40,160,.07)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Nunito,system-ui,-apple-system,sans-serif;line-height:1.65;-webkit-font-smoothing:antialiased}
+code,pre,kbd{font-family:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace}
+header.hero{background:radial-gradient(1100px 480px at 88% -12%,rgba(217,70,239,.28),transparent 60%),radial-gradient(900px 460px at 8% 0%,rgba(124,58,237,.34),transparent 62%),linear-gradient(160deg,#120a2b,#1c1044 52%,#241056);color:#fff;padding:60px clamp(20px,5vw,72px) 40px;position:relative;overflow:hidden}
+header.hero::after{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1px);background-size:22px 22px;opacity:.5}
+.hero-inner{max-width:1180px;margin:0 auto;position:relative;z-index:1}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:12.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#e9d8ff;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);padding:7px 15px;border-radius:999px}
+h1.title{font-family:Onest,Nunito,sans-serif;font-size:clamp(2rem,5vw,3.4rem);line-height:1.03;font-weight:900;margin:20px 0 0;letter-spacing:-.02em}
+h1.title .grad{background:linear-gradient(100deg,#f0abfc,#c4b5fd 60%,#7dd3fc);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{font-size:clamp(1rem,2vw,1.2rem);color:#d6ccf5;max-width:720px;margin:16px 0 0;font-weight:500}
+.pbar-wrap{max-width:1180px;margin:22px auto 0;position:relative;z-index:1}
+.pbar-top{display:flex;justify-content:space-between;font-size:13px;font-weight:800;color:#f3eaff;margin-bottom:7px}
+.pbar{height:10px;border-radius:999px;background:rgba(255,255,255,.15);overflow:hidden}
+.pbar>div{height:100%;width:0;background:linear-gradient(90deg,#a855f7,#f0abfc);transition:width .3s}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(20px,5vw,72px);display:grid;grid-template-columns:250px 1fr;gap:44px;align-items:start}
+@media(max-width:960px){.wrap{grid-template-columns:1fr;gap:0}}
+nav.toc{position:sticky;top:18px;align-self:start;padding:26px 0 40px}
+@media(max-width:960px){nav.toc{position:static;padding:18px 0 4px}}
+.toc h4{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--mut);margin:0 0 10px;font-weight:800}
+.toc ol{list-style:none;margin:0;padding:0;counter-reset:t}
+.toc a{counter-increment:t;display:flex;gap:10px;align-items:baseline;text-decoration:none;color:var(--ink2);font-size:13px;font-weight:600;padding:7px 11px;border-radius:9px;border-left:2px solid transparent;transition:.15s}
+.toc a::before{content:counter(t,decimal-leading-zero);font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--pur2);font-weight:700;min-width:20px}
+.toc a:hover{background:#f2edfe;color:var(--ink)}.toc a.active{background:#f0e9fe;color:var(--pur);border-left-color:var(--pur)}
+@media(max-width:960px){.toc ol{display:grid;grid-template-columns:1fr 1fr;gap:2px}}
+main{padding:26px 0 60px;min-width:0}
+.prose{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:26px clamp(18px,3vw,38px)}
+.prose h3{font-family:Onest,Nunito,sans-serif;font-size:1.3rem;font-weight:850;margin:34px 0 8px;letter-spacing:-.01em;scroll-margin-top:16px;padding-top:8px;border-top:1px solid var(--line);display:flex;align-items:flex-start;gap:11px}
+.prose h3:first-child{margin-top:0;border-top:0;padding-top:0}
+.prose h4{font-size:1.02rem;font-weight:800;margin:18px 0 6px;color:var(--pur)}
+.prose p{margin:10px 0;color:var(--ink2)}.prose strong{color:var(--ink);font-weight:800}
+.prose a{color:var(--pur);font-weight:700;text-decoration:none;border-bottom:1.5px solid #d8c8fb}
+.prose ul,.prose ol{margin:10px 0;padding-left:2px;list-style:none}
+.prose li{position:relative;padding-left:26px;margin:7px 0;color:var(--ink2)}
+.prose ul>li::before{content:"";position:absolute;left:5px;top:11px;width:7px;height:7px;border-radius:2px;background:var(--pur2);transform:rotate(45deg)}
+.prose ol{counter-reset:li}.prose ol>li{counter-increment:li}
+.prose ol>li::before{content:counter(li);position:absolute;left:0;top:1px;width:19px;height:19px;border-radius:6px;background:#efe8fd;color:var(--pur);font-size:11px;font-weight:800;display:grid;place-items:center;font-family:'JetBrains Mono',monospace}
+.prose code{background:#f3eefe;padding:2px 6px;border-radius:5px;font-size:.85em;color:var(--pur);font-weight:600;word-break:break-word}
+.prose hr{border:0;border-top:1px solid var(--line);margin:22px 0}
+.prose blockquote{margin:14px 0;padding:13px 16px;background:#fff7ed;border:1px solid #fed7aa;border-left:4px solid #f59e0b;border-radius:12px;color:#9a3412;font-size:14px;font-weight:600}
+.prose blockquote code{background:#fde9d3;color:#9a3412}
+.tbl{width:100%;border-collapse:collapse;margin:14px 0;font-size:13.5px;background:var(--card);border-radius:12px;overflow:hidden;border:1px solid var(--line);display:block;overflow-x:auto}
+.tbl thead{background:#f4effe}.tbl th{text-align:left;padding:11px 14px;font-weight:800;font-size:11.5px;letter-spacing:.02em;text-transform:uppercase;white-space:nowrap}
+.tbl td{padding:11px 14px;border-top:1px solid var(--line);color:var(--ink2);vertical-align:top}
+.tbl td code{background:#f3eefe;padding:2px 6px;border-radius:5px;font-size:12px;color:var(--pur)}
+.code{position:relative;margin:14px 0;border-radius:13px;overflow:hidden;background:var(--code);border:1px solid #2b2247}
+.code-bar{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:var(--code2);border-bottom:1px solid #2b2247}
+.code-bar .lbl{font-size:11.5px;font-weight:700;color:#b9a8e6;letter-spacing:.04em;display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace}
+.code-bar .lbl .fdot{width:9px;height:9px;border-radius:50%;background:#4b3d75}
+.copy{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.13);color:#d9ccff;font-size:11.5px;font-weight:700;padding:5px 12px;border-radius:8px;cursor:pointer;transition:.15s;font-family:Nunito,sans-serif}
+.copy:hover{background:var(--pur);border-color:var(--pur);color:#fff}.copy.ok{background:var(--green);border-color:var(--green);color:#fff}
+.code pre{margin:0;padding:15px 18px;overflow-x:auto;font-size:12.5px;line-height:1.7;color:#e9e3fb;white-space:pre}
+.stepcheck{flex-shrink:0;width:24px;height:24px;border-radius:7px;border:2px solid #d8c8fb;background:#fff;cursor:pointer;display:grid;place-items:center;font-size:14px;color:#fff;transition:.15s;margin-top:1px}
+.stepcheck.done{background:var(--green);border-color:var(--green)}
+h3.step.done{opacity:.62}
+footer{background:#0f0a24;color:#cbb9f2;padding:36px clamp(20px,5vw,72px);margin-top:10px;font-size:13px}
+.foot-inner{max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:center}
+.foot-inner b{color:#fff}
+</style></head><body>
+<header class="hero"><div class="hero-inner">
+<span class="eyebrow">🤖 GitHub Actions · Signed APK</span>
+<h1 class="title">Готовый подписанный <span class="grad">APK</span> через CI</h1>
+<p class="sub">От репозитория до скачанного .apk: что залить, какие секреты добавить и как получить артефакт. Выверено по workflow <code>mobile-build.yml</code> проекта.</p>
+</div>
+<div class="pbar-wrap"><div class="pbar-top"><span>Прогресс по шагам</span><span id="pcount">0 / 7</span></div><div class="pbar"><div id="pfill"></div></div></div>
+</header>
+<div class="wrap">
+<nav class="toc"><h4>Шаги</h4><ol id="toc"><li><a href="#sec1">Шаг 1 — Создать репозиторий и залить проект</a></li>
+<li><a href="#sec2">Шаг 2 — Создать ключ подписи (keystore)</a></li>
+<li><a href="#sec3">Шаг 3 — Закодировать keystore в base64</a></li>
+<li><a href="#sec4">Шаг 4 — Добавить секреты в GitHub</a></li>
+<li><a href="#sec5">Шаг 5 — Запустить сборку</a></li>
+<li><a href="#sec6">Шаг 6 — Скачать артефакт</a></li>
+<li><a href="#sec7">Шаг 7 — Установить или опубликовать</a></li>
+<li><a href="#sec8">Как это устроено (кратко)</a></li>
+<li><a href="#sec9">Диагностика</a></li></ol></nav>
+<main><div class="prose"><p>В проекте уже есть готовый workflow <strong><code>.github/workflows/mobile-build.yml</code></strong>. Он собирает Android на ubuntu-раннере GitHub (npm там доступен) и, если добавить секреты подписи, отдаёт <strong>подписанный <code>app-release.apk</code> + <code>app-release.aab</code></strong> как артефакт. Ниже — весь путь от репозитория до скачанного APK. Отмечайте шаги галочками — прогресс сохраняется в браузере.</p>
+<blockquote>Понадобится: аккаунт GitHub, установленный <code>git</code>, и JDK (для команды <code>keytool</code> — входит в JDK 17; альтернатива — Android Studio). Архив проекта <code>ai-english-teacher-src.zip</code>. Время ~20–30 минут (первый прогон CI ~10–15 мин).</blockquote>
+<h3 id="sec1">Шаг 1 — Создать репозиторий и залить проект</h3>
+<p>Создайте пустой репозиторий на github.com (можно private). Затем локально распакуйте <code>ai-english-teacher-src.zip</code> и запушьте:</p>
+<div class="code"><div class="code-bar"><span class="lbl"><span class="fdot"></span>bash</span><button class="copy">Копировать</button></div><pre>cd ai-english-teacher
+git init
+git add .
+git commit -m "AI English &amp; Math Teacher"
+git branch -M main
+git remote add origin https://github.com/ВАШ_ЛОГИН/ВАШ_РЕПО.git
+git push -u origin main</pre></div>
+<blockquote>Важно: убедитесь, что папка <code>.github/</code> попала в коммит (в ней и лежит сборщик). Проверка: <code>git ls-files .github</code> должна показать <code>.github/workflows/mobile-build.yml</code>. Если пусто — проверьте <code>.gitignore</code>.</blockquote>
+<h3 id="sec2">Шаг 2 — Создать ключ подписи (keystore)</h3>
+<p>Ключ создаётся один раз. Через <code>keytool</code> (идёт с JDK):</p>
+<div class="code"><div class="code-bar"><span class="lbl"><span class="fdot"></span>bash</span><button class="copy">Копировать</button></div><pre>keytool -genkey -v -keystore aet-release.keystore -alias aet \
+  -keyalg RSA -keysize 2048 -validity 10000</pre></div>
+<p>Команда спросит пароль хранилища, данные владельца и пароль ключа. Запомните: <strong>пароль хранилища</strong>, <strong>alias</strong> (<code>aet</code>) и <strong>пароль ключа</strong>.</p>
+<blockquote>🔒 Критично: сохраните файл <code>aet-release.keystore</code> и пароли в надёжном месте и сделайте бэкап. Потеря ключа = невозможность выпускать обновления приложения в Google Play. Не коммитьте keystore в репозиторий.</blockquote>
+<h3 id="sec3">Шаг 3 — Закодировать keystore в base64</h3>
+<p>Секреты GitHub — это текст, поэтому keystore кодируем в base64 (одной строкой, без переносов):</p>
+<div class="code"><div class="code-bar"><span class="lbl"><span class="fdot"></span>bash</span><button class="copy">Копировать</button></div><pre># macOS
+base64 -i aet-release.keystore | tr -d '\n' | pbcopy      # уже в буфере обмена
+
+# Linux
+base64 -w0 aet-release.keystore                            # скопируйте вывод
+
+# Windows (PowerShell)
+[Convert]::ToBase64String([IO.File]::ReadAllBytes("aet-release.keystore")) | Set-Clipboard</pre></div>
+<h3 id="sec4">Шаг 4 — Добавить секреты в GitHub</h3>
+<p>Репозиторий → <strong>Settings → Secrets and variables → Actions → New repository secret</strong>. Создайте четыре секрета:</p>
+<table class="tbl"><thead><tr><th>Имя секрета</th><th>Значение</th></tr></thead><tbody><tr><td><code>ANDROID_KEYSTORE_BASE64</code></td><td>строка base64 из Шага 3</td></tr><tr><td><code>ANDROID_KEYSTORE_PASSWORD</code></td><td>пароль хранилища</td></tr><tr><td><code>ANDROID_KEY_ALIAS</code></td><td><code>aet</code></td></tr><tr><td><code>ANDROID_KEY_PASSWORD</code></td><td>пароль ключа</td></tr></tbody></table>
+<blockquote>Пока этих секретов нет, workflow всё равно зелёный, но соберёт только debug-APK. Как только <code>ANDROID_KEYSTORE_BASE64</code> появился — автоматически включается сборка подписанного релиза.</blockquote>
+<h3 id="sec5">Шаг 5 — Запустить сборку</h3>
+<p>Способ А — вручную: вкладка <strong>Actions</strong> → workflow <strong>«Mobile Build (Android APK + iOS Archive)»</strong> → <strong>Run workflow</strong> → ветка <code>main</code> → <strong>Run workflow</strong>.</p>
+<p>Способ Б — по тегу релиза:</p>
+<div class="code"><div class="code-bar"><span class="lbl"><span class="fdot"></span>bash</span><button class="copy">Копировать</button></div><pre>git tag v1.0.0
+git push --tags</pre></div>
+<p>Джоб <strong>android</strong> выполнит: <code>npm install</code> → сборка веба → <code>npx cap add/sync android</code> → <code>gradlew assembleRelease bundleRelease</code> → подпись через <code>apksigner</code> (APK) и <code>jarsigner</code> (AAB) вашим keystore.</p>
+<h3 id="sec6">Шаг 6 — Скачать артефакт</h3>
+<p>Actions → откройте нужный запуск → прокрутите вниз до раздела <strong>Artifacts</strong>:</p>
+<ul><li><strong><code>android-release</code></strong> — <code>app-release.apk</code> (подписанный, для установки/раздачи) + <code>app-release.aab</code> (для Google Play);</li><li><code>android-debug-apk</code> — <code>app-debug.apk</code> (тестовый, есть всегда).</li></ul>
+<p>Нажмите на артефакт — GitHub отдаст <code>.zip</code>; распакуйте — внутри ваш <code>.apk</code>.</p>
+<h3 id="sec7">Шаг 7 — Установить или опубликовать</h3>
+<ul><li><strong>На телефон напрямую:</strong> перекиньте <code>app-release.apk</code>, разрешите «Установка из неизвестных источников», откройте. Или по кабелю: <code>adb install app-release.apk</code>.</li><li><strong>Google Play:</strong> загрузите <code>app-release.aab</code> в Play Console (<strong>Production → Create release</strong>). Рекомендуется включить <strong>Play App Signing</strong>.</li><li>Проверить подпись APK (опционально): <code>apksigner verify --print-certs app-release.apk</code>.</li></ul>
+<h3 id="sec8">Как это устроено (кратко)</h3>
+<p>Подпись сделана <strong>после сборки</strong> (<code>zipalign</code> → <code>apksigner</code> для APK, <code>jarsigner</code> для AAB) — поэтому нативную папку <code>android/</code> и <code>build.gradle</code> править не нужно, всё делает workflow. Полное описание секретов (в т.ч. iOS) — в файле <code>ci/README-CI.md</code> в репозитории.</p>
+<h3 id="sec9">Диагностика</h3>
+<table class="tbl"><thead><tr><th>Симптом</th><th>Причина / решение</th></tr></thead><tbody><tr><td>Workflow не виден во вкладке Actions</td><td>Папка <code>.github/workflows</code> не закоммичена или не в ветке <code>main</code> — проверьте <code>git ls-files .github</code></td></tr><tr><td>Собрался только <code>android-debug-apk</code></td><td>Не задан секрет <code>ANDROID_KEYSTORE_BASE64</code> — добавьте 4 секрета (Шаг 4) и перезапустите</td></tr><tr><td><code>keystore was tampered with, or password was incorrect</code></td><td>Неверный пароль/alias или base64 с переносами строк — перекодируйте (<code>-w0</code> / <code>tr -d '\n'</code>)</td></tr><tr><td>Артефакт скачался как <code>.zip</code></td><td>Это нормально — GitHub всегда упаковывает артефакты; распакуйте и возьмите <code>.apk</code></td></tr><tr><td>Джоб android падает на Gradle</td><td>Откройте лог шага сборки; чаще всего — не хватило секрета подписи или опечатка в значении</td></tr></tbody></table>
+<p>Для iOS (подписанный IPA / TestFlight) — отдельный джоб <code>ios</code> в том же workflow; секреты App Store Connect API key описаны в <code>ci/README-CI.md</code>. Настройка CI — Pavel Afanasev · Sergei Mikhailov.</p></div></main>
+</div>
+<footer><div class="foot-inner"><span>🎓 AI English &amp; Math Teacher — CI → signed APK</span><span>Настройка: <b>Pavel Afanasev</b> · <b>Sergei Mikhailov</b></span></div></footer>
+<script>
+(function(){
+  document.querySelectorAll('.code').forEach(function(b){var btn=b.querySelector('.copy'),pre=b.querySelector('pre');if(!btn||!pre)return;
+    btn.addEventListener('click',function(){navigator.clipboard.writeText(pre.innerText).then(function(){var o=btn.textContent;btn.textContent='✓ Скопировано';btn.classList.add('ok');setTimeout(function(){btn.textContent=o;btn.classList.remove('ok');},1500);}).catch(function(){});});});
+  var KEY='aet_ciapk_progress';var done={};try{done=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+  var steps=[].slice.call(document.querySelectorAll('.prose h3')).filter(function(h){return h.textContent.trim().indexOf('Шаг')===0;});
+  var total=steps.length;
+  function refresh(){var c=0;steps.forEach(function(h){if(done[h.id])c++;});document.getElementById('pcount').textContent=c+' / '+total;document.getElementById('pfill').style.width=(total?Math.round(c/total*100):0)+'%';}
+  steps.forEach(function(h){h.classList.add('step');
+    var box=document.createElement('span');box.className='stepcheck'+(done[h.id]?' done':'');box.textContent=done[h.id]?'✓':'';box.title='Отметить шаг выполненным';
+    box.addEventListener('click',function(e){e.stopPropagation();done[h.id]=!done[h.id];box.classList.toggle('done',done[h.id]);box.textContent=done[h.id]?'✓':'';h.classList.toggle('done',done[h.id]);try{localStorage.setItem(KEY,JSON.stringify(done))}catch(e){}refresh();});
+    if(done[h.id])h.classList.add('done');h.insertBefore(box,h.firstChild);});
+  refresh();
+  var links=[].slice.call(document.querySelectorAll('#toc a'));var map={};links.forEach(function(a){map[a.getAttribute('href').slice(1)]=a;});
+  var obs=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){links.forEach(function(a){a.classList.remove('active')});if(map[e.target.id])map[e.target.id].classList.add('active');}});},{rootMargin:'-12% 0px -75% 0px',threshold:0});
+  document.querySelectorAll('.prose h3').forEach(function(h){obs.observe(h);});
+})();
+</script></body></html>

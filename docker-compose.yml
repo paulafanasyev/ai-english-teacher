@@ -1,0 +1,59 @@
+name: ai-english-teacher
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-app_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      POSTGRES_DB: ${POSTGRES_DB:-ai_english_teacher}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      # bound to localhost — reachable from the host (backups, admin), not from the internet
+      - '127.0.0.1:${POSTGRES_PORT:-5432}:5432'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U "$${POSTGRES_USER:-app_user}" -d "$${POSTGRES_DB:-ai_english_teacher}"']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  api:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: ${PORT:-4000}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-app_user}:${POSTGRES_PASSWORD:-changeme}@postgres:5432/${POSTGRES_DB:-ai_english_teacher}?schema=public
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET must be set in .env}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
+      SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL:-admin@example.com}
+      SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:-ChangeMe_123}
+    ports:
+      # localhost only — nginx on the host proxies /api here and terminates HTTPS
+      - '127.0.0.1:${PORT:-4000}:4000'
+    # Runs pending migrations then starts the server. Use `docker compose run
+    # api npm run seed` separately (once) to load demo data.
+    command: sh -c "npx prisma migrate deploy && npm start"
+
+  adminer:
+    image: adminer:4
+    restart: unless-stopped
+    profiles: ['tools']
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - '${ADMINER_PORT:-8080}:8080'
+    environment:
+      ADMINER_DEFAULT_SERVER: postgres
+
+volumes:
+  pgdata:

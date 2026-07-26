@@ -1,0 +1,723 @@
+[
+  {
+    "id": "s1",
+    "emoji": "👋",
+    "level": "A1",
+    "title": {
+      "en": "Meeting someone new",
+      "ru": "Знакомство",
+      "vi": "Làm quen"
+    },
+    "description": {
+      "en": "Practice introducing yourself and asking simple questions to a new friend.",
+      "ru": "Потренируйся представляться и задавать простые вопросы новому другу.",
+      "vi": "Luyện tập tự giới thiệu và hỏi những câu đơn giản với một người bạn mới."
+    },
+    "steps": [
+      {
+        "say": "Hi there! I'm so happy to see you. What's your name?",
+        "hint": {
+          "en": "Say: My name is …",
+          "ru": "Скажи: My name is …",
+          "vi": "Hãy nói: My name is …"
+        },
+        "expect": {
+          "any": [["name is", "i am", "i'm", "call me"]],
+          "minWords": 2
+        },
+        "good": "Nice to meet you! That's a lovely name."
+      },
+      {
+        "say": "How old are you?",
+        "hint": {
+          "en": "Say: I am … years old",
+          "ru": "Скажи: I am … years old",
+          "vi": "Hãy nói: I am … years old"
+        },
+        "expect": {
+          "any": [["years old", "i am", "i'm", "old"]],
+          "minWords": 2
+        },
+        "good": "Cool, that's a great age to learn English!"
+      },
+      {
+        "say": "Where are you from?",
+        "hint": {
+          "en": "Say: I am from … (your country)",
+          "ru": "Скажи: I am from … (твоя страна)",
+          "vi": "Hãy nói: I am from … (đất nước của bạn)"
+        },
+        "expect": {
+          "any": [["from", "i live in", "i'm from"]],
+          "minWords": 2
+        },
+        "good": "Awesome! I'd love to visit there someday."
+      },
+      {
+        "say": "What do you like to do for fun?",
+        "hint": {
+          "en": "Say: I like … (a hobby)",
+          "ru": "Скажи: I like … (твоё хобби)",
+          "vi": "Hãy nói: I like … (một sở thích)"
+        },
+        "expect": {
+          "any": [["i like", "i love", "i enjoy", "playing"]],
+          "minWords": 2
+        },
+        "good": "That sounds like a lot of fun!"
+      },
+      {
+        "say": "It was great talking to you. Can we be friends?",
+        "hint": {
+          "en": "Say: Yes, of course! or Sure, let's be friends",
+          "ru": "Скажи: Yes, of course! или Sure, let's be friends",
+          "vi": "Hãy nói: Yes, of course! hoặc Sure, let's be friends"
+        },
+        "expect": {
+          "any": [["yes", "sure", "of course", "definitely"]],
+          "minWords": 1
+        },
+        "good": "Yay! I'm really glad we met today."
+      }
+    ]
+  },
+  {
+    "id": "s2",
+    "emoji": "☕",
+    "level": "A1",
+    "title": {
+      "en": "Ordering at a café",
+      "ru": "Заказ в кафе",
+      "vi": "Gọi đồ ở quán cà phê"
+    },
+    "description": {
+      "en": "Learn to order a drink and a snack politely at a café.",
+      "ru": "Научись вежливо заказывать напиток и закуску в кафе.",
+      "vi": "Học cách gọi đồ uống và món ăn nhẹ một cách lịch sự tại quán cà phê."
+    },
+    "steps": [
+      {
+        "say": "Welcome! What would you like to drink today?",
+        "hint": {
+          "en": "Say: I'd like a … (drink), please",
+          "ru": "Скажи: I'd like a … (напиток), please",
+          "vi": "Hãy nói: I'd like a … (đồ uống), please"
+        },
+        "expect": {
+          "any": [["i'd like", "i want", "can i have", "i'll have"]],
+          "minWords": 2
+        },
+        "good": "Great choice! Coming right up."
+      },
+      {
+        "say": "Would you like it hot or cold?",
+        "hint": {
+          "en": "Say: Hot, please or Cold, please",
+          "ru": "Скажи: Hot, please или Cold, please",
+          "vi": "Hãy nói: Hot, please hoặc Cold, please"
+        },
+        "expect": {
+          "any": [["hot", "cold", "iced", "warm"]],
+          "minWords": 1
+        },
+        "good": "Perfect, I'll make it just like that."
+      },
+      {
+        "say": "Do you want anything to eat with that?",
+        "hint": {
+          "en": "Say: Yes, a … please or No, thank you",
+          "ru": "Скажи: Yes, a … please или No, thank you",
+          "vi": "Hãy nói: Yes, a … please hoặc No, thank you"
+        },
+        "expect": {
+          "any": [["yes", "no", "please", "thank you"]],
+          "minWords": 1
+        },
+        "good": "Sounds good, I'll add that to your order."
+      },
+      {
+        "say": "What size would you like — small, medium, or large?",
+        "hint": {
+          "en": "Say: Small, please or Medium, please",
+          "ru": "Скажи: Small, please или Medium, please",
+          "vi": "Hãy nói: Small, please hoặc Medium, please"
+        },
+        "expect": {
+          "any": [["small", "medium", "large"]],
+          "minWords": 1
+        },
+        "good": "Got it, one size coming right up."
+      },
+      {
+        "say": "That will be five pounds. Is that okay?",
+        "hint": {
+          "en": "Say: Yes, here you go",
+          "ru": "Скажи: Yes, here you go",
+          "vi": "Hãy nói: Yes, here you go"
+        },
+        "expect": {
+          "any": [["yes", "okay", "sure", "here"]],
+          "minWords": 1
+        },
+        "good": "Thank you! Enjoy your drink and have a great day."
+      }
+    ]
+  },
+  {
+    "id": "s3",
+    "emoji": "🗺️",
+    "level": "A1",
+    "title": {
+      "en": "Asking for directions",
+      "ru": "Спрашиваем дорогу",
+      "vi": "Hỏi đường"
+    },
+    "description": {
+      "en": "Practice asking a stranger how to get somewhere in a new city.",
+      "ru": "Потренируйся спрашивать у незнакомца, как куда-то добраться в новом городе.",
+      "vi": "Luyện tập hỏi một người lạ cách đi đến một nơi nào đó ở thành phố mới."
+    },
+    "steps": [
+      {
+        "say": "Excuse me! Are you looking for something?",
+        "hint": {
+          "en": "Say: Yes, I'm looking for … (a place)",
+          "ru": "Скажи: Yes, I'm looking for … (место)",
+          "vi": "Hãy nói: Yes, I'm looking for … (một nơi)"
+        },
+        "expect": {
+          "any": [["looking for", "yes", "i need", "where is"]],
+          "minWords": 2
+        },
+        "good": "Ah, I know that place! Let me help you."
+      },
+      {
+        "say": "Do you want to go there by bus or on foot?",
+        "hint": {
+          "en": "Say: By bus or On foot",
+          "ru": "Скажи: By bus или On foot",
+          "vi": "Hãy nói: By bus hoặc On foot"
+        },
+        "expect": {
+          "any": [["bus", "foot", "walk", "walking", "train"]],
+          "minWords": 1
+        },
+        "good": "Good idea, that works well from here."
+      },
+      {
+        "say": "Okay! Go straight and then turn left. Got it?",
+        "hint": {
+          "en": "Say: Yes, straight then left. Got it!",
+          "ru": "Скажи: Yes, straight then left. Got it!",
+          "vi": "Hãy nói: Yes, straight then left. Got it!"
+        },
+        "expect": {
+          "any": [["yes", "got it", "okay", "straight", "left"]],
+          "minWords": 1
+        },
+        "good": "Great, you'll find it in about five minutes."
+      },
+      {
+        "say": "Is it your first time visiting this city?",
+        "hint": {
+          "en": "Say: Yes, it is or No, I've been here before",
+          "ru": "Скажи: Yes, it is или No, I've been here before",
+          "vi": "Hãy nói: Yes, it is hoặc No, I've been here before"
+        },
+        "expect": {
+          "any": [["yes", "no", "first time", "been here"]],
+          "minWords": 1
+        },
+        "good": "How exciting! I hope you enjoy your visit."
+      },
+      {
+        "say": "Thanks for chatting! Do you know how to say 'thank you' back?",
+        "hint": {
+          "en": "Say: Thank you so much for your help!",
+          "ru": "Скажи: Thank you so much for your help!",
+          "vi": "Hãy nói: Thank you so much for your help!"
+        },
+        "expect": {
+          "any": [["thank you", "thanks"]],
+          "minWords": 2
+        },
+        "good": "You're very welcome. Safe travels!"
+      }
+    ]
+  },
+  {
+    "id": "s4",
+    "emoji": "🎨",
+    "level": "A2",
+    "title": {
+      "en": "Talking about hobbies",
+      "ru": "Разговор о хобби",
+      "vi": "Nói về sở thích"
+    },
+    "description": {
+      "en": "Chat about your favorite hobbies and how often you do them.",
+      "ru": "Поболтай о своих любимых хобби и о том, как часто ты ими занимаешься.",
+      "vi": "Trò chuyện về sở thích yêu thích của bạn và tần suất bạn thực hiện chúng."
+    },
+    "steps": [
+      {
+        "say": "Hey! What do you usually do in your free time?",
+        "hint": {
+          "en": "Say: I usually … (a hobby)",
+          "ru": "Скажи: I usually … (хобби)",
+          "vi": "Hãy nói: I usually … (một sở thích)"
+        },
+        "expect": {
+          "any": [["i usually", "i like", "i play", "i love", "i enjoy"]],
+          "minWords": 3
+        },
+        "good": "That's a great way to spend your free time!"
+      },
+      {
+        "say": "How long have you been doing that hobby?",
+        "hint": {
+          "en": "Say: I've been doing it for … years",
+          "ru": "Скажи: I've been doing it for … years",
+          "vi": "Hãy nói: I've been doing it for … years"
+        },
+        "expect": {
+          "any": [["years", "months", "since", "for"]],
+          "minWords": 2
+        },
+        "good": "Wow, that's a lot of practice and dedication."
+      },
+      {
+        "say": "Do you practice alone or with friends?",
+        "hint": {
+          "en": "Say: I practice alone or I practice with friends",
+          "ru": "Скажи: I practice alone или I practice with friends",
+          "vi": "Hãy nói: I practice alone hoặc I practice with friends"
+        },
+        "expect": {
+          "any": [["alone", "friends", "with", "myself"]],
+          "minWords": 2
+        },
+        "good": "That sounds like the perfect balance."
+      },
+      {
+        "say": "What's the hardest part about your hobby?",
+        "hint": {
+          "en": "Say: The hardest part is …",
+          "ru": "Скажи: The hardest part is …",
+          "vi": "Hãy nói: The hardest part is …"
+        },
+        "expect": {
+          "any": [["hardest", "difficult", "hard", "tricky", "challenging"]],
+          "minWords": 3
+        },
+        "good": "I totally understand, that's never easy."
+      },
+      {
+        "say": "Would you like to try a new hobby someday?",
+        "hint": {
+          "en": "Say: Yes, I'd like to try … or No, I'm happy with this one",
+          "ru": "Скажи: Yes, I'd like to try … или No, I'm happy with this one",
+          "vi": "Hãy nói: Yes, I'd like to try … hoặc No, I'm happy with this one"
+        },
+        "expect": {
+          "any": [["yes", "no", "i'd like", "maybe"]],
+          "minWords": 2
+        },
+        "good": "Sounds exciting! Trying new things is always fun."
+      },
+      {
+        "say": "Thanks for sharing! What hobby should we talk about next time?",
+        "hint": {
+          "en": "Say: Let's talk about … next time",
+          "ru": "Скажи: Let's talk about … next time",
+          "vi": "Hãy nói: Let's talk about … next time"
+        },
+        "expect": {
+          "any": [["let's talk", "next time", "maybe", "how about"]],
+          "minWords": 3
+        },
+        "good": "Perfect, I can't wait to hear about that."
+      }
+    ]
+  },
+  {
+    "id": "s5",
+    "emoji": "👕",
+    "level": "A2",
+    "title": {
+      "en": "Shopping for clothes",
+      "ru": "Покупка одежды",
+      "vi": "Mua sắm quần áo"
+    },
+    "description": {
+      "en": "Practice trying on clothes and talking about sizes and colors in a store.",
+      "ru": "Потренируйся примерять одежду и говорить о размерах и цветах в магазине.",
+      "vi": "Luyện tập thử quần áo và nói về kích cỡ, màu sắc trong cửa hàng."
+    },
+    "steps": [
+      {
+        "say": "Hi! Are you looking for anything special today?",
+        "hint": {
+          "en": "Say: I'm looking for a … (jacket, shirt, etc.)",
+          "ru": "Скажи: I'm looking for a … (куртка, рубашка и т.д.)",
+          "vi": "Hãy nói: I'm looking for a … (áo khoác, áo sơ mi, v.v.)"
+        },
+        "expect": {
+          "any": [["looking for", "i need", "i want"]],
+          "minWords": 3
+        },
+        "good": "Great, I think we have just the thing."
+      },
+      {
+        "say": "What size do you usually wear?",
+        "hint": {
+          "en": "Say: I usually wear size … (small, medium, large)",
+          "ru": "Скажи: I usually wear size … (S, M, L)",
+          "vi": "Hãy nói: I usually wear size … (S, M, L)"
+        },
+        "expect": {
+          "any": [["small", "medium", "large", "size"]],
+          "minWords": 2
+        },
+        "good": "Perfect, let me grab that size for you."
+      },
+      {
+        "say": "What color would you like — do you have a favorite?",
+        "hint": {
+          "en": "Say: I like … color, or My favorite color is …",
+          "ru": "Скажи: I like … color, или My favorite color is …",
+          "vi": "Hãy nói: I like … color, hoặc My favorite color is …"
+        },
+        "expect": {
+          "any": [["color", "blue", "red", "black", "white", "green"]],
+          "minWords": 1
+        },
+        "good": "Great choice, that color looks amazing on everyone."
+      },
+      {
+        "say": "Would you like to try it on in the fitting room?",
+        "hint": {
+          "en": "Say: Yes, please or No, thank you",
+          "ru": "Скажи: Yes, please или No, thank you",
+          "vi": "Hãy nói: Yes, please hoặc No, thank you"
+        },
+        "expect": {
+          "any": [["yes", "no", "please", "sure"]],
+          "minWords": 1
+        },
+        "good": "Sure, the fitting room is right over there."
+      },
+      {
+        "say": "How does it fit — too big, too small, or just right?",
+        "hint": {
+          "en": "Say: It fits just right or It's too big / too small",
+          "ru": "Скажи: It fits just right или It's too big / too small",
+          "vi": "Hãy nói: It fits just right hoặc It's too big / too small"
+        },
+        "expect": {
+          "any": [["just right", "too big", "too small", "fits", "perfect"]],
+          "minWords": 2
+        },
+        "good": "Wonderful, I'm so glad it works well for you."
+      },
+      {
+        "say": "Great! Would you like to pay by card or cash?",
+        "hint": {
+          "en": "Say: By card, please or By cash, please",
+          "ru": "Скажи: By card, please или By cash, please",
+          "vi": "Hãy nói: By card, please hoặc By cash, please"
+        },
+        "expect": {
+          "any": [["card", "cash"]],
+          "minWords": 1
+        },
+        "good": "Perfect, thank you so much for shopping with us."
+      }
+    ]
+  },
+  {
+    "id": "s6",
+    "emoji": "🌦️",
+    "level": "A2",
+    "title": {
+      "en": "Talking about the weather",
+      "ru": "Разговор о погоде",
+      "vi": "Nói về thời tiết"
+    },
+    "description": {
+      "en": "Chat about today's weather and what you like to do in different seasons.",
+      "ru": "Поболтай о сегодняшней погоде и о том, что ты любишь делать в разные сезоны.",
+      "vi": "Trò chuyện về thời tiết hôm nay và những gì bạn thích làm vào các mùa khác nhau."
+    },
+    "steps": [
+      {
+        "say": "Good morning! What's the weather like where you are?",
+        "hint": {
+          "en": "Say: It's sunny / rainy / cold / hot today",
+          "ru": "Скажи: It's sunny / rainy / cold / hot today",
+          "vi": "Hãy nói: It's sunny / rainy / cold / hot today"
+        },
+        "expect": {
+          "any": [["sunny", "rainy", "cold", "hot", "cloudy", "warm", "snowy"]],
+          "minWords": 2
+        },
+        "good": "Nice! Thanks for letting me know."
+      },
+      {
+        "say": "Do you like this kind of weather, or do you prefer something else?",
+        "hint": {
+          "en": "Say: Yes, I like it or I prefer … weather",
+          "ru": "Скажи: Yes, I like it или I prefer … weather",
+          "vi": "Hãy nói: Yes, I like it hoặc I prefer … weather"
+        },
+        "expect": {
+          "any": [["yes", "no", "i prefer", "i like"]],
+          "minWords": 2
+        },
+        "good": "That makes sense, everyone has their favorite."
+      },
+      {
+        "say": "What's your favorite season of the year?",
+        "hint": {
+          "en": "Say: My favorite season is … (summer, winter, etc.)",
+          "ru": "Скажи: My favorite season is … (лето, зима и т.д.)",
+          "vi": "Hãy nói: My favorite season is … (mùa hè, mùa đông, v.v.)"
+        },
+        "expect": {
+          "any": [["summer", "winter", "spring", "autumn", "fall", "favorite season"]],
+          "minWords": 2
+        },
+        "good": "That's a lovely season to enjoy the outdoors."
+      },
+      {
+        "say": "What do you usually wear when it's like this outside?",
+        "hint": {
+          "en": "Say: I usually wear a … (jacket, t-shirt, etc.)",
+          "ru": "Скажи: I usually wear a … (куртка, футболка и т.д.)",
+          "vi": "Hãy nói: I usually wear a … (áo khoác, áo phông, v.v.)"
+        },
+        "expect": {
+          "any": [["wear", "jacket", "coat", "shirt", "shorts"]],
+          "minWords": 2
+        },
+        "good": "Smart choice, that sounds really comfortable."
+      },
+      {
+        "say": "Does the weather ever change your plans for the day?",
+        "hint": {
+          "en": "Say: Yes, sometimes or No, not really",
+          "ru": "Скажи: Yes, sometimes или No, not really",
+          "vi": "Hãy nói: Yes, sometimes hoặc No, not really"
+        },
+        "expect": {
+          "any": [["yes", "no", "sometimes", "not really"]],
+          "minWords": 1
+        },
+        "good": "That's a great way to stay flexible and ready."
+      }
+    ]
+  },
+  {
+    "id": "s7",
+    "emoji": "🎒",
+    "level": "B1",
+    "title": {
+      "en": "Describing your school day",
+      "ru": "Рассказ о школьном дне",
+      "vi": "Kể về một ngày ở trường"
+    },
+    "description": {
+      "en": "Describe a typical school day, your favorite subjects, and how you feel about them.",
+      "ru": "Расскажи о типичном школьном дне, любимых предметах и своих чувствах о них.",
+      "vi": "Mô tả một ngày học điển hình, các môn học yêu thích và cảm nhận của bạn về chúng."
+    },
+    "steps": [
+      {
+        "say": "Hi! Can you tell me what a typical school day looks like for you?",
+        "hint": {
+          "en": "Say: I usually wake up, go to school, and …",
+          "ru": "Скажи: I usually wake up, go to school, and …",
+          "vi": "Hãy nói: I usually wake up, go to school, and …"
+        },
+        "expect": {
+          "any": [["wake up", "go to school", "usually", "classes"]],
+          "minWords": 4
+        },
+        "good": "That sounds like a busy and full schedule."
+      },
+      {
+        "say": "What's your favorite subject, and why do you enjoy it?",
+        "hint": {
+          "en": "Say: My favorite subject is … because …",
+          "ru": "Скажи: My favorite subject is … because …",
+          "vi": "Hãy nói: My favorite subject is … because …"
+        },
+        "expect": {
+          "any": [["favorite subject", "because", "i like", "i love"]],
+          "minWords": 4
+        },
+        "good": "That's a great subject, and a great reason too."
+      },
+      {
+        "say": "Is there a subject you find difficult, and what makes it hard?",
+        "hint": {
+          "en": "Say: I find … difficult because …",
+          "ru": "Скажи: I find … difficult because …",
+          "vi": "Hãy nói: I find … difficult because …"
+        },
+        "expect": {
+          "any": [["difficult", "hard", "because", "tricky"]],
+          "minWords": 3
+        },
+        "good": "Thanks for sharing that, it's totally normal to struggle sometimes."
+      },
+      {
+        "say": "How do you usually get to school — walk, bus, or something else?",
+        "hint": {
+          "en": "Say: I usually go to school by …",
+          "ru": "Скажи: I usually go to school by …",
+          "vi": "Hãy nói: I usually go to school by …"
+        },
+        "expect": {
+          "any": [["walk", "bus", "car", "bike", "train", "by"]],
+          "minWords": 2
+        },
+        "good": "Nice, that sounds like a good part of your routine."
+      },
+      {
+        "say": "What do you usually do right after school ends?",
+        "hint": {
+          "en": "Say: After school, I usually …",
+          "ru": "Скажи: After school, I usually …",
+          "vi": "Hãy nói: After school, I usually …"
+        },
+        "expect": {
+          "any": [["after school", "i usually", "i go", "i do"]],
+          "minWords": 3
+        },
+        "good": "That sounds like a nice way to unwind."
+      },
+      {
+        "say": "If you could change one thing about your school day, what would it be?",
+        "hint": {
+          "en": "Say: I would change … because …",
+          "ru": "Скажи: I would change … because …",
+          "vi": "Hãy nói: I would change … because …"
+        },
+        "expect": {
+          "any": [["i would", "i'd change", "less", "more"]],
+          "minWords": 4
+        },
+        "good": "That's a thoughtful idea, thanks for explaining it."
+      }
+    ]
+  },
+  {
+    "id": "s8",
+    "emoji": "🧳",
+    "level": "B1",
+    "title": {
+      "en": "Planning a trip",
+      "ru": "Планирование поездки",
+      "vi": "Lập kế hoạch cho một chuyến đi"
+    },
+    "description": {
+      "en": "Talk through the plans, destination, and excitement of an upcoming trip.",
+      "ru": "Обсуди планы, направление и предвкушение будущей поездки.",
+      "vi": "Trò chuyện về kế hoạch, điểm đến và sự háo hức cho một chuyến đi sắp tới."
+    },
+    "steps": [
+      {
+        "say": "Hey! I heard you're planning a trip. Where would you like to go?",
+        "hint": {
+          "en": "Say: I would like to go to … (a place)",
+          "ru": "Скажи: I would like to go to … (место)",
+          "vi": "Hãy nói: I would like to go to … (một nơi)"
+        },
+        "expect": {
+          "any": [["i would like", "i want to go", "i'd like to go", "to"]],
+          "minWords": 3
+        },
+        "good": "What a wonderful place to explore!"
+      },
+      {
+        "say": "How long are you planning to stay there?",
+        "hint": {
+          "en": "Say: I'm planning to stay for … days/weeks",
+          "ru": "Скажи: I'm planning to stay for … days/weeks",
+          "vi": "Hãy nói: I'm planning to stay for … days/weeks"
+        },
+        "expect": {
+          "any": [["days", "week", "weeks", "month", "for"]],
+          "minWords": 2
+        },
+        "good": "That sounds like the perfect amount of time."
+      },
+      {
+        "say": "Who are you traveling with — family, friends, or by yourself?",
+        "hint": {
+          "en": "Say: I'm traveling with … or I'm traveling alone",
+          "ru": "Скажи: I'm traveling with … или I'm traveling alone",
+          "vi": "Hãy nói: I'm traveling with … hoặc I'm traveling alone"
+        },
+        "expect": {
+          "any": [["family", "friends", "alone", "with", "myself"]],
+          "minWords": 2
+        },
+        "good": "That's going to be such a great experience together."
+      },
+      {
+        "say": "What are you most excited to see or do there?",
+        "hint": {
+          "en": "Say: I'm most excited to … because …",
+          "ru": "Скажи: I'm most excited to … because …",
+          "vi": "Hãy nói: I'm most excited to … because …"
+        },
+        "expect": {
+          "any": [["excited", "can't wait", "looking forward", "want to see"]],
+          "minWords": 3
+        },
+        "good": "That sounds absolutely amazing, I'm excited for you."
+      },
+      {
+        "say": "Have you started packing yet, or what do you still need to prepare?",
+        "hint": {
+          "en": "Say: I still need to pack … or I've already packed …",
+          "ru": "Скажи: I still need to pack … или I've already packed …",
+          "vi": "Hãy nói: I still need to pack … hoặc I've already packed …"
+        },
+        "expect": {
+          "any": [["pack", "packed", "still need", "ready"]],
+          "minWords": 3
+        },
+        "good": "Good plan, it always helps to prepare early."
+      },
+      {
+        "say": "How do you think this trip will change after you come back?",
+        "hint": {
+          "en": "Say: I think I will … after the trip",
+          "ru": "Скажи: I think I will … after the trip",
+          "vi": "Hãy nói: I think I will … after the trip"
+        },
+        "expect": {
+          "any": [["i think", "i will", "after the trip", "learn"]],
+          "minWords": 4
+        },
+        "good": "That's a beautiful way to think about travel."
+      },
+      {
+        "say": "I hope you have an amazing trip! Anything else you'd like to share?",
+        "hint": {
+          "en": "Say: Thank you! I'll tell you all about it when I'm back",
+          "ru": "Скажи: Thank you! I'll tell you all about it when I'm back",
+          "vi": "Hãy nói: Thank you! I'll tell you all about it when I'm back"
+        },
+        "expect": {
+          "any": [["thank you", "thanks", "i will", "tell you"]],
+          "minWords": 2
+        },
+        "good": "Can't wait to hear all about your adventure!"
+      }
+    ]
+  }
+]
