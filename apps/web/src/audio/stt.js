@@ -8,14 +8,24 @@
 
 const webSR = typeof window !== 'undefined' ? (window.SpeechRecognition || window.webkitSpeechRecognition) : null;
 
-function nativeSR() {
-  const c = typeof window !== 'undefined' ? window.Capacitor : null;
-  if (c && typeof c.isNativePlatform === 'function' && c.isNativePlatform()
-      && c.Plugins && c.Plugins.SpeechRecognition) {
-    return c.Plugins.SpeechRecognition;
-  }
+// Доступ к нативному плагину ПО ИМЕНИ. window.Capacitor.registerPlugin
+// инъектируется нативным слоем ДО загрузки страницы, поэтому плагин доступен
+// без npm-импорта. Раньше читали только Capacitor.Plugins.SpeechRecognition —
+// а он НЕ populated, пока никто не вызвал registerPlugin; из-за этого микрофон
+// на устройстве не запускался (nativeSR() возвращал null).
+function nativePlugin(name) {
+  const C = typeof window !== 'undefined' ? window.Capacitor : null;
+  if (!C || typeof C.isNativePlatform !== 'function' || !C.isNativePlatform()) return null;
+  try {
+    if (C.Plugins && C.Plugins[name]) return C.Plugins[name];
+    if (typeof C.registerPlugin === 'function') {
+      const p = C.registerPlugin(name);
+      if (p) { if (C.Plugins) C.Plugins[name] = p; return p; }
+    }
+  } catch { /* ignore */ }
   return null;
 }
+function nativeSR() { return nativePlugin('SpeechRecognition'); }
 
 // --- Web Speech API (браузер, Chrome) ---
 function listenWeb(SR, { lang, onPartial, onFinal, onError }) {

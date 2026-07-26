@@ -3,14 +3,27 @@
 // preferred male/female system voice.
 const supported = typeof window !== 'undefined' && 'speechSynthesis' in window;
 
-// Нативный TTS (Capacitor) через рантайм-мост, если плагин установлен; иначе null.
-// В нативном WebView SpeechSynthesis обычно работает, но плагин надёжнее на устройстве.
-function nativeTTS() {
-  const c = typeof window !== 'undefined' ? window.Capacitor : null;
-  if (c && typeof c.isNativePlatform === 'function' && c.isNativePlatform()
-      && c.Plugins && c.Plugins.TextToSpeech) return c.Plugins.TextToSpeech;
+// Доступ к нативному Capacitor-плагину ПО ИМЕНИ через рантайм-мост.
+// window.Capacitor.registerPlugin инъектируется нативным слоем ДО загрузки
+// страницы, поэтому плагин доступен без npm-импорта (офлайн-сборка не ломается).
+// Раньше читали только Capacitor.Plugins[name] — а он НЕ populated, пока никто
+// не вызвал registerPlugin; отсюда «нет реакции» на устройстве.
+function nativePlugin(name) {
+  const C = typeof window !== 'undefined' ? window.Capacitor : null;
+  if (!C || typeof C.isNativePlatform !== 'function' || !C.isNativePlatform()) return null;
+  try {
+    if (C.Plugins && C.Plugins[name]) return C.Plugins[name];
+    if (typeof C.registerPlugin === 'function') {
+      const p = C.registerPlugin(name);
+      if (p) { if (C.Plugins) C.Plugins[name] = p; return p; }
+    }
+  } catch { /* ignore */ }
   return null;
 }
+// Нативный TTS (@capacitor-community/text-to-speech). В Android WebView
+// window.speechSynthesis фактически не работает — на устройстве озвучка учителя
+// идёт через нативный плагин.
+function nativeTTS() { return nativePlugin('TextToSpeech'); }
 
 let voices = [];
 const refresh = () => { voices = supported ? window.speechSynthesis.getVoices() : []; };
@@ -42,13 +55,14 @@ let voiceEnabled = true;
 export const setVoiceEnabled = (v) => { voiceEnabled = v; if (!v) tts.stop(); };
 
 export const tts = {
-  supported,
+  get supported() { return supported || !!nativeTTS(); },
   speaking: false,
   speak(text, teacher, { onStart, onEnd, force = false } = {}) {
     if (!text || (!voiceEnabled && !force)) { onEnd?.(); return false; }
     const nat = nativeTTS();
     if (nat) {
       try {
+        try { nat.stop && nat.stop(); } catch {}
         this.speaking = true; onStart?.();
         nat.speak({ text, lang: 'en-US', rate: teacher?.voice?.rate ?? 1, pitch: teacher?.voice?.pitch ?? 1, volume: 1 })
           .then(() => { this.speaking = false; onEnd?.(); })
