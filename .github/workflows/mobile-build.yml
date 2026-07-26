@@ -1,0 +1,279 @@
+name: Mobile Build (Android APK + iOS Archive)
+
+# Автосборка мобильных версий AI English Teacher.
+# - Android собирается на ubuntu, iOS — на macOS (требование Apple).
+# - Нативные папки android/ios НЕ хранятся в репозитории: они генерируются
+#   на каждом запуске через `npx cap add` + `cap sync` (детерминированно).
+# - Без секретов workflow всё равно зелёный: Android → debug-APK,
+#   iOS → неподписанный архив (проверка, что проект компилируется).
+# - Подписанный релиз (release APK/AAB, IPA, загрузка в TestFlight)
+#   включается АВТОМАТИЧЕСКИ, как только добавлены соответствующие секреты.
+#   Список секретов и как их получить — в ci/README-CI.md.
+
+on:
+  workflow_dispatch:        # ручной запуск из вкладки Actions
+  push:
+    tags: ['v*']            # запуск на тегах релиза, напр. v1.0.0
+    # branches: [main]      # раскомментируйте, чтобы собирать на каждый push в main
+                            # (внимание: iOS-раннеры macOS расходуют минуты ~в 10× быстрее)
+
+concurrency:
+  group: mobile-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: '18'
+  WEB_DIR: apps/web        # где лежит capacitor.config.json (рядом создаются android/ и ios/)
+
+jobs:
+  # ───────────────────────────── ANDROID ─────────────────────────────
+  android:
+    name: Android · APK / AAB
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          # cache: npm  ← включите, добавив apps/web/package-lock.json
+
+      - name: Setup JDK 17 (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install SDK packages
+        run: |
+          sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+
+      - name: Install web deps & build
+        run: |
+          npm install
+          npm run build
+
+      - name: Add & sync Android platform
+        run: |
+          [ -d android ] || npx cap add android
+          npx cap sync android
+          chmod +x android/gradlew
+
+      - name: Patch native mic permissions (RECORD_AUDIO)
+        run: node ../../scripts/patch-native.mjs
+
+      # Debug-APK — собирается всегда, без секретов (подписан debug-ключом)
+      - name: Build debug APK
+        run: |
+          cd android
+          ./gradlew assembleDebug --stacktrace
+
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-debug-apk
+          path: apps/web/android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+
+      # ── Подписанный релиз: активируется при наличии секрета keystore ──
+      - name: Check Android signing secrets
+        id: sign
+        env:
+          KS: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          if [ -n "$KS" ]; then echo "enabled=true" >> "$GITHUB_OUTPUT";
+          else echo "enabled=false" >> "$GITHUB_OUTPUT"; echo "::notice::ANDROID_KEYSTORE_BASE64 не задан — собран только debug-APK"; fi
+
+      - name: Decode keystore
+        if: steps.sign.outputs.enabled == 'true'
+        env:
+          KS: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: echo "$KS" | base64 --decode > "$RUNNER_TEMP/release.keystore"
+
+      - name: Build release APK + AAB (unsigned by Gradle)
+        if: steps.sign.outputs.enabled == 'true'
+        run: |
+          cd android
+          ./gradlew assembleRelease bundleRelease --stacktrace
+
+      - name: Sign APK (zipalign + apksigner) and AAB (jarsigner)
+        if: steps.sign.outputs.enabled == 'true'
+        env:
+          STORE_PASS: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASS: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          set -e
+          BT="$(ls -d "$ANDROID_HOME"/build-tools/*/ | sort -V | tail -1)"
+          OUT="android/app/build/outputs"
+          # APK
+          "${BT}zipalign" -v -p 4 \
+            "$OUT/apk/release/app-release-unsigned.apk" \
+            "$RUNNER_TEMP/app-aligned.apk"
+          "${BT}apksigner" sign \
+            --ks "$RUNNER_TEMP/release.keystore" \
+            --ks-pass "pass:$STORE_PASS" \
+            --ks-key-alias "$KEY_ALIAS" \
+            --key-pass "pass:$KEY_PASS" \
+            --out "$OUT/apk/release/app-release.apk" \
+            "$RUNNER_TEMP/app-aligned.apk"
+          "${BT}apksigner" verify --print-certs "$OUT/apk/release/app-release.apk"
+          # AAB (для Google Play — подпись загрузочным ключом)
+          jarsigner -keystore "$RUNNER_TEMP/release.keystore" \
+            -storepass "$STORE_PASS" -keypass "$KEY_PASS" \
+            "$OUT/bundle/release/app-release.aab" "$KEY_ALIAS"
+
+      - name: Upload signed APK + AAB
+        if: steps.sign.outputs.enabled == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-release
+          path: |
+            apps/web/android/app/build/outputs/apk/release/app-release.apk
+            apps/web/android/app/build/outputs/bundle/release/app-release.aab
+          if-no-files-found: error
+
+  # ─────────────────────────────── iOS ───────────────────────────────
+  ios:
+    name: iOS · Archive / IPA
+    runs-on: macos-14        # Apple Silicon, Xcode 15+
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Setup Node ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install web deps & build
+        run: |
+          npm install
+          npm run build
+
+      - name: Add & sync iOS platform
+        run: |
+          [ -d ios ] || npx cap add ios
+          npx cap sync ios
+
+      - name: Patch native mic permissions (Info.plist)
+        run: node ../../scripts/patch-native.mjs
+
+      - name: Check iOS signing secrets
+        id: sign
+        env:
+          ASC_KEY: ${{ secrets.ASC_API_KEY_P8 }}
+        run: |
+          if [ -n "$ASC_KEY" ]; then echo "enabled=true" >> "$GITHUB_OUTPUT";
+          else echo "enabled=false" >> "$GITHUB_OUTPUT"; echo "::notice::ASC_API_KEY_P8 не задан — собран только неподписанный архив (проверка компиляции)"; fi
+
+      # ── Без секретов: неподписанный архив = «проект компилируется» ──
+      - name: Build UNSIGNED archive (compile check)
+        if: steps.sign.outputs.enabled == 'false'
+        run: |
+          xcodebuild -workspace ios/App/App.xcworkspace \
+            -scheme App -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -archivePath "$RUNNER_TEMP/App.xcarchive" \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" DEVELOPMENT_TEAM="" \
+            archive
+          ditto -c -k --keepParent "$RUNNER_TEMP/App.xcarchive" "$RUNNER_TEMP/App-unsigned.xcarchive.zip"
+
+      - name: Upload unsigned archive
+        if: steps.sign.outputs.enabled == 'false'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-unsigned-archive
+          path: ${{ runner.temp }}/App-unsigned.xcarchive.zip
+          if-no-files-found: error
+
+      # ── С секретами: подписанный архив + IPA через App Store Connect API key ──
+      - name: Prepare App Store Connect API key
+        if: steps.sign.outputs.enabled == 'true'
+        env:
+          ASC_KEY: ${{ secrets.ASC_API_KEY_P8 }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+        run: |
+          mkdir -p "$HOME/private_keys"
+          echo "$ASC_KEY" | base64 --decode > "$RUNNER_TEMP/AuthKey.p8"
+          cp "$RUNNER_TEMP/AuthKey.p8" "$HOME/private_keys/AuthKey_${ASC_KEY_ID}.p8"
+
+      - name: Render ExportOptions.plist
+        if: steps.sign.outputs.enabled == 'true'
+        env:
+          TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          sed "s/__TEAM_ID__/$TEAM_ID/" "$GITHUB_WORKSPACE/ci/ExportOptions.plist" > "$RUNNER_TEMP/ExportOptions.plist"
+          cat "$RUNNER_TEMP/ExportOptions.plist"
+
+      - name: Build signed archive
+        if: steps.sign.outputs.enabled == 'true'
+        env:
+          TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+        run: |
+          xcodebuild -workspace ios/App/App.xcworkspace \
+            -scheme App -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -archivePath "$RUNNER_TEMP/App.xcarchive" \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$RUNNER_TEMP/AuthKey.p8" \
+            -authenticationKeyID "$ASC_KEY_ID" \
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
+            DEVELOPMENT_TEAM="$TEAM_ID" \
+            archive
+
+      - name: Export IPA
+        if: steps.sign.outputs.enabled == 'true'
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+        run: |
+          xcodebuild -exportArchive \
+            -archivePath "$RUNNER_TEMP/App.xcarchive" \
+            -exportPath "$RUNNER_TEMP/export" \
+            -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$RUNNER_TEMP/AuthKey.p8" \
+            -authenticationKeyID "$ASC_KEY_ID" \
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID"
+
+      - name: Upload IPA
+        if: steps.sign.outputs.enabled == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-ipa
+          path: ${{ runner.temp }}/export/*.ipa
+          if-no-files-found: error
+
+      # ── Необязательно: авто-загрузка в TestFlight (при UPLOAD_TO_TESTFLIGHT=true) ──
+      - name: Upload to TestFlight
+        if: steps.sign.outputs.enabled == 'true' && vars.UPLOAD_TO_TESTFLIGHT == 'true'
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+        run: |
+          IPA="$(ls "$RUNNER_TEMP"/export/*.ipa | head -1)"
+          xcrun altool --upload-app -f "$IPA" -t ios \
+            --apiKey "$ASC_KEY_ID" --apiIssuer "$ASC_ISSUER_ID"

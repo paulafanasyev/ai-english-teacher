@@ -1,0 +1,49 @@
+name: API Tests
+
+# Запускает vitest-набор бэкенда (apps/api), включая RBAC-тесты кабинетов
+# (teacher / journal / parent) на in-memory fake Prisma — без живой БД.
+# npm в GitHub-раннерах доступен (в песочнице агента он заблокирован),
+# поэтому реальный прогон тестов происходит здесь.
+
+on:
+  push:
+    paths: ['apps/api/**', '.github/workflows/api-tests.yml']
+  pull_request:
+    paths: ['apps/api/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  api:
+    name: apps/api · vitest
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/api
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install deps
+        run: npm install
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+        env:
+          # generate reads the schema (which references env("DATABASE_URL"));
+          # a dummy value is enough — no DB connection is made and tests swap
+          # in the in-memory fake before any route touches Prisma.
+          DATABASE_URL: postgresql://user:pass@localhost:5432/testdb
+
+      - name: Run tests
+        run: npm test
+        env:
+          NODE_ENV: test
+          JWT_SECRET: ci-test-secret-not-for-production
+          CORS_ORIGINS: http://localhost:3000
