@@ -74,3 +74,35 @@ if (fs.existsSync(plist)) {
 } else {
   log('iOS Info.plist не найден — пропускаю');
 }
+
+// ---------- iOS: поднять minimum deployment target ----------
+// Некоторые плагины (напр. @capacitor-community/text-to-speech) требуют iOS ≥14,
+// а Capacitor по умолчанию ставит 13.0 → pod install падает. Поднимаем до 14.0.
+// ВАЖНО: этот патч должен применяться ДО `cap sync ios` (до pod install).
+const podfile = 'ios/App/Podfile';
+if (fs.existsSync(podfile)) {
+  let p = fs.readFileSync(podfile, 'utf8');
+  const m = p.match(/platform :ios, '([\d.]+)'/);
+  if (m && parseFloat(m[1]) < 14) {
+    p = p.replace(/platform :ios, '[\d.]+'/, "platform :ios, '14.0'");
+    fs.writeFileSync(podfile, p);
+    log('iOS: platform поднят до 14.0 (Podfile)');
+  } else {
+    log('iOS: Podfile platform уже ≥14 (или строка не найдена)');
+  }
+} else {
+  log('iOS Podfile не найден — пропускаю');
+}
+const pbx = 'ios/App/App.xcodeproj/project.pbxproj';
+if (fs.existsSync(pbx)) {
+  let x = fs.readFileSync(pbx, 'utf8');
+  if (/IPHONEOS_DEPLOYMENT_TARGET = 1[0-3]\.\d+;/.test(x)) {
+    x = x.replace(/IPHONEOS_DEPLOYMENT_TARGET = 1[0-3]\.\d+;/g, 'IPHONEOS_DEPLOYMENT_TARGET = 14.0;');
+    fs.writeFileSync(pbx, x);
+    log('iOS: IPHONEOS_DEPLOYMENT_TARGET → 14.0 (pbxproj)');
+  } else {
+    log('iOS: pbxproj deployment target уже ≥14 (или не найден)');
+  }
+} else {
+  log('iOS pbxproj не найден — пропускаю');
+}

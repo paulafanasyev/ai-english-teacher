@@ -170,13 +170,15 @@ jobs:
           npm install --legacy-peer-deps
           npm run build
 
-      - name: Add & sync iOS platform
+      - name: Add iOS platform
         run: |
           [ -d ios ] || npx cap add ios
-          npx cap sync ios
 
-      - name: Patch native mic permissions (Info.plist)
+      - name: Patch native (Info.plist + iOS deployment target)
         run: node ../../scripts/patch-native.mjs
+
+      - name: Sync iOS platform (pod install)
+        run: npx cap sync ios
 
       - name: Check iOS signing secrets
         id: sign
