@@ -170,11 +170,16 @@ jobs:
           npm install --legacy-peer-deps
           npm run build
 
-      - name: Add iOS platform
+      # `cap add ios` сам запускает pod install по шаблонному Podfile (target 13.0),
+      # который падает на плагине TTS (нужен iOS 14). Даём этому pod install
+      # упасть без падения шага (Podfile уже создан), затем патчим target и ре-синкаем.
+      - name: Add iOS platform (initial pod install may fail pre-patch)
         run: |
-          [ -d ios ] || npx cap add ios
+          if [ ! -d ios ]; then
+            npx cap add ios || echo "::warning::cap add pod install failed (target<14) — will patch Podfile and re-sync"
+          fi
 
-      - name: Patch native (Info.plist + iOS deployment target)
+      - name: Patch native (Info.plist + iOS deployment target → 14.0)
         run: node ../../scripts/patch-native.mjs
 
       - name: Sync iOS platform (pod install)
