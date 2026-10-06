@@ -30,9 +30,7 @@ npm run dev
 
 ## GitHub Pages
 
-> ⚠️ Один ручной шаг: файлы `ci/workflows/pages.yml` и `ci/workflows/web-ci.yml` нужно перенести в `.github/workflows/` (токен интеграции не имеет права `workflow` и не может создавать workflow-файлы сам). Это делается прямо на GitHub: открыть файл → ✏️ → поменять путь на `.github/workflows/pages.yml` → Commit.
-
-Workflow `pages.yml` на push в `main` собирает React-приложение в `/app/`, копирует статический лендинг из `site/` в корень и публикует Pages. Один раз откройте **Settings → Pages → Source → GitHub Actions**. `web-ci.yml` проверяет сборку на каждом push и PR.
+Workflow `pages.yml` находится в `.github/workflows/` и на push в `main` собирает React-приложение в `/app/`, копирует статический лендинг из `site/` в корень и публикует Pages. Включите один раз **Settings → Pages → Source → GitHub Actions**. `web-ci.yml` проверяет web-сборку на каждом push и PR.
 
 ## Мобильная версия
 
@@ -46,12 +44,12 @@ apps/web/src/ai — WebLLM-движок, каталог моделей и рее
 apps/web/src/avatar — SVG-учителя с lip-sync
 apps/api        — необязательный Express API
 site/           — статический маркетинговый сайт (RU/EN/VI) + privacy policy
-ci/workflows/   — Pages deploy и web CI (перенести в .github/workflows)
+.github/workflows — GitHub Pages deploy и web CI
 ```
 
 ## English (short)
 
-Local-first React/Vite SPA for GitHub Pages. Progress lives in browser `localStorage`; an optional in-browser LLM (WebLLM over WebGPU) powers tutoring, corrections and writing feedback, with rule-based fallbacks everywhere. Run `cd apps/web && npm install && npm run dev`. To deploy: move `ci/workflows/*.yml` to `.github/workflows/`, then set **Settings → Pages → Source → GitHub Actions**.
+Local-first React/Vite SPA for GitHub Pages. Progress lives in browser `localStorage`; an optional in-browser LLM (WebLLM over WebGPU) powers tutoring, corrections and writing feedback, with rule-based fallbacks everywhere. Run `cd apps/web && npm install && npm run dev`. To deploy: set **Settings → Pages → Source → GitHub Actions**; the workflows already live in `.github/workflows/`.
 
 ## Разработка / Developers
 
