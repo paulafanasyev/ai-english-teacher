@@ -1,6 +1,8 @@
 import demoUrls from './assetUrls.demo.json';
 
-const PUBLISHED = import.meta.env.VITE_PUBLISHED === '1';
+// Published Pages builds use the repository's local media. Remote demo media is
+// opt-in only, so a production build never depends on a hyperagent host.
+const PUBLISHED = import.meta.env.VITE_REMOTE_ASSETS === '1' && import.meta.env.VITE_PUBLISHED === '1';
 
 export const spriteUrl = (id) => (PUBLISHED ? demoUrls.avatars[id] : `assets/avatars/${id}.webp`);
 export const greetingUrl = (id) => (PUBLISHED ? demoUrls.voices[id] : `assets/voice/${id}.mp3`);

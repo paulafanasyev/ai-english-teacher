@@ -1,55 +1,75 @@
-/* AI English Teacher — service worker (offline app shell + runtime asset cache). */
-const CACHE = 'aet-v1';
+/* AI English Teacher — Pages-aware offline shell and safe runtime caching. */
+const CACHE = 'aet-v2';
 const SHELL = [
-  './', './index.html', './app.js', './app.css', './manifest.webmanifest',
-  './icons/icon-192.png', './icons/icon-512.png', './icons/maskable-512.png', './icons/apple-touch-icon.png',
+  './',
+  './index.html',
+  './manifest.webmanifest',
+  './icons/icon-192.png',
+  './icons/icon-512.png',
+  './icons/maskable-512.png',
+  './icons/apple-touch-icon.png',
 ];
+const FONT_HOSTS = new Set(['fonts.googleapis.com', 'fonts.gstatic.com']);
 
-self.addEventListener('install', (e) => {
-  e.waitUntil(
+self.addEventListener('install', (event) => {
+  event.waitUntil(
     caches.open(CACHE)
-      // Cache shell files individually so a missing one (e.g. single-file demo has no app.js) never aborts the rest.
-      .then((c) => Promise.allSettled(SHELL.map((u) => c.add(new Request(u, { cache: 'reload' })))))
+      .then((cache) => cache.addAll(SHELL))
       .then(() => self.skipWaiting()),
   );
 });
 
-self.addEventListener('activate', (e) => {
-  e.waitUntil(
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
+      .then((keys) => Promise.all(keys.filter((key) => key !== CACHE).map((key) => caches.delete(key))))
       .then(() => self.clients.claim()),
   );
 });
 
-self.addEventListener('fetch', (e) => {
-  const req = e.request;
-  if (req.method !== 'GET') return;
+function cacheFirst(request) {
+  return caches.match(request).then((cached) => cached || fetch(request).then((response) => {
+    if (response.ok) {
+      const copy = response.clone();
+      caches.open(CACHE).then((cache) => cache.put(request, copy)).catch(() => {});
+    }
+    return response;
+  }));
+}
 
-  // SPA navigations: network-first, fall back to cached shell when offline.
-  if (req.mode === 'navigate') {
-    e.respondWith(fetch(req).catch(() => caches.match('./index.html')));
+function staleWhileRevalidate(request) {
+  return caches.match(request).then((cached) => {
+    const fresh = fetch(request).then((response) => {
+      if (response.ok) {
+        const copy = response.clone();
+        caches.open(CACHE).then((cache) => cache.put(request, copy)).catch(() => {});
+      }
+      return response;
+    });
+    return cached || fresh;
+  });
+}
+
+self.addEventListener('fetch', (event) => {
+  const request = event.request;
+  if (request.method !== 'GET') return;
+  const url = new URL(request.url);
+
+  // The app shell is resilient to a lost connection and HashRouter navigation.
+  if (request.mode === 'navigate') {
+    event.respondWith(fetch(request).catch(() => caches.match('./index.html')));
     return;
   }
 
-  const url = new URL(req.url);
-  const runtimeCacheable =
-    url.origin === self.location.origin ||
-    /(^|\.)pub\.hyperagent\.com$/.test(url.hostname) ||
-    url.hostname === 'fonts.googleapis.com' ||
-    url.hostname === 'fonts.gstatic.com';
+  // Never put model weights, WebLLM manifests, or any third-party JS/media in
+  // this worker's cache. WebLLM manages model Cache Storage itself.
+  if (url.origin !== self.location.origin) {
+    if (FONT_HOSTS.has(url.hostname)) event.respondWith(staleWhileRevalidate(request));
+    return;
+  }
 
-  // Cache-first, then network (and populate the runtime cache for assets/fonts).
-  e.respondWith(
-    caches.match(req).then((cached) => {
-      if (cached) return cached;
-      return fetch(req).then((res) => {
-        if (res && res.ok && runtimeCacheable) {
-          const copy = res.clone();
-          caches.open(CACHE).then((c) => c.put(req, copy)).catch(() => {});
-        }
-        return res;
-      });
-    }).catch(() => caches.match('./index.html')),
-  );
+  // Vite's fingerprinted bundles are immutable and safe to cache first.
+  if (/\/assets\//.test(url.pathname)) {
+    event.respondWith(cacheFirst(request).catch(() => caches.match('./index.html')));
+  }
 });

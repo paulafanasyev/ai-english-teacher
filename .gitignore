@@ -29,3 +29,6 @@ tools/bin/
 *.log
 .vite/
 .cache/
+
+# GitHub Pages staging output
+_site/
