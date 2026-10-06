@@ -1,37 +1,341 @@
-/* Tiny, dependency-free language switcher for the static landing page. */
+/* AI English Teacher landing: i18n, animated background, talking Emma. */
 (() => {
-  const copy = {
-    ru: {
-      'nav.features':'Возможности','nav.how':'Как это работает','nav.faq':'FAQ','nav.open':'Открыть приложение',
-      'hero.eyebrow':'Твой английский. Твой темп. Твоё устройство.','hero.title':'Говори по-английски<br><em>с удовольствием.</em>','hero.lead':'Живые голосовые преподаватели, увлекательные уроки и приватный ИИ, который работает прямо в браузере. Без аккаунтов и серверов.','cta.open':'Открыть приложение <span>↗</span>','cta.how':'Как это работает ↓','hero.trust':'Учись самостоятельно — прогресс остаётся у тебя','hero.teacher':'Тёплая и поддерживающая','hero.quote':'Tell me about your day!','hero.ai':'AI на устройстве','hero.streak':'дней подряд',
-      'stats.private':'приватно','stats.languages':'языка интерфейса','stats.levels':'уровни английского','stats.practice':'практика в своём темпе',
-      'features.kicker':'Всё для уверенной речи','features.title':'Не просто приложение.<br><em>Личный тренер.</em>','features.lead':'Маленькие ежедневные шаги превращаются в большую уверенность — без давления и скучных таблиц.','f.voice.title':'Говори вживую','f.voice.body':'Тренируй разговорную речь с голосовыми преподавателями. Слушай, отвечай и получай практику, похожую на настоящую беседу.','f.voice.tag':'Микрофон в браузере','f.ai.title':'ИИ, который уважает приватность','f.ai.body':'Модель загружается на устройство и работает локально. Твои упражнения и ответы не отправляются на наш сервер.','f.ai.tag':'On-device AI','f.games.title':'Уроки как игра','f.games.body':'Слова, грамматика, аудирование, квесты и XP помогают возвращаться каждый день и видеть свой прогресс.','f.games.tag':'XP · streaks · levels','f.exam.title':'IELTS и TOEFL','f.exam.body':'Тренируй reading, listening, writing и speaking — от первого шага до экзаменационного уровня.','f.exam.tag':'A1 — B2',
-      'lang.kicker':'Учись на привычном языке','lang.title':'English для мира,<br><em>объяснения — для тебя.</em>','how.kicker':'Начать проще простого','how.title':'Три шага до<br><em>новой привычки.</em>','step.one.title':'Выбери цель','step.one.body':'Определи уровень, интересы и преподавателя, с которым хочется заниматься.','step.two.title':'Практикуйся','step.two.body':'Говори, слушай и играй по 5–15 минут в удобном темпе. Можно даже без сети.','step.three.title':'Замечай рост','step.three.body':'Следи за сериями занятий, XP и уровнем — и возвращайся за следующим маленьким успехом.',
-      'download.kicker':'Уже готов к разговору?','download.title':'Твой английский<br>начинается здесь.','download.body':'Открой приложение в браузере или скачай Android APK. Никакой регистрации для старта.','cta.apk':'▣ Скачать Android APK','faq.title':'Вопросы, которые<br><em>важно задать.</em>','faq.privacy.q':'Мои данные действительно остаются на устройстве?','faq.privacy.a':'Да. В локальном режиме прогресс хранится в localStorage браузера, а встроенный ИИ обрабатывает запросы на твоём устройстве. Аккаунт и сервер не нужны. Микрофон используется только браузером или ОС для распознавания речи после твоего разрешения.','faq.model.q':'Сколько занимает загрузка AI-модели?','faq.model.a':'Размер зависит от выбранной модели и может составлять от сотен мегабайт до нескольких гигабайт. Загрузка выполняется один раз и затем модель хранится в кэше браузера. Для первого запуска нужен интернет и свободное место.','faq.browser.q':'Какие браузеры поддерживаются?','faq.browser.a':'Для локального ИИ лучше всего подходят актуальные Chrome или Edge на устройстве с WebGPU. Safari и Firefox поддерживают основные уроки и голосовые функции, но доступность WebGPU и скорость AI-модели могут отличаться.','faq.children.q':'Подходит ли приложение детям?','faq.children.a':'Приложение создано для обучения. Родителям стоит помочь ребёнку с первым запуском, разрешением микрофона и загрузкой модели. Не вводите в уроки личные или чувствительные данные.','footer.copy':'Учись. Говори. Расти.','footer.privacy':'Конфиденциальность'
+  'use strict';
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.documentElement.classList.remove('no-js');
+
+  /* ---------------- i18n (RU lives in the HTML) ---------------- */
+  const I18N = {
+    en: {
+      'meta.title': 'AI English Teacher: learn English with a talking teacher',
+      'nav.features': 'Features', 'nav.teachers': 'Teachers', 'nav.how': 'Get started', 'nav.faq': 'FAQ', 'nav.team': 'Team', 'nav.open': 'Open',
+      'hero.badge': 'Free · No sign-up · Right in your browser',
+      'hero.title': 'English with a teacher who <span class="grad">talks with you</span>',
+      'hero.lead': 'Emma and five more Pixar-style teachers explain, cheer you on and listen to your pronunciation through the microphone. Lessons, games and exams work instantly, nothing to download.',
+      'hero.open': 'Start for free', 'hero.apk': 'Android APK', 'hero.hear': 'Say hi to Emma',
+      'hero.t1': 'Voice and lip-sync', 'hero.t2': 'Pronunciation check', 'hero.t3': 'RU · EN · VI interface',
+      'stats.teachers': 'Pixar-style teachers', 'stats.langs': 'interface languages', 'stats.servers': 'servers and sign-ups', 'stats.free': 'free',
+      'features.kicker': 'Features', 'features.title': 'Everything you need to start speaking English',
+      'f1.t': 'Teachers talk', 'f1.d': 'A real voice, moving lips and blinking eyes. Your teacher reads tasks, praises and gives hints.',
+      'f2.t': 'Answer with your voice', 'f2.d': 'Speak into the microphone: the app recognises speech and rates pronunciation. Typing works too.',
+      'f3.t': 'Lessons and games', 'f3.d': 'Short lessons, word battles, a diary and rewards to keep you learning every day.',
+      'f4.t': 'Exams', 'f4.d': 'Check your level: listening, reading, writing and speaking with a detailed review.',
+      'f5.t': 'No sign-up', 'f5.d': 'Progress stays on your device only. No accounts, no servers.',
+      'f6.t': 'Smart AI, if you want', 'f6.d': 'Everything works without downloading a model. Want smarter chats? Turn on local AI in settings.',
+      'teachers.kicker': 'Teachers', 'teachers.title': 'Pick your teacher',
+      'how.kicker': 'Get started', 'how.title': 'Three steps and you are speaking',
+      's1.t': 'Open the app', 's1.d': 'In the browser on your phone or computer. No install needed.',
+      's2.t': 'Pick a teacher', 's2.d': 'Each has their own voice and personality. Switch any time.',
+      's3.t': 'Learn by speaking', 's3.d': 'Listen, repeat and answer into the mic. Your teacher helps and cheers.',
+      'faq.kicker': 'FAQ', 'faq.title': 'Frequently asked questions',
+      'q1': 'Do I need to download the AI?', 'a1': 'No. Lessons, answer checking, voice and microphone work right away. You can turn on a local model in settings if you like; it only makes free conversations smarter.',
+      'q2': 'I can\u2019t hear the teacher. What now?', 'a2': 'Tap the screen once: browsers allow sound only after a tap. Check the volume and silent mode. Voice works best in Chrome, Edge and Safari.',
+      'q3': 'How do I turn on the microphone?', 'a3': 'Press the mic button and allow access. If access is blocked, click the lock icon in the address bar and enable the microphone. Chrome needs the internet for speech recognition.',
+      'q4': 'Is it really free?', 'a4': 'Yes. No subscriptions and no sign-up. Progress is stored on your device.',
+      'q5': 'Does it work offline?', 'a5': 'Yes, after the first visit the app is cached. Only Chrome speech recognition needs a connection.',
+      'team.dev': 'Developer', 'team.devName': 'Paul Pavel Afanasyev', 'team.lead': 'Project lead', 'team.leadName': 'Mikhailov Sergey',
+      'final.title': 'Emma is waiting for you',
+      'footer.by': 'Developer: Paul Pavel Afanasyev · Project lead: Mikhailov Sergey', 'footer.privacy': 'Privacy',
+      greet: ["Hi there! I'm Emma, your English teacher.", "Let's learn English together. It's fun and easy!"],
     },
-    en: {},
-    vi: {}
+    vi: {
+      'meta.title': 'AI English Teacher: học tiếng Anh với giáo viên biết nói',
+      'nav.features': 'Tính năng', 'nav.teachers': 'Giáo viên', 'nav.how': 'Bắt đầu', 'nav.faq': 'Hỏi đáp', 'nav.team': 'Đội ngũ', 'nav.open': 'Mở',
+      'hero.badge': 'Miễn phí · Không cần đăng ký · Ngay trên trình duyệt',
+      'hero.title': 'Học tiếng Anh với giáo viên <span class="grad">trò chuyện cùng bạn</span>',
+      'hero.lead': 'Emma và năm giáo viên phong cách Pixar giảng bài, khen ngợi và nghe phát âm của bạn qua micro. Bài học, trò chơi và bài thi dùng được ngay, không cần tải gì.',
+      'hero.open': 'Bắt đầu miễn phí', 'hero.apk': 'Android APK', 'hero.hear': 'Chào Emma',
+      'hero.t1': 'Giọng nói và khẩu hình', 'hero.t2': 'Chấm phát âm', 'hero.t3': 'Giao diện RU · EN · VI',
+      'stats.teachers': 'giáo viên Pixar', 'stats.langs': 'ngôn ngữ giao diện', 'stats.servers': 'máy chủ và đăng ký', 'stats.free': 'miễn phí',
+      'features.kicker': 'Tính năng', 'features.title': 'Mọi thứ để bạn nói tiếng Anh',
+      'f1.t': 'Giáo viên biết nói', 'f1.d': 'Giọng nói thật, môi cử động và mắt chớp. Giáo viên đọc đề, khen và gợi ý.',
+      'f2.t': 'Trả lời bằng giọng nói', 'f2.d': 'Nói vào micro: ứng dụng nhận dạng và chấm phát âm. Gõ chữ cũng được.',
+      'f3.t': 'Bài học và trò chơi', 'f3.d': 'Bài học ngắn, đấu từ vựng, nhật ký và phần thưởng để học mỗi ngày.',
+      'f4.t': 'Bài thi', 'f4.d': 'Kiểm tra trình độ: nghe, đọc, viết và nói với phần nhận xét chi tiết.',
+      'f5.t': 'Không cần đăng ký', 'f5.d': 'Tiến độ chỉ lưu trên thiết bị của bạn. Không tài khoản, không máy chủ.',
+      'f6.t': 'AI thông minh tùy chọn', 'f6.d': 'Mọi thứ chạy mà không cần tải mô hình. Muốn hội thoại thông minh hơn? Bật AI cục bộ trong cài đặt.',
+      'teachers.kicker': 'Giáo viên', 'teachers.title': 'Chọn giáo viên của bạn',
+      'how.kicker': 'Bắt đầu', 'how.title': 'Ba bước là bạn đã nói được',
+      's1.t': 'Mở ứng dụng', 's1.d': 'Trên trình duyệt điện thoại hoặc máy tính. Không cần cài đặt.',
+      's2.t': 'Chọn giáo viên', 's2.d': 'Mỗi người có giọng và tính cách riêng. Đổi bất cứ lúc nào.',
+      's3.t': 'Học bằng giọng nói', 's3.d': 'Nghe, nhắc lại và trả lời vào micro. Giáo viên sẽ gợi ý và khen bạn.',
+      'faq.kicker': 'Hỏi đáp', 'faq.title': 'Câu hỏi thường gặp',
+      'q1': 'Có cần tải AI không?', 'a1': 'Không. Bài học, chấm bài, giọng nói và micro dùng được ngay. Bạn có thể bật mô hình cục bộ trong cài đặt nếu muốn, nó chỉ giúp hội thoại tự do thông minh hơn.',
+      'q2': 'Không nghe thấy giáo viên?', 'a2': 'Chạm vào màn hình một lần: trình duyệt chỉ cho phát âm thanh sau khi chạm. Kiểm tra âm lượng và chế độ im lặng. Giọng nói chạy tốt nhất trên Chrome, Edge và Safari.',
+      'q3': 'Bật micro thế nào?', 'a3': 'Bấm nút micro và cho phép truy cập. Nếu bị chặn, bấm biểu tượng ổ khóa trên thanh địa chỉ và bật micro. Chrome cần Internet để nhận dạng giọng nói.',
+      'q4': 'Có thật sự miễn phí?', 'a4': 'Có. Không thuê bao, không đăng ký. Tiến độ lưu trên thiết bị của bạn.',
+      'q5': 'Có dùng ngoại tuyến được không?', 'a5': 'Có, sau lần mở đầu ứng dụng được lưu lại. Chỉ nhận dạng giọng nói của Chrome cần mạng.',
+      'team.dev': 'Nhà phát triển', 'team.devName': 'Paul Pavel Afanasyev', 'team.lead': 'Trưởng dự án', 'team.leadName': 'Mikhailov Sergey',
+      'final.title': 'Emma đang chờ bạn',
+      'footer.by': 'Nhà phát triển: Paul Pavel Afanasyev · Trưởng dự án: Mikhailov Sergey', 'footer.privacy': 'Quyền riêng tư',
+      greet: ['Xin chào! Mình là Emma, cô giáo tiếng Anh của bạn.', 'Cùng học tiếng Anh thật vui nhé!'],
+      greetEn: ["Hi there! I'm Emma, your English teacher.", "Let's learn English together!"],
+    },
+    ru: { greet: ['Привет! Я Эмма, твой учитель английского.', 'Давай учиться вместе, это весело и просто!'], 'meta.title': document.title },
   };
-  copy.en = {
-    ...copy.ru,
-    'nav.features':'Features','nav.how':'How it works','nav.open':'Open the app','hero.eyebrow':'Your English. Your pace. Your device.','hero.title':'Speak English<br><em>with confidence.</em>','hero.lead':'Live voice teachers, playful lessons and private AI that runs right in your browser. No accounts. No servers.','cta.open':'Open the app <span>↗</span>','cta.how':'How it works ↓','hero.trust':'Learn independently — your progress stays with you','hero.teacher':'Warm & supportive','hero.ai':'On-device AI','hero.streak':'day streak','stats.private':'private by design','stats.languages':'interface languages','stats.levels':'English levels','stats.practice':'practice at your pace','features.kicker':'Everything for confident speech','features.title':'More than an app.<br><em>Your personal coach.</em>','features.lead':'Small daily steps become real confidence — without pressure or boring tables.','f.voice.tag':'Browser microphone','f.ai.tag':'On-device AI','f.games.tag':'XP · streaks · levels','f.exam.tag':'A1 — B2','f.voice.title':'Speak in real time','f.voice.body':'Practice conversation with voice teachers. Listen, answer and build skills that feel like a real conversation.','f.ai.title':'AI that respects privacy','f.ai.body':'The model downloads to your device and runs locally. Your exercises and answers are not sent to our server.','f.games.title':'Lessons that feel like play','f.games.body':'Vocabulary, grammar, listening, quests and XP keep you coming back and make progress visible.','f.exam.title':'IELTS & TOEFL','f.exam.body':'Practice reading, listening, writing and speaking — from your first step to exam level.','lang.kicker':'Learn in the language you know','lang.title':'English for the world,<br><em>guidance for you.</em>','how.kicker':'Getting started is easy','how.title':'Three steps to<br><em>a new habit.</em>','step.one.title':'Choose a goal','step.one.body':'Set your level, interests and the teacher you want to learn with.','step.two.title':'Practice','step.two.body':'Speak, listen and play for 5–15 minutes at your pace. You can even practice offline.','step.three.title':'See your growth','step.three.body':'Track streaks, XP and levels — then come back for your next small win.','download.kicker':'Ready to start speaking?','download.title':'Your English<br>starts here.','download.body':'Open the app in your browser or download the Android APK. No sign-up needed to start.','cta.apk':'▣ Download Android APK','faq.title':'Questions worth<br><em>asking.</em>','faq.privacy.q':'Does my data really stay on my device?','faq.privacy.a':'Yes. In local-first mode, progress is stored in your browser localStorage and the built-in AI processes prompts on your device. No account or server is required. Your browser or OS uses the microphone only for speech recognition after you grant permission.','faq.model.q':'How large is the AI model download?','faq.model.a':'It depends on the model and may range from hundreds of megabytes to several gigabytes. It downloads once and is then kept in browser storage. You need internet and free space for the first run.','faq.browser.q':'Which browsers are supported?','faq.browser.a':'Current Chrome or Edge with WebGPU are best for local AI. Safari and Firefox support the core lessons and voice features, but WebGPU availability and AI speed may vary.','faq.children.q':'Is the app suitable for children?','faq.children.a':'The app is built for learning. Parents should help with first launch, microphone permission and model download. Do not enter personal or sensitive information into lessons.','footer.copy':'Learn. Speak. Grow.','footer.privacy':'Privacy'
-  };
-  copy.vi = {
-    ...copy.ru,
-    'nav.features':'Tính năng','nav.how':'Cách hoạt động','nav.open':'Mở ứng dụng','hero.eyebrow':'Tiếng Anh của bạn. Nhịp độ của bạn. Thiết bị của bạn.','hero.title':'Nói tiếng Anh<br><em>thật tự tin.</em>','hero.lead':'Giáo viên giọng nói sống động, bài học thú vị và AI riêng tư chạy ngay trong trình duyệt. Không tài khoản. Không máy chủ.','cta.open':'Mở ứng dụng <span>↗</span>','cta.how':'Cách hoạt động ↓','hero.trust':'Tự học — tiến bộ luôn ở bên bạn','hero.teacher':'Ấm áp và tận tình','hero.ai':'AI trên thiết bị','hero.streak':'ngày liên tiếp','stats.private':'riêng tư','stats.languages':'ngôn ngữ giao diện','stats.levels':'trình độ tiếng Anh','stats.practice':'học theo nhịp độ riêng','features.kicker':'Mọi thứ để nói tự tin','features.title':'Không chỉ là ứng dụng.<br><em>Huấn luyện viên riêng.</em>','features.lead':'Mỗi bước nhỏ hằng ngày tạo nên sự tự tin lớn — không áp lực, không bảng biểu nhàm chán.','f.voice.tag':'Mic trình duyệt','f.ai.tag':'AI trên thiết bị','f.games.tag':'XP · chuỗi ngày · cấp độ','f.exam.tag':'A1 — B2','f.voice.title':'Nói trực tiếp','f.voice.body':'Luyện giao tiếp với giáo viên bằng giọng nói. Lắng nghe, trả lời và luyện tập như một cuộc trò chuyện thật.','f.ai.title':'AI tôn trọng quyền riêng tư','f.ai.body':'Mô hình được tải về thiết bị và chạy cục bộ. Bài tập và câu trả lời không được gửi lên máy chủ.','f.games.title':'Bài học như trò chơi','f.games.body':'Từ vựng, ngữ pháp, nghe, nhiệm vụ và XP giúp bạn quay lại mỗi ngày và thấy tiến bộ.','f.exam.title':'Luyện IELTS & TOEFL','f.exam.body':'Luyện đọc, nghe, viết và nói — từ bước đầu đến trình độ thi.','lang.kicker':'Học bằng ngôn ngữ quen thuộc','lang.title':'English cho thế giới,<br><em>giải thích dành cho bạn.</em>','how.kicker':'Bắt đầu thật dễ','how.title':'Ba bước để<br><em>tạo thói quen mới.</em>','step.one.title':'Chọn mục tiêu','step.one.body':'Chọn trình độ, sở thích và giáo viên bạn muốn học cùng.','step.two.title':'Luyện tập','step.two.body':'Nói, nghe và chơi 5–15 phút theo nhịp độ của bạn. Bạn có thể học cả khi không có mạng.','step.three.title':'Thấy tiến bộ','step.three.body':'Theo dõi chuỗi ngày học, XP và trình độ — rồi quay lại cho thành công nhỏ tiếp theo.','download.kicker':'Sẵn sàng bắt đầu nói?','download.title':'Tiếng Anh của bạn<br>bắt đầu từ đây.','download.body':'Mở ứng dụng trong trình duyệt hoặc tải APK Android. Không cần đăng ký để bắt đầu.','cta.apk':'▣ Tải APK Android','faq.title':'Những câu hỏi<br><em>quan trọng.</em>','faq.privacy.q':'Dữ liệu có thực sự ở trên thiết bị không?','faq.privacy.a':'Có. Ở chế độ local-first, tiến độ được lưu trong localStorage của trình duyệt và AI tích hợp xử lý trên thiết bị. Không cần tài khoản hay máy chủ. Trình duyệt hoặc hệ điều hành chỉ dùng mic để nhận dạng giọng nói sau khi bạn cho phép.','faq.model.q':'Tải mô hình AI mất bao lâu?','faq.model.a':'Tùy mô hình, dung lượng có thể từ vài trăm MB đến vài GB. Mô hình được tải một lần rồi lưu trong bộ nhớ trình duyệt. Lần đầu cần Internet và dung lượng trống.','faq.browser.q':'Trình duyệt nào được hỗ trợ?','faq.browser.a':'Chrome hoặc Edge mới nhất có WebGPU phù hợp nhất cho AI cục bộ. Safari và Firefox hỗ trợ bài học và giọng nói cơ bản, nhưng WebGPU và tốc độ AI có thể khác nhau.','faq.children.q':'Ứng dụng có phù hợp với trẻ em không?','faq.children.a':'Ứng dụng được thiết kế để học tập. Phụ huynh nên hỗ trợ lần mở đầu, quyền micro và tải mô hình. Không nhập thông tin cá nhân hoặc nhạy cảm vào bài học.','footer.copy':'Học. Nói. Tiến bộ.','footer.privacy':'Quyền riêng tư'
-  };
-  const safeGet = (key) => { try { return localStorage.getItem(key); } catch { return null; } };
-  const safeSet = (key, value) => { try { localStorage.setItem(key, value); } catch {} };
-  const savedLocale = safeGet('aet_landing_locale');
-  const browserLocale = (navigator.language || '').toLowerCase();
-  const locale = savedLocale || (browserLocale.startsWith('vi') ? 'vi' : browserLocale.startsWith('en') ? 'en' : 'ru');
-  function render(lang) {
-    const strings = copy[lang] || copy.ru;
+  const VOICE_LANG = { ru: 'ru-RU', en: 'en-US', vi: 'vi-VN' };
+  const nodes = $$('[data-i18n]');
+  nodes.forEach((el) => { I18N.ru[el.dataset.i18n] = el.innerHTML; });
+  const saved = (() => { try { return localStorage.getItem('aet_site_lang'); } catch { return null; } })();
+  const nav = (navigator.language || 'ru').slice(0, 2).toLowerCase();
+  let lang = I18N[saved] ? saved : (I18N[nav] ? nav : 'ru');
+
+  function applyLang(next) {
+    lang = I18N[next] ? next : 'ru';
+    const dict = I18N[lang];
+    nodes.forEach((el) => { const v = dict[el.dataset.i18n] ?? I18N.ru[el.dataset.i18n]; if (v != null) el.innerHTML = v; });
     document.documentElement.lang = lang;
-    document.querySelectorAll('[data-i18n]').forEach((node) => { const value = strings[node.dataset.i18n]; if (value != null) node.innerHTML = value; });
-    document.querySelectorAll('[data-lang]').forEach((button) => button.classList.toggle('active', button.dataset.lang === lang));
-    safeSet('aet_landing_locale', lang);
+    document.title = dict['meta.title'] || I18N.ru['meta.title'];
+    $$('.lang button').forEach((b) => { const on = b.dataset.lang === lang; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
+    try { localStorage.setItem('aet_site_lang', lang); } catch {}
+    typeGreeting();
   }
-  document.querySelectorAll('[data-lang]').forEach((button) => button.addEventListener('click', () => render(button.dataset.lang)));
-  render(locale);
+  $$('.lang button').forEach((b) => b.addEventListener('click', () => { applyLang(b.dataset.lang); stopSpeech(); }));
+
+  /* ---------------- animated aurora background ---------------- */
+  const canvas = $('#bg');
+  const ctx = canvas.getContext('2d');
+  const BLOBS = [
+    { c: [124, 92, 255], x: .15, y: .2, r: .55, sx: .00011, sy: .00017 },
+    { c: [20, 184, 166], x: .85, y: .25, r: .5, sx: .00013, sy: .0001 },
+    { c: [255, 95, 162], x: .7, y: .85, r: .45, sx: .00009, sy: .00015 },
+    { c: [255, 181, 71], x: .2, y: .9, r: .4, sx: .00016, sy: .00008 },
+    { c: [91, 124, 255], x: .5, y: .5, r: .35, sx: .00012, sy: .00014 },
+  ];
+  let W = 0; let H = 0; let running = true;
+  function resize() {
+    // Low-res canvas, upscaled by CSS: cheap and naturally soft.
+    W = canvas.width = Math.max(64, Math.round(innerWidth / 6));
+    H = canvas.height = Math.max(64, Math.round(innerHeight / 6));
+  }
+  function frame(t) {
+    ctx.fillStyle = '#f4f7fb';
+    ctx.fillRect(0, 0, W, H);
+    const m = Math.max(W, H);
+    BLOBS.forEach((b, i) => {
+      const x = (b.x + Math.sin(t * b.sx + i) * .18) * W;
+      const y = (b.y + Math.cos(t * b.sy + i * 2) * .16) * H;
+      const r = b.r * m * (1 + Math.sin(t * .0003 + i) * .08);
+      const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+      g.addColorStop(0, `rgba(${b.c},.34)`);
+      g.addColorStop(1, `rgba(${b.c},0)`);
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, W, H);
+    });
+    if (running && !reduced) requestAnimationFrame(frame);
+  }
+  resize();
+  addEventListener('resize', resize, { passive: true });
+  document.addEventListener('visibilitychange', () => {
+    running = !document.hidden;
+    if (running && !reduced) requestAnimationFrame(frame);
+  });
+  requestAnimationFrame(frame);
+
+  // Floating words drifting up behind the content.
+  const WORDS = ['Hello!', 'Привет', 'Xin chào', 'ABC', 'Great job!', 'apple', 'I can do it', '⭐', 'Thank you', 'Спасибо', 'Cảm ơn', 'How are you?', '🎤', 'book', 'Well done!'];
+  if (!reduced) {
+    const box = $('#floaters');
+    const count = innerWidth < 680 ? 9 : 16;
+    for (let i = 0; i < count; i += 1) {
+      const s = document.createElement('span');
+      s.textContent = WORDS[i % WORDS.length];
+      s.style.left = `${(i / count) * 100 + Math.random() * 4}%`;
+      s.style.fontSize = `${14 + Math.random() * 22}px`;
+      s.style.animationDuration = `${22 + Math.random() * 26}s`;
+      s.style.animationDelay = `${-Math.random() * 40}s`;
+      box.appendChild(s);
+    }
+  }
+
+  /* ---------------- top bar + reveal ---------------- */
+  const topbar = $('#topbar');
+  const onScroll = () => topbar.classList.toggle('scrolled', scrollY > 8);
+  addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  if ('IntersectionObserver' in window && !reduced) {
+    const io = new IntersectionObserver((entries) => entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' });
+    $$('.reveal').forEach((el, i) => { el.style.transitionDelay = `${(i % 3) * 70}ms`; io.observe(el); });
+  } else $$('.reveal').forEach((el) => el.classList.add('in'));
+
+  /* ---------------- teacher portraits (from the app's data modules) ---------------- */
+  const REV = 'e19bed09d0cbce96d412d2d4746861d4806399b5';
+  const SOURCES = [
+    `https://cdn.jsdelivr.net/gh/paulafanasyev/ai-english-teacher@${REV}/apps/web/src/avatar/pixar/`,
+    `https://raw.githubusercontent.com/paulafanasyev/ai-english-teacher/${REV}/apps/web/src/avatar/pixar/`,
+  ];
+  async function fetchText(path) {
+    for (const base of SOURCES) {
+      try { const r = await fetch(base + path, { cache: 'force-cache' }); if (r.ok) return await r.text(); } catch {}
+    }
+    throw new Error('portrait unavailable');
+  }
+  const parseModule = (src) => JSON.parse(src.slice(src.indexOf('export default') + 14).trim().replace(/;\s*$/, ''));
+  const parseString = (src) => (src.match(/['"](data:image\/[^'"]+)['"]/) || [])[1];
+  async function loadFull(id) { return parseModule(await fetchText(`${id}.js`)); }
+  async function loadBase(id) {
+    if (['alex', 'linh', 'minh'].includes(id)) return parseString(await fetchText(`${id}/base.js`));
+    return loadFull(id).then((d) => d.base);
+  }
+
+  /* ---------------- Emma: portrait, blink, lip-sync ---------------- */
+  const emmaBtn = $('#emma');
+  const face = $('#emmaFace');
+  const layers = {};
+  const target = { A: 0, O: 0, E: 0, happy: 0, blink: 0 };
+  const cur = { ...target };
+  let emmaReady = false;
+  const emmaData = loadFull('emma').then((data) => {
+    const pct = (v) => `${(v / data.size) * 100}%`;
+    const base = new Image();
+    base.className = 'base'; base.alt = 'Emma'; base.src = data.base; base.decoding = 'async';
+    face.appendChild(base);
+    ['happy', 'A', 'O', 'E', 'blink'].forEach((k) => {
+      const l = data.layers[k]; if (!l) return;
+      const img = new Image();
+      img.className = 'layer'; img.alt = ''; img.src = l.src;
+      Object.assign(img.style, { left: pct(l.x), top: pct(l.y), width: pct(l.w), height: pct(l.h) });
+      face.appendChild(img); layers[k] = img;
+    });
+    emmaBtn.classList.add('ready');
+    emmaReady = true;
+    target.happy = 1;
+    return data;
+  }).catch(() => null);
+  let lastT = performance.now();
+  (function tick(now) {
+    const dt = Math.min(64, now - lastT); lastT = now;
+    Object.keys(target).forEach((k) => {
+      const speed = k === 'blink' ? .6 : k === 'happy' ? .12 : .45;
+      cur[k] += (target[k] - cur[k]) * Math.min(1, speed * dt / 16);
+      if (layers[k]) layers[k].style.opacity = cur[k].toFixed(3);
+    });
+    requestAnimationFrame(tick);
+  })(lastT);
+  (function blink() {
+    setTimeout(() => {
+      target.blink = 1;
+      setTimeout(() => { target.blink = 0; }, 110);
+      blink();
+    }, 2200 + Math.random() * 3800);
+  })();
+  const mouth = (k) => { ['A', 'O', 'E'].forEach((m) => { target[m] = m === k ? 1 : 0; }); };
+  const visemeOf = (ch) => {
+    const c = ch.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    if ('aаяă'.includes(c)) return 'A';
+    if ('oоuуwюơư'.includes(c)) return 'O';
+    if ('mbpмбп'.includes(c)) return null;
+    return 'E';
+  };
+  let mouthTimers = [];
+  function animateWord(word) {
+    mouthTimers.forEach(clearTimeout); mouthTimers = [];
+    [...word].filter((c) => /\p{L}/u.test(c)).forEach((c, i) => mouthTimers.push(setTimeout(() => mouth(visemeOf(c)), i * 70)));
+    mouthTimers.push(setTimeout(() => mouth(null), word.length * 70 + 60));
+  }
+  let babbleTimer = 0; let lastBoundary = 0;
+  function startTalking() {
+    emmaBtn.classList.add('talking'); target.happy = 0;
+    const babble = () => {
+      if (performance.now() - lastBoundary > 300) { const r = Math.random(); mouth(r < .38 ? 'A' : r < .62 ? 'E' : r < .8 ? 'O' : null); }
+      babbleTimer = setTimeout(babble, 90 + Math.random() * 120);
+    };
+    clearTimeout(babbleTimer); babbleTimer = setTimeout(babble, 200);
+  }
+  function stopTalking() {
+    emmaBtn.classList.remove('talking'); clearTimeout(babbleTimer); mouthTimers.forEach(clearTimeout); mouth(null); target.happy = 1;
+  }
+
+  /* ---------------- speech (robust for Chrome) ---------------- */
+  const synth = window.speechSynthesis;
+  let voices = [];
+  const loadVoices = () => { try { voices = synth.getVoices(); } catch {} };
+  if (synth) { loadVoices(); synth.addEventListener?.('voiceschanged', loadVoices); }
+  const FEMALE = /female|samantha|aria|jenny|zira|victoria|karen|tessa|sonia|libby|ava|allison|susan|milena|irina|svetlana|linh|hoaimy|hoai my|google us english|google русский|google tiếng việt/i;
+  function pickVoice(code, attempt) {
+    const key = code.slice(0, 2);
+    let list = voices.filter((v) => (v.lang || '').toLowerCase().replace('_', '-').startsWith(key));
+    if (attempt === 1) list = list.filter((v) => v.localService !== false);
+    if (attempt >= 2 || !list.length) return null;
+    return list.find((v) => FEMALE.test(v.name)) || list.find((v) => v.lang === code) || list[0];
+  }
+  let speakId = 0;
+  function stopSpeech() { speakId += 1; try { if (synth && (synth.speaking || synth.pending)) synth.cancel(); } catch {} stopTalking(); }
+  function say(lines, code) {
+    if (!synth || typeof SpeechSynthesisUtterance !== 'function') { pulseOnly(); return; }
+    const busy = synth.speaking || synth.pending;
+    stopSpeech();
+    const id = speakId;
+    let i = 0; let attempt = 0;
+    const next = () => {
+      if (id !== speakId) return;
+      if (i >= lines.length) { stopTalking(); return; }
+      const u = new SpeechSynthesisUtterance(lines[i]);
+      u.lang = code; u.rate = .95; u.pitch = 1.08; u.volume = 1;
+      const v = pickVoice(code, attempt); if (v) u.voice = v;
+      let started = false;
+      const watchdog = setTimeout(() => { if (!started && id === speakId) { try { synth.cancel(); } catch {} if (attempt < 2) { attempt += 1; setTimeout(next, 120); } else { stopTalking(); pulseOnly(); } } }, 2800);
+      u.onstart = () => { started = true; startTalking(); };
+      u.onboundary = (e) => { if (e.name === 'sentence') return; lastBoundary = performance.now(); const w = lines[i].slice(e.charIndex).match(/^\S+/); if (w) animateWord(w[0]); };
+      u.onend = () => { clearTimeout(watchdog); if (id !== speakId) return; if (!started) return; i += 1; setTimeout(next, 220); };
+      u.onerror = (e) => { clearTimeout(watchdog); if (id !== speakId || e.error === 'interrupted' || e.error === 'canceled') return; if (e.error === 'not-allowed') { armGesture(); return; } if (attempt < 2) { attempt += 1; setTimeout(next, 120); } else { stopTalking(); pulseOnly(); } };
+      window.__emmaU = u; // keep a reference so Chrome does not drop the events
+      try { synth.resume(); synth.speak(u); } catch { stopTalking(); }
+    };
+    // Chrome drops speak() issued right after cancel(): give it a beat.
+    if (!voices.length) { loadVoices(); setTimeout(next, 250); } else if (busy) setTimeout(next, 100); else next();
+  }
+  function pulseOnly() { startTalking(); setTimeout(stopTalking, 2600); }
+  function greet() {
+    const dict = I18N[lang];
+    let lines = dict.greet; let code = VOICE_LANG[lang];
+    loadVoices();
+    const has = voices.some((v) => (v.lang || '').toLowerCase().startsWith(code.slice(0, 2)));
+    if (!has && voices.length && dict.greetEn) { lines = dict.greetEn; code = 'en-US'; }
+    say(lines, code);
+  }
+
+  /* ---------------- greeting bubble ---------------- */
+  const bubble = $('#bubble'); const bubbleText = $('#bubbleText');
+  let typeTimer = 0;
+  function typeGreeting() {
+    const text = I18N[lang].greet.join(' ');
+    clearTimeout(typeTimer); bubble.classList.remove('done');
+    if (reduced) { bubbleText.textContent = text; bubble.classList.add('done'); return; }
+    let n = 0;
+    const step = () => { bubbleText.textContent = text.slice(0, n); n += 1; if (n <= text.length) typeTimer = setTimeout(step, 28); else bubble.classList.add('done'); };
+    step();
+  }
+
+  // Browsers need one user gesture before speech: greet on the first tap anywhere.
+  let greeted = false;
+  function armGesture() {
+    const once = (e) => {
+      if (e.target.closest && e.target.closest('a[href]:not([href^="#"]), #emma, #talkBtn, .lang')) return; // own handlers / leaving
+      removeEventListener('pointerdown', once, true); removeEventListener('keydown', once, true);
+      if (!greeted) { greeted = true; greet(); }
+    };
+    addEventListener('pointerdown', once, true); addEventListener('keydown', once, true);
+  }
+  const hello = (e) => { e.stopPropagation(); greeted = true; greet(); };
+  emmaBtn.addEventListener('click', hello);
+  $('#talkBtn').addEventListener('click', hello);
+
+  applyLang(lang);
+  emmaData.then(() => {
+    if (navigator.userActivation && navigator.userActivation.hasBeenActive) { greeted = true; setTimeout(greet, 600); }
+    else { armGesture(); if (!reduced) pulseOnly(); }
+  });
+
+  // Teacher row portraits.
+  $$('.t-img').forEach((el) => {
+    el.textContent = '🙂';
+    loadBase(el.dataset.id).then((src) => {
+      if (!src) return;
+      const img = new Image(); img.alt = ''; img.loading = 'lazy'; img.src = src;
+      el.textContent = ''; el.appendChild(img);
+    }).catch(() => {});
+  });
 })();

@@ -4,15 +4,21 @@ import { api } from '../../core/api.js';
 import { LOCALES } from '../../i18n/index.js';
 import { teacherById } from '../../data/teachers.js';
 import { music } from '../../audio/music.js';
+import { tts } from '../../audio/tts.js';
 import Avatar from '../../avatar/Avatar.jsx';
 import { Toggle, Select } from '../../ui/kit.jsx';
 import { sfx } from '../../audio/sfx.js';
 import AISettings from './AISettings.jsx';
+import About from './About.jsx';
+
+const TEST = { ru: 'Привет! Это проверка звука.', en: 'Hi! This is a sound check.', vi: 'Xin chào! Đây là kiểm tra âm thanh.' };
+const TEST_LABEL = { ru: 'Проверить голос', en: 'Test voice', vi: 'Thử giọng' };
 
 export default function Settings() {
   const { user, prefs, setPref, locale, setLocale } = useApp();
   const t = useT();
   const teacher = teacherById(user.teacherId);
+  const testVoice = () => { tts.unlock(); tts.speak(TEST[locale] || TEST.en, teacher, { force: true, lang: locale }); };
 
   return (
     <div className="max-w-xl mx-auto space-y-5">
@@ -29,13 +35,15 @@ export default function Settings() {
         {prefs.musicOn && <><Select value={prefs.musicStyle} onChange={(v) => setPref('musicStyle', v)} options={music.styles.map((s) => ({ value: s, label: t('music.' + s) }))} /><div><div className="label mb-1">{t('settings.volume')}</div><input type="range" min="0" max="1" step="0.05" value={prefs.musicVol} onChange={(e) => setPref('musicVol', Number(e.target.value))} className="w-full accent-[rgb(var(--c-primary))]" /></div></>}
         <Toggle checked={prefs.sfxOn} onChange={(v) => setPref('sfxOn', v)} label={'✨ ' + t('settings.sfx')} />
         <Toggle checked={prefs.voiceOn} onChange={(v) => setPref('voiceOn', v)} label={'🗣 ' + t('settings.voice')} />
+        <button className="btn-ghost !py-2 text-sm" onClick={testVoice}>▶️ {TEST_LABEL[locale] || TEST_LABEL.en}</button>
       </div>
-      <AISettings />
       <div className="card p-5 flex items-center gap-4">
         <div className="w-16 shrink-0"><Avatar teacher={teacher} rounded="rounded-2xl" frame={user.frame} /></div>
         <div className="flex-1"><div className="label">{t('settings.teacher')}</div><div className="font-black">{teacher.emoji} {teacher.name}</div></div>
         <Link to="/teacher" className="btn-ghost !py-2 text-sm">🔄 {t('home.changeTeacher')}</Link>
       </div>
+      <AISettings />
+      <About />
       {api.demo && <div className="card p-5 border-2 !border-amber-200 bg-amber-50/50"><div className="font-black mb-1">🧪 {t('settings.demo.title')}</div><p className="text-sm font-semibold text-ink/60">{t('settings.demo.desc')}</p><button className="btn-ghost !py-2 text-xs mt-3" onClick={async () => { await api.resetDemo(); location.reload(); }}>♻️ Reset demo data</button></div>}
     </div>
   );
