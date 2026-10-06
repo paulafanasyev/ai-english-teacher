@@ -1,0 +1,60 @@
+# MOVE THIS FILE TO .github/workflows/pages.yml (GitHub tokens without the
+# "workflow" scope cannot create workflow files directly).
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install web dependencies
+        working-directory: apps/web
+        run: npm install --no-audit --no-fund --legacy-peer-deps
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Prepare Pages staging directory
+        run: |
+          rm -rf _site
+          mkdir -p _site
+      - name: Build app
+        working-directory: apps/web
+        run: npx vite build --base=/ai-english-teacher/app/ --outDir ../../_site/app
+      - name: Add marketing site and Pages markers
+        run: |
+          cp -R site/. _site/
+          touch _site/.nojekyll
+          test -f _site/404.html
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,65 +1,60 @@
-# 🎓 AI English & Math Teacher
+# 🎓 AI English Teacher
 
-Образовательная платформа с ИИ-преподавателями в виде ультрареалистичных говорящих аватаров.
-Живой голосовой разговор, уроки по уровням, геймификация, подготовка к IELTS/TOEFL, курсы других языков и предметов, электронный дневник и кабинеты учителя/родителя. Интерфейс на **русском, английском и вьетнамском**.
+**AI English Teacher** — local-first приложение для изучения английского с голосовыми преподавателями, уроками, играми и приватным ИИ прямо в браузере.
 
-> An educational platform where lifelike AI teacher avatars teach via live voice conversation — leveled lessons, gamification, IELTS/TOEFL prep, multi-language courses, an electronic diary and teacher/parent dashboards. UI in **Russian, English and Vietnamese**.
+🌐 **Сайт:** https://paulafanasyev.github.io/ai-english-teacher/  ·  **Приложение:** https://paulafanasyev.github.io/ai-english-teacher/app/
 
-**Демо / Live demo:** https://hyperagent.com/s/VS1PzpQ__L-IazxT_gUHEA
-Демо-аккаунты (кнопки на входе): `student@demo / demo123`, `teacher@demo / teacher123`, `parent@demo / parent123`, `admin@demo / admin123`.
+## Что внутри
 
----
+- голосовая практика с анимированными SVG-учителями (lip-sync по виземам, моргание, эмоции);
+- озвучка на EN/RU/VI через браузерный или нативный TTS, с понятными ошибками и fallback;
+- уроки A1–B2, XP, серии занятий и мини-игры;
+- тренировка IELTS / TOEFL: reading, listening, writing (с оценкой от локального ИИ), speaking;
+- интерфейс на русском, английском и вьетнамском;
+- local-first режим: прогресс хранится в `localStorage`, отдельный API не нужен;
+- встроенный in-browser LLM (WebLLM, Qwen2.5 0.5B по умолчанию) включается в Настройках и работает на устройстве через WebGPU. Его «должностная инструкция» — реестр задач в `apps/web/src/ai/tasks.js` (tutor_reply, correct_sentence, explain_grammar, grade_writing, speaking_feedback, translate_hint, generate_exercise, placement_estimate, safety_filter); у каждой задачи есть валидация и rule-based fallback, поэтому приложение работает и без модели.
 
-## ✨ Возможности / Features
-- 🧑‍🏫 6 ИИ-учителей-аватаров с голосом (Web Speech в браузере / нативный плагин на устройстве).
-- 🎤 Разговорный клуб: голосовой диалог с учителем (микрофон).
-- 📖 Уроки A1–C1 с реакцией учителя, XP, монетами, стриками.
-- 🎮 Мини-игры: WordBattle, GrammarShooter, Quest, Memory.
-- 📝 IELTS / TOEFL: практика по разделам + пробный тест с оценкой CEFR.
-- 📚 Курсы: испанский, немецкий, французский (юниты: слова/фразы/квиз, полностью RU/EN/VI), математика (демо).
-- 📔 Электронный дневник, кабинет учителя и родителя (RBAC).
-- 🌐 Полная локализация RU / EN / VI. PWA + нативные обёртки (Android/iOS через Capacitor).
+Публичная GitHub Pages-сборка по умолчанию **не подключается к Express API**. Серверный режим включается только через `VITE_API_URL`. Локальные демо-данные предназначены для обучения и прототипирования, это не серверная авторизация.
 
-## 🚀 Быстрый старт / Quick start
+## Быстрый старт
+
 ```bash
-# 1) Мгновенно, без установки — открыть в браузере:
-apps/web/dist-demo/index.html            # однофайловое демо
-
-# 2) Продакшн-веб без сборки (полностью офлайн):
-npx serve apps/web/dist                  # → http://localhost:3000 (Chrome; микрофон и голос работают)
-
-# 3) Полный стек (сервер + БД):
-docker compose up                        # Postgres + API + web (см. DEPLOY.md)
-```
-Подробности — в `START-HERE.md`. Прод-деплой (VPS+домен+HTTPS) — `DEPLOY.md` и `scripts/deploy.sh`.
-
-## 🏗 Архитектура / Stack
-- **Веб:** React 18 + Tailwind (SPA), `apps/web` (демо-режим на localStorage / HTTP-режим при заданном `VITE_API_URL`).
-- **API:** Node.js / Express / Prisma / PostgreSQL, `apps/api` (JWT с ротацией, RBAC, zod, helmet, rate-limit).
-- **Мобайл:** Capacitor (Android/iOS), нативный микрофон через плагин + `scripts/patch-native.mjs`.
-- **CI:** GitHub Actions — `.github/workflows/mobile-build.yml` (APK/IPA), `api-tests.yml` (vitest).
-- **Без внешних API-ключей:** речь — SpeechSynthesis, слух — Web Speech API / нативный плагин, музыка — WebAudio.
-
-## 📂 Структура / Structure
-```
-apps/web        — фронтенд (React+Tailwind); сборки dist/ и dist-demo/
-apps/api        — бэкенд (Express+Prisma); тесты (vitest, фейковая Prisma)
-scripts/        — deploy.sh, make-keystore.sh, patch-native.mjs, backup.sh, restore.sh
-tools/          — офлайн-сборщик (fetch-vendor.mjs, build.mjs)
-docs/           — гайды (APK/iOS/деплой/CI), маркетинг, деплой- и демо-чеклисты
-.github/        — CI workflows
+cd apps/web
+npm install
+npm run dev
 ```
 
-## 📱 Сборка мобильных приложений / Mobile builds
-APK (Android) и IPA (iOS) собираются через GitHub Actions (`.github/workflows/mobile-build.yml`) или локально (Capacitor). Микрофон работает в нативной версии. Пошагово — `docs/APK-build-guide.html`, `docs/iOS-build-guide.html`, `docs/ci-signed-apk.html`.
+Для production-сборки: `npm run build && npm run preview`.
 
-## 🧪 Тесты / Tests
-```bash
-cd apps/api && npm install && npm test    # vitest: RBAC кабинетов/журнала и др.
+Голосовой ввод зависит от разрешений браузера/ОС. Для локальной AI-модели нужен современный Chrome или Edge с WebGPU; первый запуск скачивает модель (~300–1100 МБ), дальше она берётся из кэша браузера. Без WebGPU всё работает в базовом режиме.
+
+## GitHub Pages
+
+Workflow `pages.yml` находится в `.github/workflows/` и на push в `main` собирает React-приложение в `/app/`, копирует статический лендинг из `site/` в корень и публикует Pages. Включите один раз **Settings → Pages → Source → GitHub Actions**. `web-ci.yml` проверяет web-сборку на каждом push и PR.
+
+## Мобильная версия
+
+Capacitor-конфигурация и Android/iOS workflow остаются в репозитории. APK, когда опубликован, доступен на https://github.com/paulafanasyev/ai-english-teacher/releases/latest
+
+## Структура
+
+```text
+apps/web        — React 18 + Vite SPA, HashRouter, PWA, local-first API
+apps/web/src/ai — WebLLM-движок, каталог моделей и реестр задач ИИ
+apps/web/src/avatar — SVG-учителя с lip-sync
+apps/api        — необязательный Express API
+site/           — статический маркетинговый сайт (RU/EN/VI) + privacy policy
+.github/workflows — GitHub Pages deploy и web CI
 ```
 
-## 👥 Разработка / Developers
+## English (short)
+
+Local-first React/Vite SPA for GitHub Pages. Progress lives in browser `localStorage`; an optional in-browser LLM (WebLLM over WebGPU) powers tutoring, corrections and writing feedback, with rule-based fallbacks everywhere. Run `cd apps/web && npm install && npm run dev`. To deploy: set **Settings → Pages → Source → GitHub Actions**; the workflows already live in `.github/workflows/`.
+
+## Разработка / Developers
+
 **Pavel Afanasev** · **Sergei Mikhailov**
 
-## 📄 Лицензия / License
+## Лицензия / License
+
 Proprietary © 2026. Все права защищены.
