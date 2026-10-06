@@ -12,7 +12,31 @@ const MOUTHS = ['A', 'O', 'E'];
 const VISEME_TO_LAYER = { rest: null, M: null, F: 'E', A: 'A', I: 'E', E: 'E', L: 'A', O: 'O', U: 'O', W: 'O' };
 const HAPPY = new Set(['happy', 'encourage', 'excited', 'proud']);
 
-export const teacherAsset = (id, layer = 'base') => `assets/teachers/${id}/${layer}.webp`;
+// Portraits ship as lazily-loaded JS modules with WebP data URLs (no extra
+// static files to deploy; each teacher is ~20 KB and loads on first use).
+const LOADERS = {
+  emma: () => import('./pixar/emma.js'),
+  james: () => import('./pixar/james.js'),
+  sofia: () => import('./pixar/sofia.js'),
+  alex: () => import('./pixar/alex.js'),
+  linh: () => import('./pixar/linh.js'),
+  minh: () => import('./pixar/minh.js'),
+};
+const cache = {};
+function usePortrait(id) {
+  const [data, setData] = useState(() => cache[id] || null);
+  const [failed, setFailed] = useState(false);
+  useEffect(() => {
+    let alive = true;
+    if (cache[id]) { setData(cache[id]); return undefined; }
+    const load = LOADERS[id];
+    if (!load) { setFailed(true); return undefined; }
+    load().then((m) => { cache[id] = m.default; if (alive) setData(m.default); }).catch(() => { if (alive) setFailed(true); });
+    return () => { alive = false; };
+  }, [id]);
+  return { data, failed };
+}
+const pct = (v, size) => `${(v / size) * 100}%`;
 
 function useReducedMotion() {
   const [reduced, setReduced] = useState(false);
@@ -29,12 +53,12 @@ function useReducedMotion() {
 
 export default function Avatar({ teacher, emotion = 'neutral', talking = false, frame = 'none', className = '', rounded = 'rounded-[26%]' }) {
   const id = teacher?.id;
-  const [missing, setMissing] = useState(false);
-  if (!PIXAR.has(id) || missing) return <SvgAvatar teacher={teacher} emotion={emotion} frame={frame} className={className} rounded={rounded} />;
-  return <PixarAvatar teacher={teacher} emotion={emotion} talking={talking} frame={frame} className={className} rounded={rounded} onMissing={() => setMissing(true)} />;
+  const { data, failed } = usePortrait(PIXAR.has(id) ? id : null);
+  if (!PIXAR.has(id) || failed) return <SvgAvatar teacher={teacher} emotion={emotion} frame={frame} className={className} rounded={rounded} />;
+  return <PixarAvatar teacher={teacher} data={data} emotion={emotion} talking={talking} frame={frame} className={className} rounded={rounded} />;
 }
 
-function PixarAvatar({ teacher, emotion, talking, frame, className, rounded, onMissing }) {
+function PixarAvatar({ teacher, data, emotion, talking, frame, className, rounded }) {
   const id = teacher.id;
   const refs = useRef({});
   const target = useRef({ A: 0, O: 0, E: 0, happy: 0, blink: 0 });
@@ -111,11 +135,14 @@ function PixarAvatar({ teacher, emotion, talking, frame, className, rounded, onM
       <style>{AVATAR_CSS}</style>
       <div className={`w-full aspect-square overflow-hidden ${rounded} ${FRAME_CLS[frame] || ''}`} style={{ background: teacher.bg }}>
         <div className="relative w-full h-full" style={{ animation: motion, transformOrigin: '50% 90%' }}>
-          <img src={teacherAsset(id)} alt={teacher.name || 'Teacher'} draggable="false" onError={onMissing} className="absolute inset-0 w-full h-full object-cover select-none" />
-          {LAYERS.map((k) => (
-            <img key={k} ref={(el) => { refs.current[k] = el; }} src={teacherAsset(id, k)} alt="" aria-hidden="true" draggable="false"
-              className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none" style={{ opacity: 0 }} />
-          ))}
+          {data && <img src={data.base} alt={teacher.name || 'Teacher'} draggable="false" className="absolute inset-0 w-full h-full object-cover select-none" />}
+          {data && LAYERS.map((k) => {
+            const l = data.layers[k];
+            if (!l) return null;
+            return <img key={k} ref={(el) => { refs.current[k] = el; }} src={l.src} alt="" aria-hidden="true" draggable="false"
+              className="absolute select-none pointer-events-none"
+              style={{ left: pct(l.x, data.size), top: pct(l.y, data.size), width: pct(l.w, data.size), height: pct(l.h, data.size), opacity: 0 }} />;
+          })}
         </div>
       </div>
     </div>
