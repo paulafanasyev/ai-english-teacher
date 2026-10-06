@@ -1,88 +1,170 @@
-// Student speech recognition (микрофон).
-// В НАТИВНОМ приложении (Capacitor APK/IPA) Web Speech API недоступен
-// (в iOS WKWebView SpeechRecognition отсутствует, в Android WebView нестабилен),
-// поэтому используем плагин @capacitor-community/speech-recognition через
-// РАНТАЙМ-МОСТ window.Capacitor.Plugins — без npm-импорта, чтобы не ломать
-// офлайн-сборку веба. В браузере — обычный Web Speech API (Chrome).
-// В любом случае UI всегда даёт текстовый ввод-фолбэк.
+// Student speech recognition. The browser API is used where available; the
+// Capacitor plugin is resolved through the runtime bridge for native shells.
+const root = typeof window !== 'undefined' ? window : null;
+const webSR = root && (root.SpeechRecognition || root.webkitSpeechRecognition);
 
-const webSR = typeof window !== 'undefined' ? (window.SpeechRecognition || window.webkitSpeechRecognition) : null;
-
-// Доступ к нативному плагину ПО ИМЕНИ. window.Capacitor.registerPlugin
-// инъектируется нативным слоем ДО загрузки страницы, поэтому плагин доступен
-// без npm-импорта. Раньше читали только Capacitor.Plugins.SpeechRecognition —
-// а он НЕ populated, пока никто не вызвал registerPlugin; из-за этого микрофон
-// на устройстве не запускался (nativeSR() возвращал null).
 function nativePlugin(name) {
-  const C = typeof window !== 'undefined' ? window.Capacitor : null;
+  const C = root && root.Capacitor;
   if (!C || typeof C.isNativePlatform !== 'function' || !C.isNativePlatform()) return null;
   try {
     if (C.Plugins && C.Plugins[name]) return C.Plugins[name];
     if (typeof C.registerPlugin === 'function') {
-      const p = C.registerPlugin(name);
-      if (p) { if (C.Plugins) C.Plugins[name] = p; return p; }
+      const plugin = C.registerPlugin(name);
+      if (plugin && C.Plugins) C.Plugins[name] = plugin;
+      return plugin || null;
     }
-  } catch { /* ignore */ }
+  } catch { /* optional plugin */ }
   return null;
 }
 function nativeSR() { return nativePlugin('SpeechRecognition'); }
+function normalizeLang(lang) {
+  const value = String(lang || 'en-US').toLowerCase();
+  if (value === 'ru' || value.startsWith('ru-')) return 'ru-RU';
+  if (value === 'vi' || value.startsWith('vi-')) return 'vi-VN';
+  return 'en-US';
+}
+function errorCode(error) {
+  const code = String(error?.error || error?.code || error?.message || '').toLowerCase();
+  if (code.includes('not-allowed') || code.includes('permission') || code.includes('denied')) return 'not-allowed';
+  if (code.includes('no-speech') || code.includes('nospeech')) return 'no-speech';
+  if (code.includes('network')) return 'network';
+  if (code.includes('unsupported') || code.includes('unavailable')) return 'unsupported';
+  return code || 'error';
+}
+function makeError(code, message) { return { code, message: message || code }; }
 
-// --- Web Speech API (браузер, Chrome) ---
-function listenWeb(SR, { lang, onPartial, onFinal, onError }) {
-  const r = new SR();
-  r.lang = lang; r.interimResults = true; r.continuous = false; r.maxAlternatives = 3;
-  let finalText = '', done = false;
-  r.onresult = (e) => {
-    let interim = '';
-    for (const res of e.results) {
-      if (res.isFinal) finalText += res[0].transcript + ' ';
-      else interim += res[0].transcript;
-    }
-    onPartial?.((finalText + interim).trim());
+function listenWeb(SR, options) {
+  let recognition;
+  try { recognition = new SR(); } catch (error) {
+    const e = makeError('unsupported', error?.message || 'Speech recognition unavailable');
+    stt.lastError = e; options.onError?.(e.code, e.message);
+    return { stop() {} };
+  }
+  const interimResults = options.interimResults !== false;
+  recognition.lang = options.lang;
+  recognition.interimResults = interimResults;
+  recognition.continuous = options.continuous === true;
+  recognition.maxAlternatives = 3;
+  let finalText = '';
+  let done = false;
+  const fail = (raw) => {
+    if (done) return;
+    done = true;
+    const code = errorCode(raw);
+    const e = makeError(code, raw?.message || code);
+    stt.lastError = e;
+    options.onError?.(e.code, e.message);
   };
-  r.onend = () => { if (!done) { done = true; onFinal?.(finalText.trim()); } };
-  r.onerror = (e) => { if (!done) { done = true; onError?.(e.error || 'error'); } };
-  try { r.start(); } catch { onError?.('busy'); }
-  return { stop() { try { r.stop(); } catch {} } };
+  recognition.onresult = (event) => {
+    if (done) return;
+    let interim = '';
+    for (let i = event.resultIndex || 0; i < event.results.length; i += 1) {
+      const result = event.results[i];
+      const transcript = result?.[0]?.transcript || '';
+      if (result.isFinal) finalText += `${transcript} `;
+      else interim += transcript;
+    }
+    const combined = `${finalText}${interim}`.trim();
+    if (interimResults) options.onPartial?.(combined);
+    options.onInterim?.(interim.trim());
+  };
+  recognition.onend = () => {
+    if (done) return;
+    done = true;
+    options.onFinal?.(finalText.trim());
+  };
+  recognition.onerror = fail;
+  try { recognition.start(); } catch (error) {
+    const e = makeError(errorCode(error) === 'error' ? 'busy' : errorCode(error), error?.message || 'Recognition could not start');
+    stt.lastError = e;
+    done = true;
+    options.onError?.(e.code, e.message);
+  }
+  return {
+    stop() {
+      if (done) return;
+      try { recognition.stop(); } catch { /* onend normally follows */ }
+    },
+  };
 }
 
-// --- Native plugin (@capacitor-community/speech-recognition) via bridge ---
-function listenNative(SR, { lang, onPartial, onFinal, onError }) {
-  let last = '', stopped = false, sub = null;
+function permissionGranted(result) {
+  if (!result || typeof result !== 'object') return true;
+  const value = result.speechRecognition ?? result.microphone ?? result.permission;
+  return value == null || value === 'granted' || value === true;
+}
+function listenNative(SR, options) {
+  let last = '';
+  let stopped = false;
+  let finished = false;
+  let sub = null;
+  const cleanup = () => {
+    try { sub?.remove?.(); } catch {}
+    try { SR.removeAllListeners?.(); } catch {}
+  };
+  const fail = (raw) => {
+    if (stopped || finished) return;
+    finished = true;
+    cleanup();
+    const e = makeError(errorCode(raw), raw?.message || errorCode(raw));
+    stt.lastError = e;
+    options.onError?.(e.code, e.message);
+  };
+  const finish = () => {
+    if (finished) return;
+    finished = true;
+    cleanup();
+    options.onFinal?.(last.trim());
+  };
   (async () => {
     try {
-      if (SR.requestPermissions) { await SR.requestPermissions().catch(() => {}); }
+      if (SR.requestPermissions) {
+        const permission = await SR.requestPermissions();
+        if (!permissionGranted(permission)) { fail({ code: 'not-allowed', message: 'Microphone permission was denied' }); return; }
+      }
       if (SR.addListener) {
-        sub = await SR.addListener('partialResults', (d) => {
-          const m = (d && d.matches) || [];
-          if (m[0]) { last = m[0]; onPartial?.(last); }
+        sub = await SR.addListener('partialResults', (data) => {
+          if (stopped || finished) return;
+          const matches = data?.matches || [];
+          if (matches[0]) {
+            last = matches[0];
+            if (options.interimResults !== false) options.onPartial?.(last);
+            options.onInterim?.(last);
+          }
         });
       }
-      const res = await SR.start({ language: lang, maxResults: 3, partialResults: true, popup: false });
-      // iOS возвращает финальные matches из start(); Android — через слушатель.
-      if (res && res.matches && res.matches[0]) { last = res.matches[0]; onPartial?.(last); }
-    } catch (e) { if (!stopped) onError?.((e && e.message) || 'error'); }
+      if (stopped || finished) return;
+      const result = await SR.start({ language: options.lang, maxResults: 3, partialResults: options.interimResults !== false, popup: false });
+      if (result?.matches?.[0]) {
+        last = result.matches[0];
+        if (options.interimResults !== false) options.onPartial?.(last);
+        options.onInterim?.(last);
+      }
+    } catch (error) { fail(error); }
   })();
   return {
     stop() {
+      if (stopped || finished) return;
       stopped = true;
-      try { SR.stop && SR.stop(); } catch {}
-      try { sub && sub.remove && sub.remove(); } catch {}
-      try { SR.removeAllListeners && SR.removeAllListeners(); } catch {}
-      onFinal?.(last.trim());
+      try { SR.stop?.(); } catch {}
+      finish();
     },
   };
 }
 
 export const stt = {
-  // true, если доступен нативный плагин ИЛИ Web Speech API
   get supported() { return !!(nativeSR() || webSR); },
   get isNative() { return !!nativeSR(); },
-  listen({ lang = 'en-US', onPartial, onFinal, onError } = {}) {
-    const nat = nativeSR();
-    if (nat) return listenNative(nat, { lang, onPartial, onFinal, onError });
-    if (webSR) return listenWeb(webSR, { lang, onPartial, onFinal, onError });
-    onError?.('unsupported');
+  lastError: null,
+  listen({ lang = 'en-US', interimResults = true, continuous = false, onPartial, onInterim, onFinal, onError } = {}) {
+    const options = { lang: normalizeLang(lang), interimResults, continuous, onPartial, onInterim, onFinal, onError };
+    stt.lastError = null;
+    const native = nativeSR();
+    if (native) return listenNative(native, options);
+    if (webSR) return listenWeb(webSR, options);
+    const e = makeError('unsupported', 'Speech recognition is not available in this browser or WebView');
+    stt.lastError = e;
+    onError?.(e.code, e.message);
     return { stop() {} };
   },
 };
