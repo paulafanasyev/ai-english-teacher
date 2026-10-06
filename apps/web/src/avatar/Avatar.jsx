@@ -1,32 +1,18 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { speechBus } from '../audio/speechBus.js';
 import { faceFor } from './faces.js';
-import {
-  FRAME_CLS,
-  emotionMouth,
-  getVisemeShape,
-  interpolateViseme,
-  mouthPathsFromShape,
-  renderAvatarSVG,
-} from './svg.js';
+import { FRAME_CLS, renderAvatarSVG } from './svg.js';
 
-function setMouth(root, shape, viseme) {
-  if (!root) return;
-  const mouth = root.querySelector('#avatar-mouth');
-  if (!mouth) return;
-  const paths = mouthPathsFromShape(shape);
-  const set = (name, value) => mouth.querySelector(name)?.setAttribute('d', value);
-  set('#avatar-mouth-outer', paths.outer);
-  set('#avatar-mouth-inner', paths.inner);
-  set('#avatar-mouth-teeth', paths.toothTop);
-  set('#avatar-mouth-tongue', paths.tonguePath);
-  const highlight = mouth.querySelector('#avatar-mouth-highlight');
-  if (highlight) highlight.setAttribute('d', `M ${Math.max(140, shape.left + 8).toFixed(1)} ${(shape.top + 4).toFixed(1)} Q160 ${(shape.top + 1).toFixed(1)} ${Math.min(180, shape.right - 8).toFixed(1)} ${(shape.top + 4).toFixed(1)}`);
-  mouth.querySelector('#avatar-mouth-inner')?.setAttribute('opacity', String(paths.innerOpacity));
-  mouth.querySelector('#avatar-mouth-teeth')?.setAttribute('opacity', String(paths.teethOpacity));
-  mouth.querySelector('#avatar-mouth-tongue')?.setAttribute('opacity', String(paths.tongueOpacity));
-  mouth.setAttribute('data-viseme', viseme || 'rest');
-}
+// Pixar-style portraits: one base render + feathered RGBA overlays that are
+// cross-faded for lip-sync (A / O / E), blinking and a happy smile.
+const PIXAR = new Set(['emma', 'james', 'sofia', 'alex', 'linh', 'minh']);
+const LAYERS = ['A', 'O', 'E', 'happy', 'blink'];
+const MOUTHS = ['A', 'O', 'E'];
+// Viseme from the TTS engine -> mouth overlay (null = closed lips of the base render).
+const VISEME_TO_LAYER = { rest: null, M: null, F: 'E', A: 'A', I: 'E', E: 'E', L: 'A', O: 'O', U: 'O', W: 'O' };
+const HAPPY = new Set(['happy', 'encourage', 'excited', 'proud']);
+
+export const teacherAsset = (id, layer = 'base') => `assets/teachers/${id}/${layer}.webp`;
 
 function useReducedMotion() {
   const [reduced, setReduced] = useState(false);
@@ -42,106 +28,114 @@ function useReducedMotion() {
 }
 
 export default function Avatar({ teacher, emotion = 'neutral', talking = false, frame = 'none', className = '', rounded = 'rounded-[26%]' }) {
-  const rootRef = useRef(null);
-  const instanceId = useId();
-  const stateRef = useRef({ current: getVisemeShape('rest'), target: getVisemeShape('rest') });
-  const face = useMemo(() => faceFor(teacher?.id), [teacher?.id]);
+  const id = teacher?.id;
+  const [missing, setMissing] = useState(false);
+  if (!PIXAR.has(id) || missing) return <SvgAvatar teacher={teacher} emotion={emotion} frame={frame} className={className} rounded={rounded} />;
+  return <PixarAvatar teacher={teacher} emotion={emotion} talking={talking} frame={frame} className={className} rounded={rounded} onMissing={() => setMissing(true)} />;
+}
+
+function PixarAvatar({ teacher, emotion, talking, frame, className, rounded, onMissing }) {
+  const id = teacher.id;
+  const refs = useRef({});
+  const target = useRef({ A: 0, O: 0, E: 0, happy: 0, blink: 0 });
+  const current = useRef({ A: 0, O: 0, E: 0, happy: 0, blink: 0 });
   const reducedMotion = useReducedMotion();
-  const svg = useMemo(() => renderAvatarSVG(face, { emotion, viseme: talking ? 'rest' : emotionMouth(emotion), instanceId }), [face, emotion, talking]);
+  const happy = HAPPY.has(emotion);
 
-  // Keep natural blinking and tiny pupil saccades independent of React renders.
+  // Base layer: happy smile when idle and cheerful.
   useEffect(() => {
-    const root = rootRef.current;
-    if (!root) return undefined;
-    let alive = true;
-    let blinkTimer;
-    let blinkClose;
-    let saccadeTimer;
-    const eyes = [root.querySelector('#avatar-eye-left'), root.querySelector('#avatar-eye-right')].filter(Boolean);
-    const gazes = [root.querySelector('#avatar-gaze-left'), root.querySelector('#avatar-gaze-right')].filter(Boolean);
-    const blink = () => {
-      if (!alive) return;
-      eyes.forEach((eye) => eye.setAttribute('transform', 'scale(1 .08)'));
-      blinkClose = window.setTimeout(() => {
-        eyes.forEach((eye) => eye.setAttribute('transform', 'scale(1 1)'));
-        // A double blink is occasional, not a distracting loop.
-        if (Math.random() < 0.16) window.setTimeout(() => {
-          eyes.forEach((eye) => eye.setAttribute('transform', 'scale(1 .08)'));
-          window.setTimeout(() => eyes.forEach((item) => item.setAttribute('transform', 'scale(1 1)')), 72);
-        }, 120);
-      }, 92);
-      blinkTimer = window.setTimeout(blink, 2000 + Math.random() * 4000);
-    };
-    const saccade = () => {
-      if (!alive) return;
-      const x = (Math.random() * 2 - 1) * 2.2;
-      const y = (Math.random() * 2 - 1) * 1.4;
-      gazes.forEach((gaze) => gaze.setAttribute('transform', `translate(${x.toFixed(2)} ${y.toFixed(2)})`));
-      saccadeTimer = window.setTimeout(saccade, 800 + Math.random() * 1400);
-    };
-    blinkTimer = window.setTimeout(blink, 1800 + Math.random() * 2600);
-    if (!reducedMotion) saccadeTimer = window.setTimeout(saccade, 900 + Math.random() * 1000);
-    return () => {
-      alive = false;
-      window.clearTimeout(blinkTimer); window.clearTimeout(blinkClose); window.clearTimeout(saccadeTimer);
-    };
-  }, [reducedMotion, svg]);
+    if (!talking) {
+      MOUTHS.forEach((k) => { target.current[k] = 0; });
+      target.current.happy = happy ? 1 : 0;
+    } else target.current.happy = 0;
+  }, [happy, talking]);
 
-  // Subscribe only while speaking. The same loop handles real visemes and a
-  // soft procedural fallback if a TTS provider has not supplied one recently.
+  // Animation loop: ease every layer toward its target opacity.
   useEffect(() => {
-    const root = rootRef.current;
-    if (!root) return undefined;
-    const state = stateRef.current;
-    const initial = talking ? getVisemeShape('rest') : getVisemeShape(emotionMouth(emotion));
-    state.current = initial; state.target = initial;
-    setMouth(root, initial, talking ? 'rest' : emotionMouth(emotion));
-    if (!talking) return undefined;
-
-    let alive = true;
-    let raf = 0;
-    let previous = performance.now();
-    let lastEvent = performance.now();
-    let nextBabble = lastEvent + 250;
-    const babble = ['A', 'E', 'I', 'O', 'U', 'M', 'F', 'L', 'W'];
-    const ownEvent = (payload) => !payload?.teacherId || payload.teacherId === face.id;
-    const onViseme = (payload = {}) => {
-      if (!ownEvent(payload)) return;
-      const v = payload.v || 'rest';
-      state.target = getVisemeShape(v);
-      state.lastViseme = v;
-      lastEvent = performance.now();
-    };
-    const onStart = (payload = {}) => { if (ownEvent(payload)) lastEvent = performance.now(); };
-    const onEnd = (payload = {}) => { if (ownEvent(payload)) state.target = getVisemeShape('rest'); };
-    const offViseme = speechBus.on('viseme', onViseme);
-    const offStart = speechBus.on('start', onStart);
-    const offEnd = speechBus.on('end', onEnd);
-
+    let raf = 0; let prev = performance.now(); let alive = true;
     const tick = (now) => {
       if (!alive) return;
-      const dt = Math.min(80, now - previous); previous = now;
-      if (now - lastEvent > 250 && now >= nextBabble) {
-        const v = babble[Math.floor(Math.random() * babble.length)];
-        state.target = getVisemeShape(v);
-        state.lastViseme = v;
-        nextBabble = now + 100 + Math.random() * 170;
-      }
-      state.current = interpolateViseme(state.current, state.target, Math.min(1, dt / 60));
-      setMouth(root, state.current, state.lastViseme || 'rest');
+      const dt = Math.min(64, now - prev); prev = now;
+      LAYERS.forEach((k) => {
+        const speed = k === 'blink' ? 0.6 : k === 'happy' ? 0.12 : 0.45;
+        const c = current.current[k] + (target.current[k] - current.current[k]) * Math.min(1, speed * (dt / 16));
+        current.current[k] = Math.abs(c - target.current[k]) < 0.01 ? target.current[k] : c;
+        const el = refs.current[k];
+        if (el) el.style.opacity = String(current.current[k]);
+      });
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
-    return () => {
-      alive = false; cancelAnimationFrame(raf);
-      offViseme?.(); offStart?.(); offEnd?.();
-    };
-  }, [talking, emotion, face.id]);
+    return () => { alive = false; cancelAnimationFrame(raf); };
+  }, []);
 
+  // Natural blinking (2-6 s, occasional double blink).
+  useEffect(() => {
+    let alive = true; let t1; let t2;
+    const blink = () => {
+      if (!alive) return;
+      target.current.blink = 1;
+      t2 = setTimeout(() => {
+        target.current.blink = 0;
+        if (Math.random() < 0.15) setTimeout(() => { target.current.blink = 1; setTimeout(() => { target.current.blink = 0; }, 90); }, 140);
+      }, 110);
+      t1 = setTimeout(blink, 2000 + Math.random() * 4000);
+    };
+    t1 = setTimeout(blink, 1500 + Math.random() * 2500);
+    return () => { alive = false; clearTimeout(t1); clearTimeout(t2); };
+  }, []);
+
+  // Lip-sync: real visemes from the speech engine, babble fallback if none arrive.
+  useEffect(() => {
+    if (!talking) return undefined;
+    let last = performance.now(); let alive = true; let babbleTimer;
+    const show = (layer) => { MOUTHS.forEach((k) => { target.current[k] = k === layer ? 1 : 0; }); };
+    const own = (p) => !p?.teacherId || p.teacherId === id;
+    const offV = speechBus.on('viseme', (p = {}) => { if (!own(p)) return; last = performance.now(); show(VISEME_TO_LAYER[p.v] ?? null); });
+    const offE = speechBus.on('end', (p = {}) => { if (own(p)) show(null); });
+    const babble = () => {
+      if (!alive) return;
+      if (performance.now() - last > 260) {
+        const r = Math.random();
+        show(r < 0.38 ? 'A' : r < 0.6 ? 'E' : r < 0.78 ? 'O' : null);
+      }
+      babbleTimer = setTimeout(babble, 90 + Math.random() * 120);
+    };
+    babbleTimer = setTimeout(babble, 260);
+    return () => { alive = false; clearTimeout(babbleTimer); offV(); offE(); show(null); };
+  }, [talking, id]);
+
+  const motion = reducedMotion ? 'none' : talking ? 'aet-talk 2.6s ease-in-out infinite' : 'aet-breathe 4.2s ease-in-out infinite';
+  return (
+    <div className={`relative ${className}`}>
+      <style>{AVATAR_CSS}</style>
+      <div className={`w-full aspect-square overflow-hidden ${rounded} ${FRAME_CLS[frame] || ''}`} style={{ background: teacher.bg }}>
+        <div className="relative w-full h-full" style={{ animation: motion, transformOrigin: '50% 90%' }}>
+          <img src={teacherAsset(id)} alt={teacher.name || 'Teacher'} draggable="false" onError={onMissing} className="absolute inset-0 w-full h-full object-cover select-none" />
+          {LAYERS.map((k) => (
+            <img key={k} ref={(el) => { refs.current[k] = el; }} src={teacherAsset(id, k)} alt="" aria-hidden="true" draggable="false"
+              className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none" style={{ opacity: 0 }} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const AVATAR_CSS = `
+@keyframes aet-breathe { 0%,100% { transform: translateY(0) scale(1) } 50% { transform: translateY(-0.6%) scale(1.006) } }
+@keyframes aet-talk { 0%,100% { transform: rotate(0deg) translateY(0) } 25% { transform: rotate(-0.6deg) translateY(-0.4%) } 75% { transform: rotate(0.6deg) translateY(-0.2%) } }
+`;
+
+// Fallback for teachers without a Pixar render (e.g. custom ones from an API).
+function SvgAvatar({ teacher, emotion, frame, className, rounded }) {
+  const instanceId = useId();
+  const face = useMemo(() => faceFor(teacher?.id), [teacher?.id]);
+  const svg = useMemo(() => renderAvatarSVG(face, { emotion, instanceId }), [face, emotion, instanceId]);
   return (
     <div className={`relative ${className}`}>
       <div className={`w-full aspect-square overflow-hidden ${rounded} ${FRAME_CLS[frame] || ''}`} style={{ background: teacher?.bg || face.bg }}>
-        <div ref={rootRef} className="w-full h-full [&>svg]:block [&>svg]:w-full [&>svg]:h-full" dangerouslySetInnerHTML={{ __html: svg }} />
+        <div className="w-full h-full [&>svg]:block [&>svg]:w-full [&>svg]:h-full" dangerouslySetInnerHTML={{ __html: svg }} />
       </div>
     </div>
   );
