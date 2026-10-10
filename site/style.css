@@ -197,3 +197,5 @@ article p{color:var(--muted)}
   .reveal{opacity:1;transform:none}
   .floaters{display:none}
 }
+
+.contact-link{margin-top:8px;display:inline-flex;align-items:center;justify-self:start;padding:9px 12px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.72);color:var(--ink);font-size:13px;font-weight:800;text-decoration:none;overflow-wrap:anywhere}.contact-link:hover{border-color:var(--teal)}
