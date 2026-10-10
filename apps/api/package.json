@@ -4,6 +4,7 @@
   "description": "Production backend for AI English Teacher (self-hosted)",
   "type": "module",
   "private": true,
+  "license": "SEE LICENSE IN LICENSE",
   "engines": {
     "node": ">=18"
   },
