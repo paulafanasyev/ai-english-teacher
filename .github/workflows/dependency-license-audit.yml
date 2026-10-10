@@ -46,11 +46,6 @@ jobs:
             console.log('Packages needing manual license review:', unknown.length);
             console.log(unknown.join('\n'));
           }
+            console.log('Complete package/license inventory:');
+            console.log(Object.entries(data).map(([name, meta]) => name + ' | ' + (Array.isArray(meta.licenses) ? meta.licenses.join(' OR ') : String(meta.licenses || 'UNKNOWN'))).join('\\n'));
           NODE
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: dependency-license-inventory
-          path: dependency-licenses-*.json
-          if-no-files-found: warn
-          retention-days: 30
