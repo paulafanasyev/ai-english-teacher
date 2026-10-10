@@ -106,7 +106,7 @@ export default function Layout({ children }) {
             <a href="mailto:Pavel.afanasyev@inbox.ru" className="underline">Email</a>
             <a href="https://wa.me/79148289964" target="_blank" rel="noreferrer" className="underline">WhatsApp</a>
             <a href="https://t.me/PaulPavel_it_dev" target="_blank" rel="noreferrer" className="underline">Telegram</a>
-            <a href="./LICENSE" className="underline">License</a>
+            <a href="https://github.com/paulafanasyev/ai-english-teacher/blob/main/LICENSE" className="underline" target="_blank" rel="noreferrer">License</a>
           </footer>
         </main>
 
