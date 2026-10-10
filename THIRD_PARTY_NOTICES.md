@@ -20,3 +20,10 @@ Before publishing or distributing a build, verify and retain:
 ## Audit status
 
 This document defines the boundary and release checklist; it is **not** a claim that every transitive dependency and every media/model asset has already been individually cleared. A release must not be marked license-audited until an SBOM/license report for its exact commit and asset inventory has been reviewed and retained.
+
+## Historical reference audit (2026-10-10)
+
+- `main` contains the current proprietary `LICENSE`.
+- The non-main branches `feat/microphone-reliability`, `feat/pixar-teachers`, `feat/voice-mic-redesign`, and `release/v2-local-ai` were checked and had no `LICENSE`.
+- The historical tag `v1.0` was checked and had no `LICENSE`.
+- These refs were not rewritten. A new license on `main` does not amend old commits/tags or retroactively revoke permissions already granted under an earlier license.
