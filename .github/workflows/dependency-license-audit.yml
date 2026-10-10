@@ -1,0 +1,56 @@
+name: Dependency license inventory
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Inventory web app dependencies
+        working-directory: apps/web
+        run: |
+          npm ci
+          npx --yes license-checker --production --json > ../../dependency-licenses-web.json
+      - name: Inventory API dependencies
+        working-directory: apps/api
+        run: |
+          npm ci
+          npx --yes license-checker --production --json > ../../dependency-licenses-api.json
+      - name: Summarize package license metadata
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          for (const file of ['dependency-licenses-web.json', 'dependency-licenses-api.json']) {
+            if (!fs.existsSync(file)) continue;
+            const data = JSON.parse(fs.readFileSync(file, 'utf8'));
+            const counts = {};
+            const unknown = [];
+            for (const [name, meta] of Object.entries(data)) {
+              const license = Array.isArray(meta.licenses) ? meta.licenses.join(' OR ') : String(meta.licenses || 'UNKNOWN');
+              counts[license] = (counts[license] || 0) + 1;
+              if (/unknown|unlicensed|see license/i.test(license)) unknown.push(name + ': ' + license);
+            }
+            console.log('\nReport:', file);
+            console.log('Production packages inventoried:', Object.keys(data).length);
+            console.log('License counts:', JSON.stringify(counts, null, 2));
+            console.log('Packages needing manual license review:', unknown.length);
+            console.log(unknown.join('\n'));
+          }
+          NODE
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: dependency-license-inventory
+          path: dependency-licenses-*.json
+          if-no-files-found: warn
+          retention-days: 30
