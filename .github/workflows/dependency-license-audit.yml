@@ -19,12 +19,12 @@ jobs:
       - name: Inventory web app dependencies
         working-directory: apps/web
         run: |
-          npm install
+          npm install --legacy-peer-deps
           npx --yes license-checker --production --json > ../../dependency-licenses-web.json
       - name: Inventory API dependencies
         working-directory: apps/api
         run: |
-          npm install
+          npm install --legacy-peer-deps
           npx --yes license-checker --production --json > ../../dependency-licenses-api.json
       - name: Summarize package license metadata
         run: |
