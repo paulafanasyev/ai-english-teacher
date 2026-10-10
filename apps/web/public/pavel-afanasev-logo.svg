@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 100" role="img" aria-labelledby="title desc">
+  <title id="title">Pavel Afanasev logo</title>
+  <desc id="desc">Geometric P, slash, and forward arrow mark from the project brand.</desc>
+  <rect width="320" height="100" rx="16" fill="#ffffff"/>
+  <g transform="translate(8 10) scale(.88)">
+    <g fill="#0a3e47" transform="translate(3 4)">
+      <path fill-rule="evenodd" d="M8 6h30a22 22 0 0 1 0 44H24v24H8zM24 20v16h13a8 8 0 0 0 0-16z"/>
+      <path d="M58 6h14L52 74H38z"/><path d="M80 33h12l14 15-14 15H80l14-15z"/>
+    </g>
+    <g fill="#168779">
+      <path fill-rule="evenodd" d="M8 6h30a22 22 0 0 1 0 44H24v24H8zM24 20v16h13a8 8 0 0 0 0-16z"/>
+      <path d="M58 6h14L52 74H38z"/><path d="M80 33h12l14 15-14 15H80l14-15z"/>
+    </g>
+  </g>
+  <text x="125" y="45" fill="#172b2a" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700">PAVEL</text>
+  <text x="125" y="70" fill="#168779" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700">AFANASEV</text>
+</svg>
