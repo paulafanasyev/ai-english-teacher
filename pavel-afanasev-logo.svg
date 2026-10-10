@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 100" role="img" aria-labelledby="title desc">
+  <title id="title">Pavel Afanasev logo</title>
+  <desc id="desc">Teal geometric P with a forward slash and arrow motif.</desc>
+  <rect width="320" height="100" rx="16" fill="#ffffff"/>
+  <g fill="none" stroke="#168779" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M24 76V24h26c17 0 26 9 26 23S67 70 50 70H24"/>
+    <path d="M89 75 121 25"/>
+    <path d="M108 25h17v17"/>
+  </g>
+  <text x="145" y="47" fill="#172b2a" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700">PAVEL</text>
+  <text x="145" y="72" fill="#168779" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700">AFANASEV</text>
+</svg>
