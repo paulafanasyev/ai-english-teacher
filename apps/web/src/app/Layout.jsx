@@ -57,7 +57,7 @@ export default function Layout({ children }) {
       {/* Sidebar (desktop) */}
       <aside className="hidden md:flex flex-col gap-1 p-4 border-r border-black/5 bg-surface/60 backdrop-blur">
         <div className="flex items-center gap-2 px-2 py-3">
-          <span className="text-3xl">🎓</span>
+          <img src="./pavel-afanasev-logo.svg" alt="Pavel Afanasev" className="h-9 w-auto rounded-md bg-white" />
           <span className="font-black text-lg leading-tight">AI English<br />Teacher</span>
         </div>
         {items.map((n) => (
@@ -90,7 +90,7 @@ export default function Layout({ children }) {
       <div className="h-full flex flex-col min-w-0">
         {/* Top bar (mobile) */}
         <header className="md:hidden flex items-center gap-2 px-4 py-3 bg-surface/80 backdrop-blur border-b border-black/5 sticky top-0 z-40">
-          <span className="text-2xl">🎓</span>
+          <img src="./pavel-afanasev-logo.svg" alt="Pavel Afanasev" className="h-7 w-auto rounded bg-white" />
           <span className="font-black">AI English Teacher</span>
           <div className="ml-auto flex items-center gap-2">
             <Lang /><Xp n={user.xp} /><Coin n={user.coins} />
@@ -100,6 +100,14 @@ export default function Layout({ children }) {
 
         <main className="flex-1 overflow-y-auto px-4 md:px-8 py-5 md:py-8 pb-24 md:pb-8">
           <div className="max-w-5xl mx-auto">{children}</div>
+          <footer className="mx-auto mt-10 flex max-w-5xl flex-wrap items-center gap-3 border-t border-black/10 pt-4 text-xs text-ink/60">
+            <img src="./pavel-afanasev-logo.svg" alt="Pavel Afanasev" className="h-8 w-auto rounded bg-white" />
+            <span>© 2026 Pavel Afanasev</span>
+            <a href="mailto:Pavel.afanasyev@inbox.ru" className="underline">Email</a>
+            <a href="https://wa.me/79148289964" target="_blank" rel="noreferrer" className="underline">WhatsApp</a>
+            <a href="https://t.me/PaulPavel_it_dev" target="_blank" rel="noreferrer" className="underline">Telegram</a>
+            <a href="./LICENSE" className="underline">License</a>
+          </footer>
         </main>
 
         {/* Bottom nav (mobile) */}
