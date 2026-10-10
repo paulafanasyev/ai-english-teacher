@@ -1,5 +1,7 @@
 # 🎓 AI English Teacher
 
+![Pavel Afanasev logo](pavel-afanasev-logo.svg)
+
 **AI English Teacher** — local-first приложение для изучения английского с голосовыми преподавателями, уроками, играми и приватным ИИ прямо в браузере.
 
 🌐 **Сайт:** https://paulafanasyev.github.io/ai-english-teacher/  ·  **Приложение:** https://paulafanasyev.github.io/ai-english-teacher/app/
@@ -55,6 +57,16 @@ Local-first React/Vite SPA for GitHub Pages. Progress lives in browser `localSto
 
 **Pavel Afanasev** · **Sergei Mikhailov**
 
+## Правообладатель и связь
+
+**Правообладатель:** Pavel Afanasev
+
+- Email: [Pavel.afanasyev@inbox.ru](mailto:Pavel.afanasyev@inbox.ru)
+- WhatsApp: [+79148289964](https://wa.me/79148289964)
+- Telegram: [@PaulPavel_it_dev](https://t.me/PaulPavel_it_dev)
+
+Коммерческие лицензии, разрешения на распространение и другие вопросы об использовании материалов: свяжитесь с правообладателем письменно.
+
 ## Лицензия / License
 
-Proprietary © 2026. Все права защищены.
+Материалы, принадлежащие правообладателю, распространяются на условиях проприетарной лицензии [LICENSE](LICENSE). Коммерческое использование, перепродажа и распространение копий без предварительного письменного разрешения запрещены. Сторонние компоненты регулируются собственными лицензиями.
