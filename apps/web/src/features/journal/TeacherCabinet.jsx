@@ -3,6 +3,7 @@ import { useT } from '../../core/store.js';
 import { api } from '../../core/api.js';
 import { Stat, ProgressBar } from '../../ui/kit.jsx';
 import { sfx } from '../../audio/sfx.js';
+import MathCabinet from '../math/MathCabinet.jsx';
 
 const KIND_ICON = { lesson: '📘', quiz: '📝', homework: '🏠', note: '📌' };
 const MARK_CLS = (m) => (m >= 5 ? '!bg-emerald-100 text-emerald-700' : m === 4 ? '!bg-sky-100 text-sky-700' : m === 3 ? '!bg-amber-100 text-amber-700' : '!bg-rose-100 text-rose-600');
@@ -91,6 +92,9 @@ export default function TeacherCabinet() {
           </tbody>
         </table>
       </div>
+
+      {/* Math: per-student stats and homework (demo mode) */}
+      {classId && <MathCabinet classId={classId} />}
 
       {/* Add entry */}
       <form onSubmit={add} className="card p-5 mb-5 grid md:grid-cols-6 gap-2 items-end">
