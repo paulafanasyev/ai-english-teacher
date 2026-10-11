@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useApp, useT } from '../core/store.js';
-import { LOCALES } from '../i18n/index.js';
+import { LOCALES, pickL } from '../i18n/index.js';
 import { api } from '../core/api.js';
 import { teacherById } from '../data/teachers.js';
 import Avatar from '../avatar/Avatar.jsx';
@@ -12,6 +12,7 @@ import { Coin, Xp } from '../ui/kit.jsx';
 const NAV = [
   { to: '/', icon: '🏠', key: 'nav.home' },
   { to: '/lesson', icon: '📖', key: 'nav.lesson' },
+  { to: '/math', icon: '🧮', key: 'nav.math', label: { ru: 'Математика', en: 'Math', vi: 'Toán' } },
   { to: '/talk', icon: '💬', key: 'nav.talk' },
   { to: '/games', icon: '🎮', key: 'nav.games' },
   { to: '/shop', icon: '🛍️', key: 'nav.shop' },
@@ -27,6 +28,7 @@ export default function Layout({ children }) {
   const nav = useNavigate();
   const teacher = teacherById(user.teacherId);
   const isStaff = user.role === 'TEACHER' || user.role === 'PARENT';
+  const label = (n) => (n.label ? pickL(n.label, locale) : t(n.key));
   const Lang = () => (
     <div className="flex gap-1 bg-soft rounded-full p-1">
       {LOCALES.map((l) => (
@@ -62,7 +64,7 @@ export default function Layout({ children }) {
         </div>
         {items.map((n) => (
           <NavLink key={n.to} to={n.to} className={linkCls} onClick={() => sfx.click()}>
-            <span className="text-xl">{n.icon}</span>{t(n.key)}
+            <span className="text-xl">{n.icon}</span>{label(n)}
           </NavLink>
         ))}
         <NavLink to="/settings" className={linkCls} onClick={() => sfx.click()}>
@@ -115,7 +117,7 @@ export default function Layout({ children }) {
           {[...items.slice(0, 4), { to: '/settings', icon: '⚙️', key: 'nav.settings' }].map((n) => (
             <NavLink key={n.to} to={n.to} onClick={() => sfx.click()}
               className={({ isActive }) => `flex flex-col items-center px-3 py-1 rounded-xl text-[11px] font-bold ${isActive ? 'text-primary' : 'text-ink/50'}`}>
-              <span className="text-2xl">{n.icon}</span>{t(n.key)}
+              <span className="text-2xl">{n.icon}</span>{label(n)}
             </NavLink>
           ))}
         </nav>
