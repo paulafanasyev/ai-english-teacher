@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp, useLocale } from '../../core/store.js';
 import { api } from '../../core/api.js';
@@ -10,6 +10,8 @@ import { track } from '../../core/analytics.js';
 import { ProgressBar, Select, Confetti } from '../../ui/kit.jsx';
 import { TOPICS, makeSet } from './problems.js';
 import * as S from './socratic.js';
+import { mathStore } from './mathStore.js';
+import { topicTitle } from './classMath.js';
 
 const T = {
   title: { ru: 'Математика: подумай сам', en: 'Math: think it through', vi: 'Toán: tự suy nghĩ' },
@@ -47,6 +49,10 @@ const T = {
   again: { ru: 'Ещё задачи', en: 'More problems', vi: 'Thêm bài' },
   home: { ru: 'На главную', en: 'Home', vi: 'Trang chủ' },
   progress: { ru: 'Задача {n} из {total}', en: 'Problem {n} of {total}', vi: 'Bài {n}/{total}' },
+  homework: { ru: 'Задание от учителя', en: 'Homework from your teacher', vi: 'Bài tập từ giáo viên' },
+  doHomework: { ru: 'Решать', en: 'Start', vi: 'Làm bài' },
+  mixed: { ru: 'разные темы', en: 'mixed topics', vi: 'nhiều chủ đề' },
+  sent: { ru: 'Результат отправлен учителю в журнал', en: 'Your result was sent to the teacher', vi: 'Đã gửi kết quả cho giáo viên' },
   xpRule: { ru: 'Без подсказок 10 ⭐, с одной 7, с двумя 4, с тремя 2', en: 'No hints 10 ⭐, one 7, two 4, three 2', vi: 'Không gợi ý 10 ⭐, 1: 7, 2: 4, 3: 2' },
 };
 
@@ -70,16 +76,24 @@ export default function MathTutor() {
   const startedAt = useRef(0);
   const recorded = useRef(new Set());
   const advancing = useRef(false);
+  const [homework, setHomework] = useState([]);
+  const [assignment, setAssignment] = useState(null);
+
+  useEffect(() => { if (phase === 'setup') setHomework(mathStore.myOpen()); }, [phase]);
 
   const topicOpts = useMemo(() => [{ value: 'any', label: tr('any') },
     ...(TOPICS[cfg.grade] || []).map((x) => ({ value: x.id, label: pickL(x.title, locale) }))], [cfg.grade, locale]); // eslint-disable-line
 
-  const begin = () => {
+  // A teacher assignment uses its own seed, so the whole class gets the same problems.
+  const begin = (a = null) => {
     sfx.click();
-    const s = makeSet({ grade: cfg.grade, topic: cfg.topic, count: cfg.count, seed: (Date.now() ^ (Math.random() * 1e9)) >>> 0 });
+    setAssignment(a);
+    const s = a
+      ? makeSet({ grade: a.grade, topic: a.topic, count: a.count, seed: a.seed })
+      : makeSet({ grade: cfg.grade, topic: cfg.topic, count: cfg.count, seed: (Date.now() ^ (Math.random() * 1e9)) >>> 0 });
     recorded.current = new Set();
     setSet(s); setIdx(0); setLog([]); open(s[0]);
-    track('math_start', { grade: cfg.grade, topic: cfg.topic });
+    track('math_start', { grade: a ? a.grade : cfg.grade, topic: a ? a.topic : cfg.topic, homework: !!a });
     setPhase('run');
   };
   const open = (p) => { setSt(S.start(p)); setInput(''); setWhy(''); setWhyRes(null); startedAt.current = Date.now(); };
@@ -88,8 +102,8 @@ export default function MathTutor() {
   const record = (n, correct) => {
     if (recorded.current.has(n.problem.id)) return;
     recorded.current.add(n.problem.id);
-    api.addAttempt({ taskType: 'math', topic: n.problem.topic, level: 'G' + n.problem.grade, correct, durationMs: Date.now() - startedAt.current })
-      .then((u) => u && setUser(u)).catch(() => {});
+    // Math has its own log: English attempts drive the adaptive CEFR level, so math must not mix in.
+    mathStore.log({ grade: n.problem.grade, topic: n.problem.topic, correct, hints: n.hintLevel, revealed: !correct, assignmentId: assignment?.id || null });
   };
 
   const onCheck = (e) => {
@@ -124,9 +138,11 @@ export default function MathTutor() {
     const xp = all.reduce((a, b) => a + b.xp, 0);
     const solved = all.filter((x) => x.solved).length;
     const coins = 5 + solved * 2;
+    const hintsTotal = all.reduce((a, b) => a + b.hints, 0);
+    const sent = assignment ? !!mathStore.complete({ assignmentId: assignment.id, solved, total: all.length, hints: hintsTotal }) : false;
     const u = await api.earn({ xp, coins }).catch(() => null);
     if (u) setUser(u);
-    setReward({ xp, coins, solved, total: all.length, hints: all.reduce((a, b) => a + b.hints, 0) });
+    setReward({ xp, coins, solved, total: all.length, hints: hintsTotal, sent });
     sfx.levelUp(); flash('happy', 6000);
     setPhase('done');
   };
@@ -136,6 +152,17 @@ export default function MathTutor() {
       <div className="max-w-xl mx-auto">
         <h1 className="h1 mb-2">🧮 {tr('title')}</h1>
         <p className="font-semibold text-ink/60 mb-5">{tr('intro')}</p>
+        {homework.length > 0 && (
+          <div className="card p-5 mb-5 space-y-2 !border-2 !border-violet-300">
+            <div className="font-black">📝 {tr('homework')}</div>
+            {homework.map((a) => (
+              <div key={a.id} className="flex items-center gap-3">
+                <div className="flex-1 font-bold">{a.topic === 'any' ? tr('mixed') : pickL(topicTitle(a.topic), locale)} · {a.grade} {tr('grade').toLowerCase()} · {a.count}</div>
+                <button className="btn-primary !py-2" onClick={() => begin(a)}>{tr('doHomework')}</button>
+              </div>
+            ))}
+          </div>
+        )}
         <div className="card p-6 space-y-5">
           <div>
             <div className="label mb-1.5">{tr('grade')}</div>
@@ -160,7 +187,7 @@ export default function MathTutor() {
             </div>
           </div>
           <div className="text-xs font-bold text-ink/50">⭐ {tr('xpRule')}</div>
-          <button className="btn-primary w-full text-lg" onClick={begin}>🚀 {tr('start')}</button>
+          <button className="btn-primary w-full text-lg" onClick={() => begin()}>🚀 {tr('start')}</button>
         </div>
       </div>
     );
@@ -177,6 +204,7 @@ export default function MathTutor() {
           <div><div className="text-3xl font-black text-violet-500">+{reward.xp}</div><div className="label">XP</div></div>
           <div><div className="text-3xl font-black text-amber-500">{reward.hints}</div><div className="label">{tr('hintsUsed')}</div></div>
         </div>
+        {reward.sent && <div role="status" className="chip !bg-emerald-100 text-emerald-700 mt-4">✅ {tr('sent')}</div>}
         <div className="flex gap-3 mt-6">
           <button className="btn-primary flex-1" onClick={() => setPhase('setup')}>🔁 {tr('again')}</button>
           <Link to="/" className="btn-ghost flex-1">🏠 {tr('home')}</Link>
