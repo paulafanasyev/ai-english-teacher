@@ -11,6 +11,7 @@
 - голосовая практика с анимированными SVG-учителями (lip-sync по виземам, моргание, эмоции);
 - озвучка на EN/RU/VI через браузерный или нативный TTS, с понятными ошибками и fallback;
 - уроки A1–B2, XP, серии занятий и мини-игры;
+- математика 5–9 класс в режиме «Подумай сам»: подсказки по шагам, решение только после попыток, точная проверка ответов без ИИ (`apps/web/src/features/math`, тесты: `npm test`);
 - тренировка IELTS / TOEFL: reading, listening, writing (с оценкой от локального ИИ), speaking;
 - интерфейс на русском, английском и вьетнамском;
 - local-first режим: прогресс хранится в `localStorage`, отдельный API не нужен;
@@ -26,7 +27,7 @@ npm install
 npm run dev
 ```
 
-Для production-сборки: `npm run build && npm run preview`.
+Для production-сборки: `npm run build && npm run preview`. Тесты математики: `npm test`.
 
 Голосовой ввод зависит от разрешений браузера/ОС. Для локальной AI-модели нужен современный Chrome или Edge с WebGPU; первый запуск скачивает модель (~300–1100 МБ), дальше она берётся из кэша браузера. Без WebGPU всё работает в базовом режиме.
 
@@ -44,6 +45,7 @@ Capacitor-конфигурация и Android/iOS workflow остаются в �
 apps/web        — React 18 + Vite SPA, HashRouter, PWA, local-first API
 apps/web/src/ai — WebLLM-движок, каталог моделей и реестр задач ИИ
 apps/web/src/avatar — SVG-учителя с lip-sync
+apps/web/src/features/math — математика «Подумай сам» с точной проверкой
 apps/api        — необязательный Express API
 site/           — статический маркетинговый сайт (RU/EN/VI) + privacy policy
 .github/workflows — GitHub Pages deploy и web CI
@@ -51,11 +53,11 @@ site/           — статический маркетинговый сайт (
 
 ## English (short)
 
-Local-first React/Vite SPA for GitHub Pages. Progress lives in browser `localStorage`; an optional in-browser LLM (WebLLM over WebGPU) powers tutoring, corrections and writing feedback, with rule-based fallbacks everywhere. Run `cd apps/web && npm install && npm run dev`. To deploy: set **Settings → Pages → Source → GitHub Actions**; the workflows already live in `.github/workflows/`.
+Local-first React/Vite SPA for GitHub Pages. Progress lives in browser `localStorage`; an optional in-browser LLM (WebLLM over WebGPU) powers tutoring, corrections and writing feedback, with rule-based fallbacks everywhere. Includes a grade 5–9 math tutor with step-by-step hints and exact answer checking. Run `cd apps/web && npm install && npm run dev`. To deploy: set **Settings → Pages → Source → GitHub Actions**; the workflows already live in `.github/workflows/`.
 
 ## Разработка / Developers
 
-**Pavel Afanasev** · **Sergei Mikhailov**
+**Pavel Afanasev** (разработчик и руководитель проекта)
 
 ## Правообладатель и связь
 
