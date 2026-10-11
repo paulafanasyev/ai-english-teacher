@@ -24,6 +24,7 @@ import ParentCabinet from '../features/journal/ParentCabinet.jsx';
 import ExamCenter from '../features/exams/ExamCenter.jsx';
 import Courses from '../features/courses/Courses.jsx';
 import StudentDiary from '../features/journal/StudentDiary.jsx';
+import MathTutor from '../features/math/MathTutor.jsx';
 
 class ErrorBoundary extends Component {
   constructor(p) { super(p); this.state = { err: null, stack: '' }; }
@@ -109,6 +110,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/lesson" element={<Lesson />} />
+        <Route path="/math" element={<MathTutor />} />
         <Route path="/talk" element={<Talk />} />
         <Route path="/games" element={<GamesHub />} />
         <Route path="/games/wordbattle" element={<WordBattle />} />
