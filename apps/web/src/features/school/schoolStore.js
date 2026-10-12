@@ -3,10 +3,22 @@
 const KEY = 'aet_school_v1';
 const EVT = 'aet-school-change';
 
+const isObj = (v) => !!v && typeof v === 'object' && !Array.isArray(v);
+const arr = (v) => (Array.isArray(v) ? v : []);
+
 function load() {
   let d = {};
   try { d = JSON.parse(localStorage.getItem(KEY)) || {}; } catch { d = {}; }
-  return { schools: d.schools || [], classes: d.classes || [], messages: d.messages || {}, plans: d.plans || {} };
+  if (!isObj(d)) d = {};
+  const schools = arr(d.schools).filter((s) => isObj(s) && s.id && s.name);
+  const classes = arr(d.classes)
+    .filter((c) => isObj(c) && c.id && c.code)
+    .map((c) => ({ ...c, members: arr(c.members).filter((m) => isObj(m) && m.id), lesson: isObj(c.lesson) && c.lesson.url ? c.lesson : null }));
+  const messages = {};
+  if (isObj(d.messages)) for (const [k, v] of Object.entries(d.messages)) messages[k] = arr(v).filter((m) => isObj(m) && m.id);
+  const plans = {};
+  if (isObj(d.plans)) for (const [k, v] of Object.entries(d.plans)) if (isObj(v)) plans[k] = v;
+  return { schools, classes, messages, plans };
 }
 function save(db) {
   try { localStorage.setItem(KEY, JSON.stringify(db)); } catch {}
@@ -100,5 +112,14 @@ export const school = {
     db.plans[`${userId}:${programId}`] = { ...plan, savedAt: Date.now() };
     save(db);
   },
-  getPlan(userId, programId) { return load().plans[`${userId}:${programId}`] || null; },
+  // Returns a sanitized saved plan or null.
+  getPlan(userId, programId) {
+    const p = load().plans[`${userId}:${programId}`];
+    if (!p) return null;
+    const nums = (v) => arr(v).filter((x) => Number.isInteger(x));
+    const lessons = arr(p.lessons)
+      .filter((l) => isObj(l))
+      .map((l, i) => ({ n: Number.isInteger(l.n) ? l.n : i + 1, date: String(l.date || ''), section: String(l.section || ''), topic: String(l.topic || ''), hw: String(l.hw || '') }));
+    return { start: typeof p.start === 'string' ? p.start : '', days: nums(p.days), secs: nums(p.secs), lessons };
+  },
 };

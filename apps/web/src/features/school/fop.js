@@ -2,7 +2,20 @@
 import math from '../../data/fop/math.json';
 import english from '../../data/fop/english.json';
 
-export const PROGRAMS = [...math, ...english];
+// Display punctuation: numeric ranges get an en dash, word pairs a slash, other dashes a colon.
+export function tidy(t) {
+  return String(t)
+    .replace(/(\d)\s*[-–—]\s*(\d)/g, '$1–$2')
+    .replace(/([A-Za-z)])\s[-–—]\s(?=[A-Za-z(])/g, '$1 / ')
+    .replace(/\s[–—]\s/g, ': ');
+}
+const tidyProgram = (p) => ({
+  ...p,
+  sections: p.sections.map((s) => ({ title: tidy(s.title), topics: s.topics.map(tidy) })),
+  results: (p.results || []).map(tidy),
+});
+
+export const PROGRAMS = [...math, ...english].map(tidyProgram);
 
 export const DOCS = {
   noo: { title: 'ФОП НОО, приказ Минпросвещения России № 372 от 18.05.2023', url: 'http://publication.pravo.gov.ru/document/0001202307130044' },
@@ -84,17 +97,32 @@ export function schoolYearStart(now = new Date()) {
   return `${y}-09-01`;
 }
 
+export function isValidDate(s) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(s || ''))) return false;
+  return !Number.isNaN(new Date(`${s}T12:00:00`).getTime());
+}
+
+// Checks the chosen weekdays against the weekly hours. Fewer days than hours means paired lessons.
+export function checkDays(days, perWeek) {
+  const n = new Set(days).size;
+  if (!n) return { ok: false, msg: 'Выберите дни уроков.' };
+  if (n > perWeek) return { ok: false, msg: `По программе ${perWeek} ч в неделю: выберите не больше ${perWeek} дн.` };
+  if (n < perWeek) return { ok: true, paired: true };
+  return { ok: true };
+}
+
 const ymd = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
-// Dates for `count` lessons: `perWeek` lessons a week spread over the chosen weekdays (1 = Monday).
+// Dates for `count` lessons: `perWeek` lessons a week over the chosen weekdays (1 = Monday).
+// Every chosen day gets at least one lesson; extra hours become paired lessons on the first days.
 export function lessonDates(start, days, perWeek, count) {
   const sorted = [...new Set(days)].filter((d) => d >= 1 && d <= 6).sort((a, b) => a - b);
-  if (!sorted.length || count <= 0) return [];
+  if (!sorted.length || count <= 0 || !isValidDate(start)) return [];
+  const total = Math.max(perWeek, sorted.length, 1);
   const slots = {};
-  for (let i = 0; i < Math.max(perWeek, 1); i += 1) { const wd = sorted[i % sorted.length]; slots[wd] = (slots[wd] || 0) + 1; }
+  for (let i = 0; i < total; i += 1) { const wd = sorted[i % sorted.length]; slots[wd] = (slots[wd] || 0) + 1; }
   const out = [];
   const d = new Date(`${start}T12:00:00`);
-  if (Number.isNaN(d.getTime())) return [];
   for (let guard = 0; out.length < count && guard < 800; guard += 1) {
     const n = slots[d.getDay()] || 0;
     for (let k = 0; k < n && out.length < count; k += 1) out.push(ymd(d));
