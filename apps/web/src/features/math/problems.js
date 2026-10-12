@@ -10,7 +10,7 @@ export function rng(seed) {
 const int = (r, lo, hi) => lo + Math.floor(r() * (hi - lo + 1));
 const nz = (r, lo, hi) => { let v = 0; while (v === 0) v = int(r, lo, hi); return v; };
 const pick = (r, arr) => arr[Math.floor(r() * arr.length)];
-const L = (ru, en) => ({ ru, en, vi: en });
+const L = (ru, en) => ({ ru, en });
 const H = (q) => q.toHuman();
 const sg = (n) => (n < 0 ? `− ${-n}` : `+ ${n}`); // signed term for display
 const par = (n) => (n < 0 ? `(${String(n).replace('-', '−')})` : String(n));
@@ -256,7 +256,7 @@ const SUPD = '⁰¹²³⁴⁵⁶⁷⁸⁹';
 function prettyStr(s) {
   return s.replace(/(^|[\s(=:±·,])-(?=\d|x)/g, '$1−').replace(/\^(\d+)/g, (_, d) => [...d].map((c) => SUPD[+c]).join(''));
 }
-function pretty(o) { return { ru: prettyStr(o.ru), en: prettyStr(o.en), vi: prettyStr(o.vi) }; }
+function pretty(o) { return { ru: prettyStr(o.ru), en: prettyStr(o.en) }; }
 
 function gcdN(a, b) { while (b) [a, b] = [b, a % b]; return a; }
 function toSub(n) { return String(n).split('').map((c) => '₀₁₂₃₄₅₆₇₈₉'[+c]).join(''); }

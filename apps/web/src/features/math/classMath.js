@@ -14,7 +14,7 @@ export function topicTitle(topic) {
     const t = TOPICS[g].find((x) => x.id === topic);
     if (t) return t.title;
   }
-  return { ru: topic, en: topic, vi: topic };
+  return { ru: topic, en: topic };
 }
 
 export function markFor(solved, total) {
