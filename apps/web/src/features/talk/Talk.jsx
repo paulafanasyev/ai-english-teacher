@@ -12,7 +12,7 @@ import { sfx } from '../../audio/sfx.js';
 import { Confetti } from '../../ui/kit.jsx';
 import { useAI } from '../../ai/useAI.js';
 
-const MODE_COPY = { en: { local: 'AI: local model', basic: 'AI: basic mode', mic: 'Microphone error — type instead.' }, ru: { local: 'AI: локальная модель', basic: 'AI: базовый режим', mic: 'Ошибка микрофона — напиши ответ.' }, vi: { local: 'AI: mô hình cục bộ', basic: 'AI: chế độ cơ bản', mic: 'Lỗi micrô — hãy gõ thay thế.' } };
+const MODE_COPY = { en: { local: 'AI: local model', basic: 'AI: basic mode', mic: 'Microphone error — type instead.' }, ru: { local: 'AI: локальная модель', basic: 'AI: базовый режим', mic: 'Ошибка микрофона — напиши ответ.' } };
 
 export default function Talk() {
   const { user, setUser } = useApp();
