@@ -97,14 +97,22 @@ export function schoolYearStart(now = new Date()) {
   return `${y}-09-01`;
 }
 
+// Strict YYYY-MM-DD check: rejects impossible dates like 2025-02-31.
 export function isValidDate(s) {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(s || ''))) return false;
-  return !Number.isNaN(new Date(`${s}T12:00:00`).getTime());
+  if (typeof s !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(s)) return false;
+  const d = new Date(`${s}T12:00:00`);
+  return !Number.isNaN(d.getTime())
+    && d.getFullYear() === Number(s.slice(0, 4))
+    && d.getMonth() + 1 === Number(s.slice(5, 7))
+    && d.getDate() === Number(s.slice(8, 10));
 }
 
-// Checks the chosen weekdays against the weekly hours. Fewer days than hours means paired lessons.
+export const isWeekday = (d) => Number.isInteger(d) && d >= 1 && d <= 6;
+
+// Checks the chosen weekdays (1 = Monday ... 6 = Saturday) against the weekly hours. Fewer days than hours means paired lessons.
 export function checkDays(days, perWeek) {
-  const n = new Set(days).size;
+  const valid = [...new Set(Array.isArray(days) ? days : [])].filter(isWeekday);
+  const n = valid.length;
   if (!n) return { ok: false, msg: 'Выберите дни уроков.' };
   if (n > perWeek) return { ok: false, msg: `По программе ${perWeek} ч в неделю: выберите не больше ${perWeek} дн.` };
   if (n < perWeek) return { ok: true, paired: true };
@@ -116,7 +124,7 @@ const ymd = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0
 // Dates for `count` lessons: `perWeek` lessons a week over the chosen weekdays (1 = Monday).
 // Every chosen day gets at least one lesson; extra hours become paired lessons on the first days.
 export function lessonDates(start, days, perWeek, count) {
-  const sorted = [...new Set(days)].filter((d) => d >= 1 && d <= 6).sort((a, b) => a - b);
+  const sorted = [...new Set(days)].filter(isWeekday).sort((a, b) => a - b);
   if (!sorted.length || count <= 0 || !isValidDate(start)) return [];
   const total = Math.max(perWeek, sorted.length, 1);
   const slots = {};

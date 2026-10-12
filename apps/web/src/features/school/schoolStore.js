@@ -5,17 +5,42 @@ const EVT = 'aet-school-change';
 
 const isObj = (v) => !!v && typeof v === 'object' && !Array.isArray(v);
 const arr = (v) => (Array.isArray(v) ? v : []);
+const str = (v, max = 120) => (typeof v === 'string' ? v.replace(/\s+/g, ' ').trim().slice(0, max) : '');
+const num = (v) => (Number.isFinite(v) ? v : 0);
+const isUrl = (v) => typeof v === 'string' && /^https:\/\/meet\.jit\.si\/[A-Za-z0-9-]+$/.test(v);
 
 function load() {
   let d = {};
   try { d = JSON.parse(localStorage.getItem(KEY)) || {}; } catch { d = {}; }
   if (!isObj(d)) d = {};
-  const schools = arr(d.schools).filter((s) => isObj(s) && s.id && s.name);
+  const schools = arr(d.schools)
+    .filter((s) => isObj(s) && typeof s.id === 'string')
+    .map((s) => ({ id: s.id, name: str(s.name), region: str(s.region, 80), ownerId: str(s.ownerId), createdAt: num(s.createdAt) }))
+    .filter((s) => s.name);
   const classes = arr(d.classes)
-    .filter((c) => isObj(c) && c.id && c.code)
-    .map((c) => ({ ...c, members: arr(c.members).filter((m) => isObj(m) && m.id), lesson: isObj(c.lesson) && c.lesson.url ? c.lesson : null }));
+    .filter((c) => isObj(c) && typeof c.id === 'string' && typeof c.code === 'string')
+    .map((c) => ({
+      id: c.id,
+      schoolId: str(c.schoolId),
+      title: str(c.title, 20),
+      subject: str(c.subject, 60),
+      teacherId: str(c.teacherId),
+      teacherName: str(c.teacherName, 60),
+      code: str(c.code, 10).toUpperCase(),
+      members: arr(c.members).filter((m) => isObj(m) && typeof m.id === 'string').map((m) => ({ id: m.id, name: str(m.name, 60), joinedAt: num(m.joinedAt) })),
+      lesson: isObj(c.lesson) && isUrl(c.lesson.url) ? { url: c.lesson.url, topic: str(c.lesson.topic, 140), startedAt: num(c.lesson.startedAt) } : null,
+      createdAt: num(c.createdAt),
+    }))
+    .filter((c) => c.title && c.code);
   const messages = {};
-  if (isObj(d.messages)) for (const [k, v] of Object.entries(d.messages)) messages[k] = arr(v).filter((m) => isObj(m) && m.id);
+  if (isObj(d.messages)) {
+    for (const [k, v] of Object.entries(d.messages)) {
+      messages[k] = arr(v)
+        .filter((m) => isObj(m) && typeof m.id === 'string')
+        .map((m) => ({ id: m.id, userId: str(m.userId), name: str(m.name, 60), role: str(m.role, 20), text: typeof m.text === 'string' ? m.text.slice(0, 2000) : '', kind: m.kind === 'hw' ? 'hw' : 'msg', at: num(m.at) }))
+        .filter((m) => m.text);
+    }
+  }
   const plans = {};
   if (isObj(d.plans)) for (const [k, v] of Object.entries(d.plans)) if (isObj(v)) plans[k] = v;
   return { schools, classes, messages, plans };
@@ -41,7 +66,7 @@ export const school = {
 
   createSchool({ name, region, ownerId }) {
     const db = load();
-    const s = { id: uid('sch'), name: clean(name), region: clean(region, 80), ownerId, createdAt: Date.now() };
+    const s = { id: uid('sch'), name: clean(name), region: clean(region, 80), ownerId: String(ownerId), createdAt: Date.now() };
     if (!s.name) return null;
     db.schools.push(s);
     save(db);
@@ -54,7 +79,7 @@ export const school = {
     const db = load();
     let code = makeCode();
     while (db.classes.some((c) => c.code === code)) code = makeCode();
-    const c = { id: uid('cls'), schoolId, title: clean(title, 20), subject: clean(subject, 60), teacherId: teacher.id, teacherName: clean(teacher.name, 60), code, members: [], lesson: null, createdAt: Date.now() };
+    const c = { id: uid('cls'), schoolId, title: clean(title, 20), subject: clean(subject, 60), teacherId: String(teacher.id), teacherName: clean(teacher.name, 60), code, members: [], lesson: null, createdAt: Date.now() };
     if (!c.title) return null;
     db.classes.push(c);
     save(db);
@@ -67,7 +92,7 @@ export const school = {
     const db = load();
     const c = db.classes.find((x) => x.code === clean(code, 10).toUpperCase());
     if (!c) return null;
-    if (!c.members.some((m) => m.id === user.id)) c.members.push({ id: user.id, name: clean(user.name, 60), joinedAt: Date.now() });
+    if (!c.members.some((m) => m.id === user.id)) c.members.push({ id: String(user.id), name: clean(user.name, 60), joinedAt: Date.now() });
     save(db);
     return c;
   },
@@ -83,7 +108,7 @@ export const school = {
     if (!body) return null;
     const db = load();
     const list = db.messages[classId] || (db.messages[classId] = []);
-    const m = { id: uid('msg'), userId: user.id, name: clean(user.name, 60), role: user.role, text: body, kind, at: Date.now() };
+    const m = { id: uid('msg'), userId: String(user.id), name: clean(user.name, 60), role: String(user.role || ''), text: body, kind: kind === 'hw' ? 'hw' : 'msg', at: Date.now() };
     list.push(m);
     if (list.length > 500) list.splice(0, list.length - 500);
     save(db);
@@ -116,10 +141,10 @@ export const school = {
   getPlan(userId, programId) {
     const p = load().plans[`${userId}:${programId}`];
     if (!p) return null;
-    const nums = (v) => arr(v).filter((x) => Number.isInteger(x));
+    const ints = (v) => arr(v).filter((x) => Number.isInteger(x));
     const lessons = arr(p.lessons)
       .filter((l) => isObj(l))
-      .map((l, i) => ({ n: Number.isInteger(l.n) ? l.n : i + 1, date: String(l.date || ''), section: String(l.section || ''), topic: String(l.topic || ''), hw: String(l.hw || '') }));
-    return { start: typeof p.start === 'string' ? p.start : '', days: nums(p.days), secs: nums(p.secs), lessons };
+      .map((l, i) => ({ n: Number.isInteger(l.n) ? l.n : i + 1, date: typeof l.date === 'string' ? l.date : '', section: str(l.section, 300), topic: typeof l.topic === 'string' ? l.topic.slice(0, 2000) : '', hw: typeof l.hw === 'string' ? l.hw.slice(0, 500) : '' }));
+    return { start: typeof p.start === 'string' ? p.start : '', days: ints(p.days).filter((x) => x >= 1 && x <= 6), secs: ints(p.secs).filter((x) => x >= 0), lessons };
   },
 };
