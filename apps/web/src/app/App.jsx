@@ -25,6 +25,9 @@ import ExamCenter from '../features/exams/ExamCenter.jsx';
 import Courses from '../features/courses/Courses.jsx';
 import StudentDiary from '../features/journal/StudentDiary.jsx';
 import MathTutor from '../features/math/MathTutor.jsx';
+import Programs from '../features/school/Programs.jsx';
+import Planner from '../features/school/Planner.jsx';
+import ClassRoom from '../features/school/ClassRoom.jsx';
 
 class ErrorBoundary extends Component {
   constructor(p) { super(p); this.state = { err: null, stack: '' }; }
@@ -82,6 +85,9 @@ export default function App() {
         <ErrorBoundary>
           <Routes>
             <Route path="/teacher" element={<TeacherCabinet />} />
+            <Route path="/classroom" element={<ClassRoom />} />
+            <Route path="/planner" element={<Planner />} />
+            <Route path="/programs" element={<Programs />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="*" element={<Navigate to="/teacher" replace />} />
           </Routes>
@@ -95,6 +101,7 @@ export default function App() {
         <ErrorBoundary>
           <Routes>
             <Route path="/child" element={<ParentCabinet />} />
+            <Route path="/programs" element={<Programs />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="*" element={<Navigate to="/child" replace />} />
           </Routes>
@@ -122,9 +129,12 @@ export default function App() {
         <Route path="/exams" element={<ExamCenter />} />
         <Route path="/courses" element={<Courses />} />
         <Route path="/diary" element={<StudentDiary />} />
+        <Route path="/classroom" element={<ClassRoom />} />
+        <Route path="/programs" element={<Programs />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/teacher" element={<TeacherPicker />} />
         {user.role === 'ADMIN' && <Route path="/admin" element={<Admin />} />}
+        {user.role === 'ADMIN' && <Route path="/planner" element={<Planner />} />}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       </ErrorBoundary>

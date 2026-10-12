@@ -9,10 +9,18 @@ import { audioCtx } from '../audio/engine.js';
 import { sfx } from '../audio/sfx.js';
 import { Coin, Xp } from '../ui/kit.jsx';
 
+const L_PROGRAMS = { ru: 'Программы ФОП', en: 'Curricula', vi: 'Chương trình' };
+const L_CLASS = { ru: 'Мой класс', en: 'My class', vi: 'Lớp của em' };
+const L_CLASSES = { ru: 'Классы и чат', en: 'Classes & chat', vi: 'Lớp và chat' };
+const L_PLANNER = { ru: 'План уроков', en: 'Lesson plan', vi: 'Kế hoạch' };
+const L_A11Y = { ru: 'Доступность', en: 'Accessibility', vi: 'Trợ năng' };
+const L_READ = { ru: 'Прочитать выделенное', en: 'Read selection aloud', vi: 'Đọc phần đã chọn' };
+
 const NAV = [
   { to: '/', icon: '🏠', key: 'nav.home' },
   { to: '/lesson', icon: '📖', key: 'nav.lesson' },
   { to: '/math', icon: '🧮', key: 'nav.math', label: { ru: 'Математика', en: 'Math', vi: 'Toán' } },
+  { to: '/classroom', icon: '👥', key: 'nav.classroom', label: L_CLASS },
   { to: '/talk', icon: '💬', key: 'nav.talk' },
   { to: '/games', icon: '🎮', key: 'nav.games' },
   { to: '/shop', icon: '🛍️', key: 'nav.shop' },
@@ -20,7 +28,42 @@ const NAV = [
   { to: '/exams', icon: '📝', key: 'nav.exams' },
   { to: '/courses', icon: '📚', key: 'nav.courses' },
   { to: '/diary', icon: '📔', key: 'nav.diary' },
+  { to: '/programs', icon: '📋', key: 'nav.programs', label: L_PROGRAMS },
 ];
+
+const A11Y_CSS = `
+html.a11y { font-size: 125%; }
+html.a11y *, html.a11y *::before, html.a11y *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+html.a11y :focus-visible { outline: 3px solid #1d4ed8 !important; outline-offset: 2px; }
+html.a11y body { line-height: 1.6; letter-spacing: 0.01em; }
+html.a11y .text-ink\\/40, html.a11y .text-ink\\/50, html.a11y .text-ink\\/55, html.a11y .text-ink\\/60 { color: rgba(17, 24, 39, 0.85) !important; }
+`;
+
+function useA11y(on) {
+  useEffect(() => {
+    if (!document.getElementById('a11y-css')) {
+      const s = document.createElement('style');
+      s.id = 'a11y-css';
+      s.textContent = A11Y_CSS;
+      document.head.appendChild(s);
+    }
+    document.documentElement.classList.toggle('a11y', !!on);
+  }, [on]);
+}
+
+function readSelection(locale) {
+  try {
+    const synth = window.speechSynthesis;
+    if (!synth) return;
+    const text = String(window.getSelection?.() || '').trim();
+    synth.cancel();
+    if (!text) return;
+    const u = new SpeechSynthesisUtterance(text.slice(0, 4000));
+    u.lang = /[\u0400-\u04FF]/.test(text) ? 'ru-RU' : locale === 'vi' ? 'vi-VN' : 'en-US';
+    u.rate = 0.95;
+    synth.speak(u);
+  } catch {}
+}
 
 export default function Layout({ children }) {
   const { user, prefs, setPref, setUser, locale, setLocale } = useApp();
@@ -29,6 +72,7 @@ export default function Layout({ children }) {
   const teacher = teacherById(user.teacherId);
   const isStaff = user.role === 'TEACHER' || user.role === 'PARENT';
   const label = (n) => (n.label ? pickL(n.label, locale) : t(n.key));
+  useA11y(prefs.a11y);
   const Lang = () => (
     <div className="flex gap-1 bg-soft rounded-full p-1">
       {LOCALES.map((l) => (
@@ -46,18 +90,31 @@ export default function Layout({ children }) {
   }, [prefs.musicOn, prefs.sfxOn]);
 
   const logout = async () => { await api.logout(); setUser(null); nav('/'); };
-  const items = user.role === 'ADMIN' ? [...NAV, { to: '/admin', icon: '🛠️', key: 'nav.admin' }]
-    : user.role === 'TEACHER' ? [{ to: '/teacher', icon: '🧑‍🏫', key: 'nav.cabinet' }]
-    : user.role === 'PARENT' ? [{ to: '/child', icon: '👪', key: 'nav.child' }]
+  const items = user.role === 'ADMIN' ? [...NAV, { to: '/planner', icon: '🗓️', key: 'nav.planner', label: L_PLANNER }, { to: '/admin', icon: '🛠️', key: 'nav.admin' }]
+    : user.role === 'TEACHER' ? [
+      { to: '/teacher', icon: '🧑‍🏫', key: 'nav.cabinet' },
+      { to: '/classroom', icon: '👥', key: 'nav.classroom', label: L_CLASSES },
+      { to: '/planner', icon: '🗓️', key: 'nav.planner', label: L_PLANNER },
+      { to: '/programs', icon: '📋', key: 'nav.programs', label: L_PROGRAMS },
+    ]
+    : user.role === 'PARENT' ? [
+      { to: '/child', icon: '👪', key: 'nav.child' },
+      { to: '/programs', icon: '📋', key: 'nav.programs', label: L_PROGRAMS },
+    ]
     : NAV;
 
   const linkCls = ({ isActive }) =>
     `flex items-center gap-3 px-4 py-2.5 rounded-2xl font-extrabold transition ${isActive ? 'bg-primary text-white shadow-lg shadow-primary/30' : 'hover:bg-soft text-ink/70'}`;
+  const a11yBtn = (cls) => (
+    <button className={cls} aria-pressed={!!prefs.a11y} onClick={() => setPref('a11y', !prefs.a11y)} title={pickL(L_A11Y, locale)}>
+      ♿{cls.includes('w-full') ? ` ${pickL(L_A11Y, locale)}: ${prefs.a11y ? 'ON' : 'OFF'}` : ''}
+    </button>
+  );
 
   return (
     <div className="h-full md:grid md:grid-cols-[250px_1fr]">
       {/* Sidebar (desktop) */}
-      <aside className="hidden md:flex flex-col gap-1 p-4 border-r border-black/5 bg-surface/60 backdrop-blur">
+      <aside className="hidden md:flex flex-col gap-1 p-4 border-r border-black/5 bg-surface/60 backdrop-blur overflow-y-auto">
         <div className="flex items-center gap-2 px-2 py-3">
           <img src="./pavel-afanasev-logo.svg" alt="Pavel Afanasev" className="h-9 w-auto rounded-md bg-white" />
           <span className="font-black text-lg leading-tight">{t('app.name')}</span>
@@ -75,6 +132,10 @@ export default function Layout({ children }) {
           <button className="btn-ghost w-full !py-2 text-sm" onClick={() => setPref('musicOn', !prefs.musicOn)}>
             {prefs.musicOn ? '🎵 ' + t('settings.music') + ': ON' : '🔇 ' + t('settings.music') + ': OFF'}
           </button>
+          {a11yBtn('btn-ghost w-full !py-2 text-sm')}
+          {prefs.a11y && (
+            <button className="btn-ghost w-full !py-2 text-sm" onMouseDown={(e) => e.preventDefault()} onClick={() => readSelection(locale)}>🔊 {pickL(L_READ, locale)}</button>
+          )}
           <div className="card p-3 flex items-center gap-3">
             {isStaff
               ? <div className="w-11 h-11 shrink-0 rounded-xl grid place-items-center text-2xl bg-soft">{user.role === 'TEACHER' ? '🧑‍🏫' : '👪'}</div>
@@ -96,6 +157,8 @@ export default function Layout({ children }) {
           <span className="font-black truncate">{t('app.name')}</span>
           <div className="ml-auto flex items-center gap-2">
             <Lang /><Xp n={user.xp} /><Coin n={user.coins} />
+            {a11yBtn(`text-xl rounded-lg px-1 ${prefs.a11y ? 'bg-primary text-white' : ''}`)}
+            {prefs.a11y && <button aria-label={pickL(L_READ, locale)} className="text-xl" onMouseDown={(e) => e.preventDefault()} onTouchStart={() => {}} onClick={() => readSelection(locale)}>🔊</button>}
             <button onClick={() => setPref('musicOn', !prefs.musicOn)} className="text-xl">{prefs.musicOn ? '🎵' : '🔇'}</button>
           </div>
         </header>
