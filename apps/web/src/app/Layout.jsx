@@ -9,7 +9,7 @@ import { audioCtx } from '../audio/engine.js';
 import { sfx } from '../audio/sfx.js';
 import { Coin, Xp } from '../ui/kit.jsx';
 
-const L_PROGRAMS = { ru: 'Программы ФОП', en: 'Curricula', vi: 'Chương trình' };
+const L_PROGRAMS = { ru: 'Темы ФОП', en: 'Curriculum topics', vi: 'Chủ đề chương trình' };
 const L_CLASS = { ru: 'Мой класс', en: 'My class', vi: 'Lớp của em' };
 const L_CLASSES = { ru: 'Классы и чат', en: 'Classes & chat', vi: 'Lớp và chat' };
 const L_PLANNER = { ru: 'План уроков', en: 'Lesson plan', vi: 'Kế hoạch' };
@@ -76,7 +76,7 @@ export default function Layout({ children }) {
   const Lang = () => (
     <div className="flex gap-1 bg-soft rounded-full p-1">
       {LOCALES.map((l) => (
-        <button key={l.id} onClick={() => { sfx.click(); setLocale(l.id); }} title={l.label}
+        <button key={l.id} onClick={() => { sfx.click(); setLocale(l.id); }} title={l.label} aria-label={l.label} aria-pressed={locale === l.id}
           className={`rounded-full px-2 py-0.5 text-[11px] font-black transition ${locale === l.id ? 'bg-primary text-white' : 'text-ink/55'}`}>{l.id.toUpperCase()}</button>
       ))}
     </div>
@@ -105,11 +105,10 @@ export default function Layout({ children }) {
 
   const linkCls = ({ isActive }) =>
     `flex items-center gap-3 px-4 py-2.5 rounded-2xl font-extrabold transition ${isActive ? 'bg-primary text-white shadow-lg shadow-primary/30' : 'hover:bg-soft text-ink/70'}`;
-  const a11yBtn = (cls) => (
-    <button className={cls} aria-pressed={!!prefs.a11y} onClick={() => setPref('a11y', !prefs.a11y)} title={pickL(L_A11Y, locale)}>
-      ♿{cls.includes('w-full') ? ` ${pickL(L_A11Y, locale)}: ${prefs.a11y ? 'ON' : 'OFF'}` : ''}
-    </button>
-  );
+  const a11yName = pickL(L_A11Y, locale);
+  const readName = pickL(L_READ, locale);
+  const musicName = `${t('settings.music')}: ${prefs.musicOn ? 'ON' : 'OFF'}`;
+  const toggleA11y = () => setPref('a11y', !prefs.a11y);
 
   return (
     <div className="h-full md:grid md:grid-cols-[250px_1fr]">
@@ -121,20 +120,20 @@ export default function Layout({ children }) {
         </div>
         {items.map((n) => (
           <NavLink key={n.to} to={n.to} className={linkCls} onClick={() => sfx.click()}>
-            <span className="text-xl">{n.icon}</span>{label(n)}
+            <span className="text-xl" aria-hidden="true">{n.icon}</span>{label(n)}
           </NavLink>
         ))}
         <NavLink to="/settings" className={linkCls} onClick={() => sfx.click()}>
-          <span className="text-xl">⚙️</span>{t('nav.settings')}
+          <span className="text-xl" aria-hidden="true">⚙️</span>{t('nav.settings')}
         </NavLink>
         <div className="mt-auto space-y-3 pt-4">
           <div className="flex justify-center"><Lang /></div>
-          <button className="btn-ghost w-full !py-2 text-sm" onClick={() => setPref('musicOn', !prefs.musicOn)}>
-            {prefs.musicOn ? '🎵 ' + t('settings.music') + ': ON' : '🔇 ' + t('settings.music') + ': OFF'}
+          <button className="btn-ghost w-full !py-2 text-sm" aria-pressed={!!prefs.musicOn} onClick={() => setPref('musicOn', !prefs.musicOn)}>
+            {prefs.musicOn ? '🎵 ' : '🔇 '}{musicName}
           </button>
-          {a11yBtn('btn-ghost w-full !py-2 text-sm')}
+          <button className="btn-ghost w-full !py-2 text-sm" aria-pressed={!!prefs.a11y} onClick={toggleA11y}>♿ {a11yName}: {prefs.a11y ? 'ON' : 'OFF'}</button>
           {prefs.a11y && (
-            <button className="btn-ghost w-full !py-2 text-sm" onMouseDown={(e) => e.preventDefault()} onClick={() => readSelection(locale)}>🔊 {pickL(L_READ, locale)}</button>
+            <button className="btn-ghost w-full !py-2 text-sm" onMouseDown={(e) => e.preventDefault()} onClick={() => readSelection(locale)}>🔊 {readName}</button>
           )}
           <div className="card p-3 flex items-center gap-3">
             {isStaff
@@ -144,7 +143,7 @@ export default function Layout({ children }) {
               <div className="font-black truncate">{user.name}</div>
               <div className="text-xs font-bold text-ink/50">{isStaff ? t(user.role === 'TEACHER' ? 'cab.title' : 'par.title') : `${user.level} · ⭐ ${user.xp}`}</div>
             </div>
-            <button title={t('nav.logout')} onClick={logout} className="text-xl hover:scale-110 transition">🚪</button>
+            <button title={t('nav.logout')} aria-label={t('nav.logout')} onClick={logout} className="text-xl hover:scale-110 transition">🚪</button>
           </div>
         </div>
       </aside>
@@ -157,9 +156,9 @@ export default function Layout({ children }) {
           <span className="font-black truncate">{t('app.name')}</span>
           <div className="ml-auto flex items-center gap-2">
             <Lang /><Xp n={user.xp} /><Coin n={user.coins} />
-            {a11yBtn(`text-xl rounded-lg px-1 ${prefs.a11y ? 'bg-primary text-white' : ''}`)}
-            {prefs.a11y && <button aria-label={pickL(L_READ, locale)} className="text-xl" onMouseDown={(e) => e.preventDefault()} onTouchStart={() => {}} onClick={() => readSelection(locale)}>🔊</button>}
-            <button onClick={() => setPref('musicOn', !prefs.musicOn)} className="text-xl">{prefs.musicOn ? '🎵' : '🔇'}</button>
+            <button aria-label={a11yName} aria-pressed={!!prefs.a11y} title={a11yName} onClick={toggleA11y} className={`text-xl rounded-lg px-1 ${prefs.a11y ? 'bg-primary text-white' : ''}`}>♿</button>
+            {prefs.a11y && <button aria-label={readName} title={readName} className="text-xl" onMouseDown={(e) => e.preventDefault()} onClick={() => readSelection(locale)}>🔊</button>}
+            <button aria-label={musicName} aria-pressed={!!prefs.musicOn} title={musicName} onClick={() => setPref('musicOn', !prefs.musicOn)} className="text-xl">{prefs.musicOn ? '🎵' : '🔇'}</button>
           </div>
         </header>
 
@@ -180,7 +179,7 @@ export default function Layout({ children }) {
           {[...items.slice(0, 4), { to: '/settings', icon: '⚙️', key: 'nav.settings' }].map((n) => (
             <NavLink key={n.to} to={n.to} onClick={() => sfx.click()}
               className={({ isActive }) => `flex flex-col items-center px-3 py-1 rounded-xl text-[11px] font-bold ${isActive ? 'text-primary' : 'text-ink/50'}`}>
-              <span className="text-2xl">{n.icon}</span>{label(n)}
+              <span className="text-2xl" aria-hidden="true">{n.icon}</span>{label(n)}
             </NavLink>
           ))}
         </nav>
