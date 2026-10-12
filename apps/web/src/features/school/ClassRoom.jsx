@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useApp } from '../../core/store.js';
 import { school } from './schoolStore.js';
+import RuOnly from './RuOnly.jsx';
 
 function useSchoolDb() {
   const [db, setDb] = useState(() => school.get());
@@ -11,6 +12,17 @@ function useSchoolDb() {
 const SUBJECTS = ['Математика', 'Алгебра', 'Геометрия', 'Иностранный язык', 'Русский язык', 'Классное руководство', 'Другой предмет'];
 const input = 'w-full rounded-xl border border-black/10 bg-white px-3 py-2 font-semibold';
 const time = (t) => new Date(t).toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+
+function ClassTabs({ classes, cls, setSel }) {
+  if (!classes.length) return null;
+  return (
+    <div className="flex flex-wrap gap-2" role="group" aria-label="Классы">
+      {classes.map((c) => (
+        <button key={c.id} onClick={() => setSel(c.id)} aria-pressed={cls?.id === c.id} className={`rounded-full px-4 py-1.5 text-sm font-black ${cls?.id === c.id ? 'bg-primary text-white' : 'bg-soft text-ink/70'}`}>{c.title} · {c.subject}{c.lesson ? ' 🔴' : ''}{c.lesson && <span className="sr-only"> (идёт урок)</span>}</button>
+      ))}
+    </div>
+  );
+}
 
 function Chat({ cls, user, db }) {
   const [text, setText] = useState('');
@@ -106,13 +118,7 @@ function TeacherView({ user, db }) {
       </div>
 
       {classes.length === 0 && <p className="font-semibold text-ink/60">Создайте первый класс: ученики присоединяются по коду.</p>}
-      {classes.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {classes.map((c) => (
-            <button key={c.id} onClick={() => setSel(c.id)} className={`rounded-full px-4 py-1.5 text-sm font-black ${cls?.id === c.id ? 'bg-primary text-white' : 'bg-soft text-ink/70'}`}>{c.title} · {c.subject}{c.lesson ? ' 🔴' : ''}</button>
-          ))}
-        </div>
-      )}
+      <ClassTabs classes={classes} cls={cls} setSel={setSel} />
 
       {cls && (
         <div className="grid gap-4 lg:grid-cols-[minmax(0,320px)_1fr]">
@@ -124,7 +130,7 @@ function TeacherView({ user, db }) {
               {cls.members.length === 0 && <p className="text-sm font-semibold text-ink/50">Пока никого. Передайте код классу.</p>}
               <ul className="space-y-1 text-sm font-semibold">
                 {cls.members.map((m) => (
-                  <li key={m.id} className="flex items-center justify-between gap-2"><span>{m.name}</span><button className="text-xs font-bold text-ink/40 hover:text-ink" onClick={() => school.leave(cls.id, m.id)}>убрать</button></li>
+                  <li key={m.id} className="flex items-center justify-between gap-2"><span>{m.name}</span><button className="text-xs font-bold text-ink/40 hover:text-ink" aria-label={`Убрать из класса: ${m.name}`} onClick={() => school.leave(cls.id, m.id)}>убрать</button></li>
                 ))}
               </ul>
             </div>
@@ -155,13 +161,7 @@ function StudentView({ user, db }) {
         <button className="btn-primary !py-2" disabled={code.trim().length < 6} onClick={join}>Войти в класс</button>
         {err && <p className="w-full text-sm font-bold text-red-600" role="alert">{err}</p>}
       </div>
-      {classes.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {classes.map((c) => (
-            <button key={c.id} onClick={() => setSel(c.id)} className={`rounded-full px-4 py-1.5 text-sm font-black ${cls?.id === c.id ? 'bg-primary text-white' : 'bg-soft text-ink/70'}`}>{c.title} · {c.subject}{c.lesson ? ' 🔴' : ''}</button>
-          ))}
-        </div>
-      )}
+      <ClassTabs classes={classes} cls={cls} setSel={setSel} />
       {cls && (
         <div className="grid gap-4 lg:grid-cols-[minmax(0,320px)_1fr]">
           <div className="space-y-4">
@@ -169,7 +169,7 @@ function StudentView({ user, db }) {
               <div className="font-black">🏫 {schoolName(cls)}</div>
               <p className="text-sm font-semibold">{cls.title} · {cls.subject}</p>
               <p className="text-sm font-semibold">Учитель: {cls.teacherName}</p>
-              <p className="text-sm font-semibold text-ink/60">Одноклассников: {cls.members.length}</p>
+              <p className="text-sm font-semibold text-ink/60">Учеников в классе: {cls.members.length}</p>
             </div>
             <RemoteLesson cls={cls} user={user} />
           </div>
@@ -187,9 +187,10 @@ export default function ClassRoom() {
   return (
     <div className="space-y-5">
       <div>
-        <div className="h2">👥 {isTeacher ? 'Мои классы' : 'Мой класс'}</div>
+        <div className="h2">👥 {isTeacher ? 'Мои классы' : 'Мой класс'}, демо</div>
         <p className="text-sm font-semibold text-ink/60 mt-1">Демо-режим: школа, классы и чат хранятся в этом браузере (можно сразу проверить с демо-учителем и демо-учеником). Общий класс на разных устройствах заработает после переезда на сервер в России.</p>
       </div>
+      <RuOnly />
       {isTeacher ? <TeacherView user={user} db={db} /> : <StudentView user={user} db={db} />}
     </div>
   );
