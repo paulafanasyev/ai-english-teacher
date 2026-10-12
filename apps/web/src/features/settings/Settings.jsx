@@ -11,8 +11,8 @@ import { sfx } from '../../audio/sfx.js';
 import AISettings from './AISettings.jsx';
 import About from './About.jsx';
 
-const TEST = { ru: 'Привет! Это проверка звука.', en: 'Hi! This is a sound check.', vi: 'Xin chào! Đây là kiểm tra âm thanh.' };
-const TEST_LABEL = { ru: 'Проверить голос', en: 'Test voice', vi: 'Thử giọng' };
+const TEST = { ru: 'Привет! Это проверка звука.', en: 'Hi! This is a sound check.' };
+const TEST_LABEL = { ru: 'Проверить голос', en: 'Test voice' };
 
 export default function Settings() {
   const { user, prefs, setPref, locale, setLocale } = useApp();
@@ -25,8 +25,8 @@ export default function Settings() {
       <h1 className="h1">⚙️ {t('settings.title')}</h1>
       <div className="card p-5">
         <div className="label mb-3">🌍 {t('settings.language')}</div>
-        <div className="grid grid-cols-3 gap-2">
-          {LOCALES.map((l) => <button key={l.id} onClick={() => { sfx.click(); setLocale(l.id); }} className={`btn !py-2.5 ${locale === l.id ? 'btn-primary' : 'btn-ghost'}`}>{l.flag} {l.label}</button>)}
+        <div className="grid grid-cols-2 gap-2">
+          {LOCALES.map((l) => <button key={l.id} onClick={() => { sfx.click(); setLocale(l.id); }} aria-pressed={locale === l.id} className={`btn !py-2.5 ${locale === l.id ? 'btn-primary' : 'btn-ghost'}`}>{l.flag} {l.label}</button>)}
         </div>
       </div>
       <div className="card p-5 space-y-4">
