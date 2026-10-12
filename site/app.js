@@ -49,7 +49,7 @@
       'team.dev': 'Developer', 'team.devName': 'Pavel Afanasyev', 'team.baseRole': 'Based on the project', 'team.base': '“Svetlana”', 'team.org': 'Non-profit “Mir Samozanyatykh”',
       'final.title': 'Emma and your exercises are waiting',
       'footer.by': 'Based on “Svetlana” by the non-profit “Mir Samozanyatykh” · Developer: Pavel Afanasyev', 'footer.privacy': 'Privacy',
-      greet: ["Hi there! I'm Emma, your English teacher.", "Let's learn English together. It's fun and easy!"],
+      greet: ["Hi there! I'm Emma, your tutor and a teacher's helper.", "I'll help you with English and math. Let's get started!"],
     },
     vi: {
       'meta.title': 'Svetlana Tutor: trợ lý cho học sinh và giáo viên',
@@ -92,10 +92,10 @@
       'team.dev': 'Nhà phát triển', 'team.devName': 'Pavel Afanasyev', 'team.baseRole': 'Dựa trên dự án', 'team.base': '“Svetlana”', 'team.org': 'Tổ chức phi lợi nhuận “Mir Samozanyatykh”',
       'final.title': 'Emma và các bài tập đang chờ bạn',
       'footer.by': 'Dựa trên “Svetlana” của tổ chức “Mir Samozanyatykh” · Nhà phát triển: Pavel Afanasyev', 'footer.privacy': 'Quyền riêng tư',
-      greet: ['Xin chào! Mình là Emma, cô giáo tiếng Anh của bạn.', 'Cùng học tiếng Anh thật vui nhé!'],
-      greetEn: ["Hi there! I'm Emma, your English teacher.", "Let's learn English together!"],
+      greet: ['Xin chào! Mình là Emma, gia sư của bạn và trợ lý của thầy cô.', 'Mình sẽ giúp bạn học tiếng Anh và toán nhé!'],
+      greetEn: ["Hi there! I'm Emma, your tutor and a teacher's helper.", "I'll help you with English and math!"],
     },
-    ru: { greet: ['Привет! Я Эмма, твой учитель английского.', 'Давай учиться вместе, это весело и просто!'], 'meta.title': document.title },
+    ru: { greet: ['Привет! Я Эмма, твой репетитор и помощник учителя.', 'Помогу с английским и математикой. Давай начнём!'], 'meta.title': document.title },
   };
   const VOICE_LANG = { ru: 'ru-RU', en: 'en-US', vi: 'vi-VN' };
   const nodes = $$('[data-i18n]');
