@@ -1,0 +1,13 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "cd apps/web && npm install --no-audit --no-fund --legacy-peer-deps",
+  "buildCommand": "rm -rf _site && mkdir -p _site && (cd apps/web && npx vite build --base=/app/ --outDir ../../_site/app --emptyOutDir) && cp -R site/. _site/",
+  "outputDirectory": "_site",
+  "headers": [
+    {
+      "source": "/app/assets/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+    }
+  ]
+}
