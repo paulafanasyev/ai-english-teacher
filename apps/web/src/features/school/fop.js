@@ -5,14 +5,21 @@ import russianNoo from '../../data/fop/russian_noo.json';
 import readingNoo from '../../data/fop/literary_reading_noo.json';
 import worldNoo from '../../data/fop/world_noo.json';
 import mathNoo from '../../data/fop/math_noo.json';
+import orkseNoo from '../../data/fop/orkse_noo.json';
+import artNoo from '../../data/fop/art_noo.json';
+import musicNoo from '../../data/fop/music_noo.json';
+import techNoo from '../../data/fop/tech_noo.json';
+import peNoo from '../../data/fop/pe_noo.json';
 
 // Display punctuation: numeric ranges get an en dash, word pairs a slash, other dashes a colon.
-// Titles in «guillemets» are kept verbatim.
+// Titles in «guillemets» and a short theme name before the first colon («Композиторы – детям: …») are kept verbatim.
 export function tidy(t) {
-  return String(t)
+  const s = String(t)
     .replace(/(\d)\s*[-–—]\s*(\d)/g, '$1–$2')
-    .replace(/([A-Za-z)])\s[-–—]\s(?=[A-Za-z(])/g, '$1 / ')
-    .replace(/«[^»]*»|\s[–—]\s/g, (m) => (m.startsWith('«') ? m : ': '));
+    .replace(/([A-Za-z)])\s[-–—]\s(?=[A-Za-z(])/g, '$1 / ');
+  const head = s.match(/^[^:.;«»]{1,60}?(?=: )/);
+  const keep = head && /\s[–—]\s/.test(head[0]) ? head[0] : '';
+  return keep + s.slice(keep.length).replace(/«[^»]*»|\s[–—]\s/g, (m) => (m.startsWith('«') ? m : ': '));
 }
 const tidyProgram = (p) => ({
   ...p,
@@ -20,7 +27,10 @@ const tidyProgram = (p) => ({
   results: (p.results || []).map(tidy),
 });
 
-export const PROGRAMS = [...russianNoo, ...readingNoo, ...mathNoo, ...worldNoo, ...math, ...english].map(tidyProgram);
+export const PROGRAMS = [
+  ...russianNoo, ...readingNoo, ...mathNoo, ...worldNoo, ...orkseNoo, ...artNoo, ...musicNoo, ...techNoo, ...peNoo,
+  ...math, ...english,
+].map(tidyProgram);
 
 export const DOCS = {
   noo: { title: 'ФОП НОО, приказ Минпросвещения России № 372 от 18.05.2023', url: 'http://publication.pravo.gov.ru/document/0001202307130044' },
@@ -35,6 +45,7 @@ export const DOCS = {
 export const PLANS = {
   'НОО': {
     label: '1–4 классы', grades: [1, 2, 3, 4], doc: 'noo',
+    note: 'Базовая структура учебного плана. Перед утверждением плана школы сверяйте часы с действующей редакцией приказа № 372: в 2024–2025 годах в него вносились изменения.',
     rows: [
       ['Русский язык', [5, 5, 5, 5]],
       ['Литературное чтение', [4, 4, 4, 4]],
@@ -82,11 +93,18 @@ const SUBJECT_MAP = {
   'Математика': 'Математика', 'Алгебра': 'Алгебра', 'Геометрия': 'Геометрия',
   'Вероятность и статистика': 'Вероятность и статистика', 'Иностранный язык': 'Иностранный (английский) язык',
   'Русский язык': 'Русский язык', 'Литературное чтение': 'Литературное чтение', 'Окружающий мир': 'Окружающий мир',
+  'Основы религиозных культур и светской этики': 'ОРКСЭ', 'Изобразительное искусство': 'Изобразительное искусство',
+  'Музыка': 'Музыка', 'Труд (технология)': 'Труд (технология)', 'Физическая культура': 'Физическая культура',
 };
 
-export function findProgram(planSubject, grade) {
+// All programs for a plan subject and grade. Subjects with modules (ОРКСЭ) give one program per module: «ОРКСЭ: <модуль>».
+export function findPrograms(planSubject, grade) {
   const s = SUBJECT_MAP[planSubject];
-  return s ? PROGRAMS.find((p) => p.subject === s && p.grade === grade) : undefined;
+  return s ? PROGRAMS.filter((p) => p.grade === grade && (p.subject === s || p.subject.startsWith(`${s}: `))) : [];
+}
+
+export function findProgram(planSubject, grade) {
+  return findPrograms(planSubject, grade)[0];
 }
 
 // Split an official paragraph into sentence-sized lesson topics.

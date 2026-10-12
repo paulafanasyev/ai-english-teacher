@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../../core/store.js';
-import { PLANS, DOCS, findProgram } from './fop.js';
+import { PLANS, DOCS, findProgram, findPrograms } from './fop.js';
 import RuOnly from './RuOnly.jsx';
 
 const Doc = ({ k }) => (
@@ -15,14 +15,16 @@ export default function Programs() {
   const plan = PLANS[level];
   const [grade, setGrade] = useState(5);
   const [subject, setSubject] = useState('Математика');
+  const [mod, setMod] = useState(0);
   const g = plan.grades.includes(grade) ? grade : plan.grades[0];
   const gi = plan.grades.indexOf(g);
   const rows = plan.rows.filter(([, h]) => h[gi] > 0);
   const current = rows.find(([s]) => s === subject) ? subject : null;
-  const program = current ? findProgram(current, g) : null;
+  const programs = current ? findPrograms(current, g) : [];
+  const program = programs[mod] || programs[0] || null;
   const canPlan = user.role === 'TEACHER' || user.role === 'ADMIN';
 
-  const pickLevel = (l) => { setLevel(l); setGrade(PLANS[l].grades[0]); setSubject(null); };
+  const pickLevel = (l) => { setLevel(l); setGrade(PLANS[l].grades[0]); setSubject(null); setMod(0); };
   const tab = (on) => `rounded-full px-4 py-1.5 text-sm font-black transition ${on ? 'bg-primary text-white' : 'bg-soft text-ink/70'}`;
 
   return (
@@ -30,7 +32,7 @@ export default function Programs() {
       <div>
         <div className="h2">📋 Темы федеральных программ, демо</div>
         <p className="text-sm font-semibold text-ink/60 mt-1">
-          Учебный план и содержание обучения по документам Минпросвещения России. Сейчас доступны разделы и темы программ: 1–4 классы: русский язык, литературное чтение, математика, окружающий мир; математика (5–9) и английский язык (2–9). Остальные предметы добавляются. Это справка, она не заменяет полный текст действующей программы и утверждённый план школы.
+          Учебный план и содержание обучения по документам Минпросвещения России. Сейчас доступны разделы и темы программ: все предметы 1–4 классов (ОРКСЭ по всем шести модулям, английский язык со 2 класса), а также математика и английский язык в 5–9 классах. Остальные предметы 5–9 классов добавляются. Это справка, она не заменяет полный текст действующей программы и утверждённый план школы.
         </p>
       </div>
       <RuOnly />
@@ -42,7 +44,7 @@ export default function Programs() {
       </div>
       <div className="flex flex-wrap gap-2" role="group" aria-label="Класс">
         {plan.grades.map((x) => (
-          <button key={x} className={tab(x === g)} onClick={() => { setGrade(x); }} aria-pressed={x === g}>{x} класс</button>
+          <button key={x} className={tab(x === g)} onClick={() => { setGrade(x); setMod(0); }} aria-pressed={x === g}>{x} класс</button>
         ))}
       </div>
 
@@ -54,7 +56,7 @@ export default function Programs() {
               const has = !!findProgram(s, g);
               return (
                 <li key={s}>
-                  <button onClick={() => setSubject(s)} aria-pressed={current === s} className={`w-full flex items-center justify-between gap-2 rounded-xl px-3 py-2 text-left text-sm font-bold transition ${current === s ? 'bg-primary text-white' : 'hover:bg-soft'}`}>
+                  <button onClick={() => { setSubject(s); setMod(0); }} aria-pressed={current === s} className={`w-full flex items-center justify-between gap-2 rounded-xl px-3 py-2 text-left text-sm font-bold transition ${current === s ? 'bg-primary text-white' : 'hover:bg-soft'}`}>
                     <span>{has ? '📘 ' : ''}{s}</span><span className="shrink-0 opacity-70">{h[gi]}</span>
                   </button>
                 </li>
@@ -79,6 +81,13 @@ export default function Programs() {
           )}
           {program && (
             <div className="space-y-4">
+              {programs.length > 1 && (
+                <div className="flex flex-wrap gap-2" role="group" aria-label="Модуль">
+                  {programs.map((p, i) => (
+                    <button key={p.id} className={tab(p.id === program.id)} aria-pressed={p.id === program.id} onClick={() => setMod(i)}>{p.subject.split(': ').slice(1).join(': ') || p.subject}</button>
+                  ))}
+                </div>
+              )}
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <div className="font-black text-lg">{program.subject}, {program.grade} класс</div>
@@ -96,7 +105,7 @@ export default function Programs() {
               ))}
               {program.results?.length > 0 && (
                 <details className="rounded-2xl bg-soft/60 p-3">
-                  <summary className="cursor-pointer font-black">Планируемые предметные результаты{program.level === 'НОО' ? ' к концу года' : ' (выборка)'}</summary>
+                  <summary className="cursor-pointer font-black">Планируемые предметные результаты{program.level !== 'НОО' ? ' (выборка)' : program.subject === 'Музыка' ? ' за весь период начальной школы (по модулям)' : ' к концу года'}</summary>
                   <ul className="mt-2 list-disc space-y-1 pl-5 text-sm font-semibold text-ink/80">
                     {program.results.map((t, i) => <li key={i}>{t}</li>)}
                   </ul>
