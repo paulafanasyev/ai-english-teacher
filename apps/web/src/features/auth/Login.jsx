@@ -8,6 +8,9 @@ import { Modal } from '../../ui/kit.jsx';
 import { sfx } from '../../audio/sfx.js';
 import { track } from '../../core/analytics.js';
 
+// Emma, Alex, Sofia (filter keeps the row safe if the teacher list changes).
+const HERO_TEACHERS = ['emma', 'alex', 'sofia'].map((id) => TEACHERS.find((t) => t.id === id)).filter(Boolean);
+
 export default function Login() {
   const { setUser, locale, setLocale } = useApp();
   const t = useT();
@@ -39,7 +42,7 @@ export default function Login() {
     <div className="min-h-full flex flex-col">
       <div className="flex justify-end p-4 gap-1">
         {LOCALES.map((l) => (
-          <button key={l.id} onClick={() => setLocale(l.id)}
+          <button key={l.id} onClick={() => setLocale(l.id)} aria-pressed={locale === l.id}
             className={`chip cursor-pointer ${locale === l.id ? '!bg-primary text-white' : ''}`}>{l.flag} {l.label}</button>
         ))}
       </div>
@@ -47,7 +50,7 @@ export default function Login() {
         {/* Brand side */}
         <div className="text-center lg:text-left">
           <div className="flex justify-center lg:justify-start items-end gap-[-10px] mb-6">
-            {[TEACHERS[0], TEACHERS[3], TEACHERS[5]].map((tc, i) => (
+            {HERO_TEACHERS.map((tc, i) => (
               <div key={tc.id} className={`w-24 md:w-32 ${i === 1 ? 'z-10 scale-110 mx-[-14px]' : ''} anim-floaty`} style={{ animationDelay: i * 0.5 + 's' }}>
                 <Avatar teacher={tc} />
               </div>
