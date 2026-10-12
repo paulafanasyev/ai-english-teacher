@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI English Teacher: английский с говорящим учителем</title>
-<meta name="description" content="Бесплатное приложение для изучения английского: Pixar-учителя говорят с тобой, слушают через микрофон и работают прямо в браузере без регистрации.">
+<title>Светлана Репетитор: помощник школьника и учителя</title>
+<meta name="description" content="Светлана Репетитор: бесплатный помощник школьника и учителя. Английский с говорящими учителями и математика 5–9 класса с подсказками по шагам. Кабинет учителя и родителя, без регистрации, прямо в браузере.">
 <meta name="theme-color" content="#f4f7fb">
-<meta property="og:title" content="AI English Teacher">
-<meta property="og:description" content="Английский с говорящим учителем. Бесплатно, без регистрации, прямо в браузере.">
+<meta property="og:title" content="Светлана Репетитор">
+<meta property="og:description" content="Помощник школьника и учителя: английский и математика. Бесплатно, без регистрации, прямо в браузере.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 112 80'%3E%3Cg fill='%2314938f'%3E%3Cpath fill-rule='evenodd' d='M8 6h30a22 22 0 0 1 0 44H24v24H8zM24 20v16h13a8 8 0 0 0 0-16z'/%3E%3Cpath d='M58 6h14L52 74H38z'/%3E%3Cpath d='M80 33h12l14 15-14 15H80l14-15z'/%3E%3C/g%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -32,16 +32,16 @@
 
 <header class="topbar" id="topbar">
   <div class="wrap topbar-in">
-    <a class="brand" href="#top" aria-label="AI English Teacher">
+    <a class="brand" href="#top" aria-label="Светлана Репетитор">
       <svg class="brand-mark"><use href="#mark"/></svg>
-      <span class="brand-text">AI English <b>Teacher</b></span>
+      <span class="brand-text">Светлана <b>Репетитор</b></span>
     </a>
     <nav class="nav" aria-label="main">
-      <a href="#features" data-i18n="nav.features">Возможности</a>
-      <a href="#teachers" data-i18n="nav.teachers">Учителя</a>
-      <a href="#how" data-i18n="nav.how">Как начать</a>
+      <a href="#features" data-i18n="nav.features">Английский</a>
+      <a href="#math" data-i18n="nav.math">Математика</a>
+      <a href="#school" data-i18n="nav.school">Учителям</a>
       <a href="#faq" data-i18n="nav.faq">Вопросы</a>
-      <a href="#team" data-i18n="nav.team">Команда</a>
+      <a href="#team" data-i18n="nav.team">Контакты</a>
     </nav>
     <div class="top-actions">
       <div class="lang" role="group" aria-label="Language">
@@ -55,17 +55,17 @@
 <main id="top">
   <section class="hero wrap">
     <div class="hero-copy reveal">
-      <span class="pill"><span class="dot"></span><span data-i18n="hero.badge">Бесплатно · Без регистрации · Прямо в браузере</span></span>
-      <h1 data-i18n="hero.title">Английский с учителем, который <span class="grad">говорит с тобой</span></h1>
-      <p class="lead" data-i18n="hero.lead">Эмма и ещё пять Pixar-учителей объясняют, хвалят и слушают твоё произношение через микрофон. Уроки, игры и экзамены работают сразу, ничего не нужно скачивать.</p>
+      <span class="pill"><span class="dot"></span><span data-i18n="hero.badge">Помощник школьника и учителя · Бесплатно · Без регистрации</span></span>
+      <h1 data-i18n="hero.title">Репетитор, который <span class="grad">учит думать</span></h1>
+      <p class="lead" data-i18n="hero.lead">Английский с говорящими учителями и математика 5–9 класса, где подсказки открываются по шагам, а готовый ответ не выдаётся сразу. Для учеников, учителей и родителей. Работает в браузере, ничего не нужно скачивать.</p>
       <div class="cta">
         <a class="btn btn-primary btn-big" href="./app/"><span data-i18n="hero.open">Начать бесплатно</span> <span aria-hidden="true">→</span></a>
         <a class="btn btn-glass btn-big" href="https://github.com/paulafanasyev/ai-english-teacher/releases/latest" rel="noopener"><span aria-hidden="true">🤖</span> <span data-i18n="hero.apk">Android APK</span></a>
       </div>
       <ul class="ticks">
-        <li data-i18n="hero.t1">Голос и синхронизация губ</li>
-        <li data-i18n="hero.t2">Проверка произношения</li>
-        <li data-i18n="hero.t3">Интерфейс RU · EN · VI</li>
+        <li data-i18n="hero.t1">Английский A1–B2 с голосом</li>
+        <li data-i18n="hero.t2">Математика 5–9 «Подумай сам»</li>
+        <li data-i18n="hero.t3">Кабинет учителя и родителя</li>
       </ul>
     </div>
 
@@ -80,22 +80,22 @@
       </button>
       <button class="btn btn-glass talk-btn" id="talkBtn" type="button"><span aria-hidden="true">🔊</span> <span data-i18n="hero.hear">Поздороваться с Эммой</span></button>
       <span class="chip chip-a" aria-hidden="true">⭐ +10 XP</span>
-      <span class="chip chip-b" aria-hidden="true">🎤 Say “apple”</span>
+      <span class="chip chip-b" aria-hidden="true">🧮 3/4 + 1/6 = ?</span>
       <span class="chip chip-c" aria-hidden="true">✅ Great job!</span>
     </div>
   </section>
 
   <section class="wrap stats reveal">
+    <div><b>2</b><span data-i18n="stats.subjects">предмета: английский и математика</span></div>
     <div><b>6</b><span data-i18n="stats.teachers">Pixar-учителей</span></div>
     <div><b>3</b><span data-i18n="stats.langs">языка интерфейса</span></div>
-    <div><b>0</b><span data-i18n="stats.servers">серверов и регистраций</span></div>
     <div><b>100%</b><span data-i18n="stats.free">бесплатно</span></div>
   </section>
 
   <section class="section wrap" id="features">
     <div class="head reveal">
-      <span class="kicker" data-i18n="features.kicker">Возможности</span>
-      <h2 data-i18n="features.title">Всё, чтобы заговорить по-английски</h2>
+      <span class="kicker" data-i18n="features.kicker">Английский</span>
+      <h2 data-i18n="features.title">Английский: говори с первого урока</h2>
     </div>
     <div class="grid3">
       <article class="card reveal"><div class="ico">🗣️</div><h3 data-i18n="f1.t">Учителя говорят</h3><p data-i18n="f1.d">Живой голос, движение губ и моргание. Учитель читает задания, хвалит и подсказывает.</p></article>
@@ -104,6 +104,30 @@
       <article class="card reveal"><div class="ico">🏆</div><h3 data-i18n="f4.t">Экзамены</h3><p data-i18n="f4.d">Проверь уровень: аудирование, чтение, письмо и говорение с подробным разбором.</p></article>
       <article class="card reveal"><div class="ico">🔒</div><h3 data-i18n="f5.t">Без регистрации</h3><p data-i18n="f5.d">Прогресс хранится только на твоём устройстве. Никаких аккаунтов и серверов.</p></article>
       <article class="card reveal"><div class="ico">✨</div><h3 data-i18n="f6.t">Умный ИИ по желанию</h3><p data-i18n="f6.d">Всё работает без загрузки модели. Хочешь умнее диалоги? Включи локальный ИИ в настройках.</p></article>
+    </div>
+  </section>
+
+  <section class="section wrap" id="math">
+    <div class="head reveal">
+      <span class="kicker" data-i18n="math.kicker">Математика 5–9</span>
+      <h2 data-i18n="math.title">Подумай сам: подсказки вместо готовых ответов</h2>
+    </div>
+    <div class="grid3">
+      <article class="card reveal"><div class="ico">🪜</div><h3 data-i18n="m1.t">Подсказки по шагам</h3><p data-i18n="m1.d">Сначала наводящий вопрос, потом подсказка, потом шаг решения. Следующая подсказка открывается только после новой попытки.</p></article>
+      <article class="card reveal"><div class="ico">🎯</div><h3 data-i18n="m2.t">Точная проверка</h3><p data-i18n="m2.d">Ответ проверяет точная математика, а не нейросеть: дроби, десятичные, уравнения и выражения со скобками. Типичные ошибки объясняются.</p></article>
+      <article class="card reveal"><div class="ico">📐</div><h3 data-i18n="m3.t">Темы школы и ОГЭ</h3><p data-i18n="m3.d">Дроби, отрицательные числа, пропорции, уравнения, степени, квадратные уравнения, проценты и прогрессии.</p></article>
+    </div>
+  </section>
+
+  <section class="section wrap" id="school">
+    <div class="head reveal">
+      <span class="kicker" data-i18n="school.kicker">Учителям и родителям</span>
+      <h2 data-i18n="school.title">Помощник не только ученику</h2>
+    </div>
+    <div class="grid3">
+      <article class="card reveal"><div class="ico">🧑‍🏫</div><h3 data-i18n="sc1.t">Кабинет учителя</h3><p data-i18n="sc1.d">Видно, какая тема у каждого ученика слабая и сколько подсказок он берёт. Домашку по математике можно выдать всему классу в два клика.</p></article>
+      <article class="card reveal"><div class="ico">🗒️</div><h3 data-i18n="sc2.t">Журнал и оценки</h3><p data-i18n="sc2.d">Сданная домашка сама попадает в журнал с оценкой и комментарием. Учитель может добавить свои записи.</p></article>
+      <article class="card reveal"><div class="ico">👪</div><h3 data-i18n="sc3.t">Дневник для родителя</h3><p data-i18n="sc3.d">Родитель видит оценки, прогресс и серию занятий ребёнка без лишних звонков и чатов.</p></article>
     </div>
   </section>
 
@@ -125,12 +149,12 @@
   <section class="section wrap" id="how">
     <div class="head reveal">
       <span class="kicker" data-i18n="how.kicker">Как начать</span>
-      <h2 data-i18n="how.title">Три шага, и ты уже говоришь</h2>
+      <h2 data-i18n="how.title">Три шага, и ты уже занимаешься</h2>
     </div>
     <ol class="steps">
       <li class="card reveal"><span class="num">1</span><h3 data-i18n="s1.t">Открой приложение</h3><p data-i18n="s1.d">В браузере на телефоне или компьютере. Установка не нужна.</p></li>
-      <li class="card reveal"><span class="num">2</span><h3 data-i18n="s2.t">Выбери учителя</h3><p data-i18n="s2.d">У каждого свой голос и характер. Сменить можно в любой момент.</p></li>
-      <li class="card reveal"><span class="num">3</span><h3 data-i18n="s3.t">Учись голосом</h3><p data-i18n="s3.d">Слушай, повторяй и отвечай в микрофон. Учитель подскажет и похвалит.</p></li>
+      <li class="card reveal"><span class="num">2</span><h3 data-i18n="s2.t">Выбери предмет</h3><p data-i18n="s2.d">Английский с говорящим учителем или математика своего класса.</p></li>
+      <li class="card reveal"><span class="num">3</span><h3 data-i18n="s3.t">Учись сам</h3><p data-i18n="s3.d">Пробуй, бери подсказки по шагам и получай очки за самостоятельность.</p></li>
     </ol>
   </section>
 
@@ -141,10 +165,12 @@
     </div>
     <div class="faq">
       <details class="card reveal"><summary data-i18n="q1">Нужно ли скачивать ИИ?</summary><p data-i18n="a1">Нет. Уроки, проверка ответов, голос и микрофон работают сразу. Локальную модель можно включить по желанию в настройках, она лишь делает свободные диалоги умнее.</p></details>
+      <details class="card reveal"><summary data-i18n="q6">Помогает ли математика готовиться к ОГЭ?</summary><p data-i18n="a6">Да. Темы 5–9 класса идут по школьной программе, а режим «Подумай сам» учит решать, а не списывать ответ.</p></details>
       <details class="card reveal"><summary data-i18n="q2">Не слышно учителя. Что делать?</summary><p data-i18n="a2">Нажми на экран один раз: браузеры разрешают звук только после касания. Проверь громкость и беззвучный режим. Лучше всего голос работает в Chrome, Edge и Safari.</p></details>
       <details class="card reveal"><summary data-i18n="q3">Как включить микрофон?</summary><p data-i18n="a3">Нажми на кнопку микрофона и разреши доступ. Если доступ запрещён, нажми на замок в адресной строке и включи микрофон. В Chrome распознавание речи требует интернет.</p></details>
       <details class="card reveal"><summary data-i18n="q4">Это правда бесплатно?</summary><p data-i18n="a4">Да. Без подписок и регистрации. Прогресс хранится на твоём устройстве.</p></details>
       <details class="card reveal"><summary data-i18n="q5">Работает ли без интернета?</summary><p data-i18n="a5">Да, после первого открытия приложение кэшируется. Без сети не будет только распознавания речи в Chrome.</p></details>
+      <details class="card reveal"><summary data-i18n="q7">Что такое «Светлана»?</summary><p data-i18n="a7">«Светлана» — проект АНО ЦПС «Мир Самозанятых». Репетитор — его образовательный сервис для школьников, учителей и родителей.</p></details>
     </div>
   </section>
 
@@ -156,26 +182,31 @@
       </div>
       <div class="people">
         <div class="person">
-          <span class="role" data-i18n="team.dev">Разработчик и руководитель проекта</span>
+          <span class="role" data-i18n="team.dev">Разработчик</span>
           <b class="name" data-i18n="team.devName">Афанасьев Павел</b>
           <a class="wa" href="https://wa.me/79148289964" target="_blank" rel="noopener"><svg><use href="#wa"/></svg>+7 (914) 828-99-64</a>
           <a class="contact-link" href="mailto:Pavel.afanasyev@inbox.ru">Pavel.afanasyev@inbox.ru</a>
           <a class="contact-link" href="https://t.me/PaulPavel_it_dev" target="_blank" rel="noopener">Telegram: @PaulPavel_it_dev</a>
+        </div>
+        <div class="person">
+          <span class="role" data-i18n="team.baseRole">На базе проекта</span>
+          <b class="name" data-i18n="team.base">«Светлана»</b>
+          <span class="contact-link" data-i18n="team.org">АНО ЦПС «Мир Самозанятых»</span>
         </div>
       </div>
     </div>
   </section>
 
   <section class="wrap final reveal">
-    <h2 data-i18n="final.title">Эмма уже ждёт тебя</h2>
+    <h2 data-i18n="final.title">Эмма и задачи уже ждут тебя</h2>
     <a class="btn btn-primary btn-big" href="./app/"><span data-i18n="hero.open">Начать бесплатно</span> <span aria-hidden="true">→</span></a>
   </section>
 </main>
 
 <footer class="footer">
   <div class="wrap footer-in">
-    <a class="brand" href="#top"><svg class="brand-mark"><use href="#mark"/></svg><span class="brand-text">AI English <b>Teacher</b></span></a>
-    <span class="muted"><span data-i18n="footer.by">Разработка и руководство проектом: Афанасьев Павел</span> · © 2026</span>
+    <a class="brand" href="#top"><svg class="brand-mark"><use href="#mark"/></svg><span class="brand-text">Светлана <b>Репетитор</b></span></a>
+    <span class="muted"><span data-i18n="footer.by">На базе «Светланы» АНО ЦПС «Мир Самозанятых» · Разработчик: Афанасьев Павел</span> · © 2026</span>
     <span class="links"><a href="./privacy.html" data-i18n="footer.privacy">Конфиденциальность</a><a href="https://github.com/paulafanasyev/ai-english-teacher" rel="noopener">GitHub</a></span>
   </div>
 </footer>
