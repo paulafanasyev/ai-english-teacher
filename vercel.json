@@ -1,8 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
-  "installCommand": "cd apps/web && npm install --no-audit --no-fund --legacy-peer-deps",
-  "buildCommand": "rm -rf _site && mkdir -p _site && (cd apps/web && npx vite build --base=/app/ --outDir ../../_site/app --emptyOutDir) && cp -R site/. _site/",
+  "installCommand": "R=$PWD; while [ ! -d \"$R/apps/web\" ] && [ \"$R\" != / ]; do R=$(dirname \"$R\"); done; echo \"repo root: $R\"; cd \"$R/apps/web\" && npm install --no-audit --no-fund --legacy-peer-deps",
+  "buildCommand": "O=$PWD; R=$PWD; while [ ! -d \"$R/apps/web\" ] && [ \"$R\" != / ]; do R=$(dirname \"$R\"); done; rm -rf \"$O/_site\" && mkdir -p \"$O/_site\" && (cd \"$R/apps/web\" && npx vite build --base=/app/ --outDir \"$O/_site/app\" --emptyOutDir) && cp -R \"$R/site/.\" \"$O/_site/\"",
   "outputDirectory": "_site",
   "headers": [
     {
