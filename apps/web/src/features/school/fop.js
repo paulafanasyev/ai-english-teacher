@@ -10,6 +10,11 @@ import artNoo from '../../data/fop/art_noo.json';
 import musicNoo from '../../data/fop/music_noo.json';
 import techNoo from '../../data/fop/tech_noo.json';
 import peNoo from '../../data/fop/pe_noo.json';
+import historyOoo from '../../data/fop/history_ooo.json';
+import physicsOoo from '../../data/fop/physics_ooo.json';
+import chemistryOoo from '../../data/fop/chemistry_ooo.json';
+import biologyOoo from '../../data/fop/biology_ooo.json';
+import informaticsOoo from '../../data/fop/informatics_ooo.json';
 
 // Display punctuation: numeric ranges get an en dash, word pairs a slash, other dashes a colon.
 // Titles in «guillemets» and a short theme name before the first colon («Композиторы – детям: …») are kept verbatim.
@@ -29,7 +34,8 @@ const tidyProgram = (p) => ({
 
 export const PROGRAMS = [
   ...russianNoo, ...readingNoo, ...mathNoo, ...worldNoo, ...orkseNoo, ...artNoo, ...musicNoo, ...techNoo, ...peNoo,
-  ...math, ...english,
+  ...math, ...historyOoo, ...physicsOoo, ...chemistryOoo, ...biologyOoo, ...informaticsOoo,
+  ...english,
 ].map(tidyProgram);
 
 export const DOCS = {
@@ -95,7 +101,12 @@ const SUBJECT_MAP = {
   'Русский язык': 'Русский язык', 'Литературное чтение': 'Литературное чтение', 'Окружающий мир': 'Окружающий мир',
   'Основы религиозных культур и светской этики': 'ОРКСЭ', 'Изобразительное искусство': 'Изобразительное искусство',
   'Музыка': 'Музыка', 'Труд (технология)': 'Труд (технология)', 'Физическая культура': 'Физическая культура',
+  'История': 'История', 'Физика': 'Физика', 'Химия': 'Химия', 'Биология': 'Биология', 'Информатика': 'Информатика',
 };
+
+// Programs whose results list is a short selection rather than the full official list.
+const SAMPLE_RESULTS = new Set([...math, ...english].map((p) => p.id));
+export const isSampleResults = (program) => SAMPLE_RESULTS.has(program.id);
 
 // All programs for a plan subject and grade. Subjects with modules (ОРКСЭ) give one program per module: «ОРКСЭ: <модуль>».
 export function findPrograms(planSubject, grade) {
