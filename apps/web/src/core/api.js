@@ -14,19 +14,22 @@ const enc = (p) => 'demo$' + btoa(unescape(encodeURIComponent(p))); // demo only
 const CEFR = ['A1', 'A2', 'B1', 'B2'];
 const TASK_TYPES = ['vocab', 'match', 'gap', 'grammar', 'listening', 'writing', 'speaking'];
 const TOPICS = ['basics', 'family', 'food', 'travel', 'school', 'hobbies', 'nature', 'city', 'shopping', 'work', 'technology', 'feelings'];
+// Must match data/teachers.js. Any other stored id (e.g. removed teachers) is reset.
+const TEACHER_IDS = ['emma', 'james', 'sofia', 'alex'];
+const validTeacher = (id) => (TEACHER_IDS.includes(id) ? id : null);
 
 function seedDb() {
   const students = [
-    ['Полина', 'polina@school.demo', 'A2', 0.82], ['Минь', 'minh@school.demo', 'A1', 0.64],
-    ['Артём', 'artem@school.demo', 'B1', 0.88], ['Линь', 'lin@school.demo', 'A1', 0.71],
-    ['Соня', 'sonya@school.demo', 'A2', 0.77], ['Хоанг', 'hoang@school.demo', 'B1', 0.9],
-    ['Кирилл', 'kirill@school.demo', 'A1', 0.55], ['Тхао', 'thao@school.demo', 'A2', 0.8],
+    ['Полина', 'polina@school.demo', 'A2', 0.82], ['Миша', 'misha@school.demo', 'A1', 0.64],
+    ['Артём', 'artem@school.demo', 'B1', 0.88], ['Лена', 'lena@school.demo', 'A1', 0.71],
+    ['Соня', 'sonya@school.demo', 'A2', 0.77], ['Егор', 'egor@school.demo', 'B1', 0.9],
+    ['Кирилл', 'kirill@school.demo', 'A1', 0.55], ['Таня', 'tanya@school.demo', 'A2', 0.8],
     ['Маша', 'masha@school.demo', 'B2', 0.93], ['Дима', 'dima@school.demo', 'A1', 0.6],
-    ['Ань', 'anh@school.demo', 'A2', 0.74],
+    ['Аня', 'anya@school.demo', 'A2', 0.74],
   ];
   const users = [
     { id: 'u_admin', email: 'admin@demo', passwordHash: enc('admin123'), name: 'Admin', role: 'ADMIN',
-      blocked: false, level: 'B2', xp: 0, coins: 999, teacherId: 'minh', theme: 'candy', frame: 'none', createdAt: now() - 40 * DAY, lastActive: now() },
+      blocked: false, level: 'B2', xp: 0, coins: 999, teacherId: 'emma', theme: 'candy', frame: 'none', createdAt: now() - 40 * DAY, lastActive: now() },
     { id: 'u_student', email: 'student@demo', passwordHash: enc('demo123'), name: 'Саша', role: 'STUDENT',
       blocked: false, level: 'A1', xp: 120, coins: 350, teacherId: null, theme: 'candy', frame: 'none', createdAt: now() - 2 * DAY, lastActive: now() },
   ];
@@ -38,7 +41,7 @@ function seedDb() {
     const daysActive = 8 + Math.floor(Math.random() * 22);
     users.push({ id, email, passwordHash: enc('pass1234'), name, role: 'STUDENT', blocked: i === 9,
       level, xp: 200 + Math.floor(Math.random() * 2200), coins: Math.floor(Math.random() * 400),
-      teacherId: ['emma', 'james', 'sofia', 'alex', 'linh', 'minh'][i % 6], theme: 'candy', frame: 'none',
+      teacherId: TEACHER_IDS[i % TEACHER_IDS.length], theme: 'candy', frame: 'none',
       createdAt: now() - (30 + i) * DAY, lastActive: now() - Math.floor(Math.random() * 9) * DAY });
     for (let d = 0; d < daysActive; d++) {
       const dayTs = now() - Math.floor(Math.random() * 30) * DAY;
@@ -80,9 +83,23 @@ function seedDb() {
   };
 }
 
+// Old saved data may still reference removed teachers: reset those choices once.
+function migrate(d) {
+  let changed = false;
+  for (const u of d.users || []) {
+    if (u.teacherId != null && !validTeacher(u.teacherId)) { u.teacherId = null; changed = true; }
+  }
+  if (Array.isArray(d.unlocks)) {
+    const kept = d.unlocks.filter((x) => x.itemType !== 'teacher' || validTeacher(x.itemId));
+    if (kept.length !== d.unlocks.length) { d.unlocks = kept; changed = true; }
+  }
+  return changed;
+}
+
 function db() {
   let d = storage.get(DB_KEY);
   if (!d) { d = seedDb(); storage.set(DB_KEY, d); }
+  else if (migrate(d)) storage.set(DB_KEY, d);
   return d;
 }
 const save = (d) => storage.set(DB_KEY, d);
@@ -157,6 +174,7 @@ const DemoApi = {
     const u = d.users.find((x) => x.id === ses?.userId);
     if (!u) throw new Error('auth');
     for (const k of ['name', 'locale', 'teacherId', 'theme', 'frame', 'level']) if (patch[k] !== undefined) u[k] = patch[k];
+    if (patch.teacherId !== undefined) u.teacherId = validTeacher(patch.teacherId);
     save(d); return publicUser(u);
   },
 
@@ -353,7 +371,8 @@ function makeHttpApi(base) {
     async register(p) { const r = await call('/api/auth/register', { method: 'POST', body: p }); setTokens(r.tokens); return r.user; },
     async login(p) { const r = await call('/api/auth/login', { method: 'POST', body: p }); setTokens(r.tokens); return r.user; },
     async logout() { try { await call('/api/auth/logout', { method: 'POST', body: { refreshToken: tokens?.refresh } }); } catch {} setTokens(null); },
-    async current() { if (!tokens) return null; try { return await call('/api/me'); } catch { return null; } },
+    // /api/me responds with { user }; unwrap it so the app gets the same shape as login().
+    async current() { if (!tokens) return null; try { const r = await call('/api/me'); return r?.user ?? r ?? null; } catch { return null; } },
     async updateProfile(patch) { return call('/api/me', { method: 'PATCH', body: patch }); },
     async addAttempt(p) { return call('/api/progress/attempt', { method: 'POST', body: p }); },
     async getStats() { return call('/api/progress/stats'); },
