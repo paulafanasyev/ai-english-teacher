@@ -2,7 +2,6 @@ import { useApp } from '../../core/store.js';
 
 const TEXT = {
   en: 'This section follows the Russian federal school curricula, so its content is shown in Russian.',
-  vi: 'Mục này theo chương trình phổ thông liên bang của Nga, vì vậy nội dung được hiển thị bằng tiếng Nga.',
 };
 
 export default function RuOnly() {

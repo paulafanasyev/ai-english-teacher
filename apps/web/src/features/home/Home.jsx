@@ -90,7 +90,7 @@ export default function Home() {
           <div className="text-3xl">💡</div>
           <div>
             <div className="label">{t('home.tip.title')}</div>
-            <div className="font-black text-lg">{tip.en} — {useApp.getState().locale === 'vi' ? tip.vi : tip.ru}</div>
+            <div className="font-black text-lg">{tip.en} — {tip.ru}</div>
             <div className="text-sm font-semibold text-ink/50 italic">{tip.exEn}</div>
           </div>
         </div>
