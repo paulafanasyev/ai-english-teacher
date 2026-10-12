@@ -24,6 +24,8 @@ const TOPICS = [
   'education',
 ];
 const LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1'];
+// Avatar teacher ids, must match apps/web/src/data/teachers.js.
+const TEACHER_IDS = ['emma', 'james', 'sofia', 'alex'];
 
 const STUDENT_NAMES = [
   'Alice Johnson',
@@ -113,7 +115,7 @@ async function main() {
         name,
         role: 'STUDENT',
         level,
-        teacherId: admin.id,
+        teacherId: TEACHER_IDS[i % TEACHER_IDS.length],
         xp: 0,
         coins: 0,
         locale: pick(['ru', 'en']),
