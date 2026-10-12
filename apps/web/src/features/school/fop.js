@@ -1,13 +1,18 @@
 // Official federal curricula (ФОП) data and lesson-plan helpers. Content: Minprosveshcheniya documents (public).
 import math from '../../data/fop/math.json';
 import english from '../../data/fop/english.json';
+import russianNoo from '../../data/fop/russian_noo.json';
+import readingNoo from '../../data/fop/literary_reading_noo.json';
+import worldNoo from '../../data/fop/world_noo.json';
+import mathNoo from '../../data/fop/math_noo.json';
 
 // Display punctuation: numeric ranges get an en dash, word pairs a slash, other dashes a colon.
+// Titles in «guillemets» are kept verbatim.
 export function tidy(t) {
   return String(t)
     .replace(/(\d)\s*[-–—]\s*(\d)/g, '$1–$2')
     .replace(/([A-Za-z)])\s[-–—]\s(?=[A-Za-z(])/g, '$1 / ')
-    .replace(/\s[–—]\s/g, ': ');
+    .replace(/«[^»]*»|\s[–—]\s/g, (m) => (m.startsWith('«') ? m : ': '));
 }
 const tidyProgram = (p) => ({
   ...p,
@@ -15,7 +20,7 @@ const tidyProgram = (p) => ({
   results: (p.results || []).map(tidy),
 });
 
-export const PROGRAMS = [...math, ...english].map(tidyProgram);
+export const PROGRAMS = [...russianNoo, ...readingNoo, ...mathNoo, ...worldNoo, ...math, ...english].map(tidyProgram);
 
 export const DOCS = {
   noo: { title: 'ФОП НОО, приказ Минпросвещения России № 372 от 18.05.2023', url: 'http://publication.pravo.gov.ru/document/0001202307130044' },
@@ -76,6 +81,7 @@ export const PLANS = {
 const SUBJECT_MAP = {
   'Математика': 'Математика', 'Алгебра': 'Алгебра', 'Геометрия': 'Геометрия',
   'Вероятность и статистика': 'Вероятность и статистика', 'Иностранный язык': 'Иностранный (английский) язык',
+  'Русский язык': 'Русский язык', 'Литературное чтение': 'Литературное чтение', 'Окружающий мир': 'Окружающий мир',
 };
 
 export function findProgram(planSubject, grade) {
