@@ -60,7 +60,7 @@ export default function Layout({ children }) {
       <aside className="hidden md:flex flex-col gap-1 p-4 border-r border-black/5 bg-surface/60 backdrop-blur">
         <div className="flex items-center gap-2 px-2 py-3">
           <img src="./pavel-afanasev-logo.svg" alt="Pavel Afanasev" className="h-9 w-auto rounded-md bg-white" />
-          <span className="font-black text-lg leading-tight">AI English<br />Teacher</span>
+          <span className="font-black text-lg leading-tight">{t('app.name')}</span>
         </div>
         {items.map((n) => (
           <NavLink key={n.to} to={n.to} className={linkCls} onClick={() => sfx.click()}>
@@ -93,7 +93,7 @@ export default function Layout({ children }) {
         {/* Top bar (mobile) */}
         <header className="md:hidden flex items-center gap-2 px-4 py-3 bg-surface/80 backdrop-blur border-b border-black/5 sticky top-0 z-40">
           <img src="./pavel-afanasev-logo.svg" alt="Pavel Afanasev" className="h-7 w-auto rounded bg-white" />
-          <span className="font-black">AI English Teacher</span>
+          <span className="font-black truncate">{t('app.name')}</span>
           <div className="ml-auto flex items-center gap-2">
             <Lang /><Xp n={user.xp} /><Coin n={user.coins} />
             <button onClick={() => setPref('musicOn', !prefs.musicOn)} className="text-xl">{prefs.musicOn ? '🎵' : '🔇'}</button>
@@ -104,7 +104,7 @@ export default function Layout({ children }) {
           <div className="max-w-5xl mx-auto">{children}</div>
           <footer className="mx-auto mt-10 flex max-w-5xl flex-wrap items-center gap-3 border-t border-black/10 pt-4 text-xs text-ink/60">
             <img src="./pavel-afanasev-logo.svg" alt="Pavel Afanasev" className="h-8 w-auto rounded bg-white" />
-            <span>© 2026 Pavel Afanasev</span>
+            <span>{t('app.credit')} · © 2026</span>
             <a href="mailto:Pavel.afanasyev@inbox.ru" className="underline">Email</a>
             <a href="https://wa.me/79148289964" target="_blank" rel="noreferrer" className="underline">WhatsApp</a>
             <a href="https://t.me/PaulPavel_it_dev" target="_blank" rel="noreferrer" className="underline">Telegram</a>
