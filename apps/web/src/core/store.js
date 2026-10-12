@@ -1,14 +1,15 @@
 import { create } from 'zustand';
 import { api } from './api.js';
 import { storage } from './storage.js';
-import { translate } from '../i18n/index.js';
+import { translate, normalizeLocale } from '../i18n/index.js';
 
 const savedPrefs = storage.get('aet_prefs', {});
+const initialLocale = normalizeLocale(savedPrefs.locale);
 
 export const useApp = create((set, get) => ({
   user: null,
   booted: false,
-  locale: savedPrefs.locale || 'ru',
+  locale: initialLocale,
   prefs: {
     musicOn: false,
     musicStyle: 'lofi',
@@ -17,6 +18,7 @@ export const useApp = create((set, get) => ({
     voiceOn: true,
     theme: 'candy',
     ...savedPrefs,
+    locale: initialLocale,
   },
 
   async boot() {
@@ -31,8 +33,9 @@ export const useApp = create((set, get) => ({
   setUser(user) { set({ user }); },
 
   setLocale(locale) {
-    set({ locale });
-    get().savePrefs({ locale });
+    const next = normalizeLocale(locale);
+    set({ locale: next });
+    get().savePrefs({ locale: next });
   },
   setPref(key, value) {
     const prefs = { ...get().prefs, [key]: value };
@@ -42,7 +45,7 @@ export const useApp = create((set, get) => ({
   },
   savePrefs(patch) {
     const cur = storage.get('aet_prefs', {});
-    storage.set('aet_prefs', { ...cur, ...patch, locale: patch.locale || get().locale });
+    storage.set('aet_prefs', { ...cur, ...patch, locale: normalizeLocale(patch.locale || get().locale) });
   },
   applyTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme || 'candy');
