@@ -2,6 +2,7 @@ import en from './en.js';
 import ru from './ru.js';
 import vi from './vi.js';
 import extra from './cabinets.js';
+import brand from './brand.js';
 
 const dicts = { en, ru, vi };
 
@@ -12,7 +13,7 @@ export const LOCALES = [
 ];
 
 export function translate(locale, key, params) {
-  let s = dicts[locale]?.[key] ?? extra[locale]?.[key] ?? dicts.en[key] ?? extra.en?.[key] ?? key;
+  let s = brand[locale]?.[key] ?? dicts[locale]?.[key] ?? extra[locale]?.[key] ?? brand.en[key] ?? dicts.en[key] ?? extra.en?.[key] ?? key;
   if (params) for (const k of Object.keys(params)) s = s.split(`{${k}}`).join(String(params[k]));
   return s;
 }

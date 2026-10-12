@@ -1,8 +1,10 @@
-# 🎓 AI English Teacher
+# 🎓 Светлана Репетитор
 
 ![Pavel Afanasev logo](pavel-afanasev-logo.svg)
 
-**AI English Teacher** — local-first приложение для изучения английского с голосовыми преподавателями, уроками, играми и приватным ИИ прямо в браузере.
+**Светлана Репетитор** — бесплатный помощник школьника и учителя: английский с озвученными учителями и математика 5–9 класса в режиме «Подумай сам», local-first, прямо в браузере.
+
+Создан на базе проекта **«Светлана» АНО ЦПС «Мир Самозанятых»**. Разработчик: **Афанасьев Павел**.
 
 🌐 **Сайт:** https://paulafanasyev.github.io/ai-english-teacher/  ·  **Приложение:** https://paulafanasyev.github.io/ai-english-teacher/app/
 
@@ -12,6 +14,7 @@
 - озвучка на EN/RU/VI через браузерный или нативный TTS, с понятными ошибками и fallback;
 - уроки A1–B2, XP, серии занятий и мини-игры;
 - математика 5–9 класс в режиме «Подумай сам»: подсказки по шагам, решение только после попыток, точная проверка ответов без ИИ (`apps/web/src/features/math`, тесты: `npm test`);
+- демо-кабинет учителя и родителя: слабые темы, домашка по математике, журнал (в публичной сборке данные в одном браузере);
 - тренировка IELTS / TOEFL: reading, listening, writing (с оценкой от локального ИИ), speaking;
 - интерфейс на русском, английском и вьетнамском;
 - local-first режим: прогресс хранится в `localStorage`, отдельный API не нужен;
@@ -31,9 +34,9 @@ npm run dev
 
 Голосовой ввод зависит от разрешений браузера/ОС. Для локальной AI-модели нужен современный Chrome или Edge с WebGPU; первый запуск скачивает модель (~300–1100 МБ), дальше она берётся из кэша браузера. Без WebGPU всё работает в базовом режиме.
 
-## GitHub Pages
+## GitHub Pages и Vercel
 
-Workflow `pages.yml` находится в `.github/workflows/` и на push в `main` собирает React-приложение в `/app/`, копирует статический лендинг из `site/` в корень и публикует Pages. Включите один раз **Settings → Pages → Source → GitHub Actions**. `web-ci.yml` проверяет web-сборку на каждом push и PR.
+Workflow `pages.yml` находится в `.github/workflows/` и на push в `main` собирает React-приложение в `/app/`, копирует статический лендинг из `site/` в корень и публикует Pages. Включите один раз **Settings → Pages → Source → GitHub Actions**. `web-ci.yml` проверяет web-сборку на каждом push и PR. Та же сборка для Vercel описана в `vercel.json`.
 
 ## Мобильная версия
 
@@ -53,11 +56,11 @@ site/           — статический маркетинговый сайт (
 
 ## English (short)
 
-Local-first React/Vite SPA for GitHub Pages. Progress lives in browser `localStorage`; an optional in-browser LLM (WebLLM over WebGPU) powers tutoring, corrections and writing feedback, with rule-based fallbacks everywhere. Includes a grade 5–9 math tutor with step-by-step hints and exact answer checking. Run `cd apps/web && npm install && npm run dev`. To deploy: set **Settings → Pages → Source → GitHub Actions**; the workflows already live in `.github/workflows/`.
+**Svetlana Tutor** is a free helper for students and teachers, based on the “Svetlana” project of the non-profit “Mir Samozanyatykh” (АНО ЦПС «Мир Самозанятых»), developed by Pavel Afanasyev. Local-first React/Vite SPA: progress lives in browser `localStorage`; an optional in-browser LLM (WebLLM over WebGPU) powers tutoring, corrections and writing feedback, with rule-based fallbacks everywhere. Includes English with voice-enabled teachers, a grade 5–9 math tutor with step-by-step hints and exact answer checking, and demo teacher/parent dashboards. Run `cd apps/web && npm install && npm run dev`.
 
 ## Разработка / Developers
 
-**Pavel Afanasev** (разработчик и руководитель проекта)
+**Афанасьев Павел (Pavel Afanasev)**, разработчик и руководитель проекта. На базе проекта «Светлана» АНО ЦПС «Мир Самозанятых».
 
 ## Правообладатель и связь
 
