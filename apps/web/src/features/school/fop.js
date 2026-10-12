@@ -15,6 +15,7 @@ import physicsOoo from '../../data/fop/physics_ooo.json';
 import chemistryOoo from '../../data/fop/chemistry_ooo.json';
 import biologyOoo from '../../data/fop/biology_ooo.json';
 import informaticsOoo from '../../data/fop/informatics_ooo.json';
+import socialOoo from '../../data/fop/social_ooo.json';
 
 // Display punctuation: numeric ranges get an en dash, word pairs a slash, other dashes a colon.
 // Titles in «guillemets» and a short theme name before the first colon («Композиторы – детям: …») are kept verbatim.
@@ -34,13 +35,14 @@ const tidyProgram = (p) => ({
 
 export const PROGRAMS = [
   ...russianNoo, ...readingNoo, ...mathNoo, ...worldNoo, ...orkseNoo, ...artNoo, ...musicNoo, ...techNoo, ...peNoo,
-  ...math, ...historyOoo, ...physicsOoo, ...chemistryOoo, ...biologyOoo, ...informaticsOoo,
+  ...math, ...historyOoo, ...socialOoo, ...physicsOoo, ...chemistryOoo, ...biologyOoo, ...informaticsOoo,
   ...english,
 ].map(tidyProgram);
 
 export const DOCS = {
   noo: { title: 'ФОП НОО, приказ Минпросвещения России № 372 от 18.05.2023', url: 'http://publication.pravo.gov.ru/document/0001202307130044' },
-  ooo: { title: 'ФОП ООО, приказ Минпросвещения России № 370 от 18.05.2023', url: 'http://publication.pravo.gov.ru/document/0001202307140040' },
+  ooo: { title: 'ФОП ООО, приказ Минпросвещения России № 370 от 18.05.2023 (ред. от 10.11.2025)', url: 'http://publication.pravo.gov.ru/document/0001202307140040' },
+  ooo808: { title: 'Изменения в ФОП ООО, приказ Минпросвещения России № 808 от 10.11.2025', url: 'http://publication.pravo.gov.ru/document/0001202602120006' },
   faopNoo: { title: 'ФАОП НОО для обучающихся с ОВЗ, приказ № 1023 от 24.11.2022', url: 'http://publication.pravo.gov.ru/Document/View/0001202303220005' },
   faopOoo: { title: 'ФАОП ООО для обучающихся с ОВЗ, приказ № 1025 от 24.11.2022', url: 'http://publication.pravo.gov.ru/Document/View/0001202303220006' },
   fpu: { title: 'Федеральный перечень учебников, приказ № 495 от 26.06.2025 и его изменения', url: 'http://publication.pravo.gov.ru/document/0001202507290005' },
@@ -48,6 +50,8 @@ export const DOCS = {
 };
 
 // Federal curriculum, variant 1 (5-day week): weekly hours by grade, mandatory part.
+// Fractional hours (0.5) mean a yearly total spread over part of the year (17 h).
+export const fmtHours = (h) => String(h).replace('.', ',');
 export const PLANS = {
   'НОО': {
     label: '1–4 классы', grades: [1, 2, 3, 4], doc: 'noo',
@@ -68,30 +72,30 @@ export const PLANS = {
   },
   'ООО': {
     label: '5–9 классы', grades: [5, 6, 7, 8, 9], doc: 'ooo',
-    note: 'Базовая структура варианта 1. Перед утверждением плана школы сверяйте часы с действующей редакцией приказа № 370: в 2024–2025 годах в него вносились изменения.',
+    note: 'Вариант 1 на 2026/27 учебный год по ФОП ООО в редакции приказов № 704, № 729 и № 808: история 3 ч в 5–8 классах, обществознание только в 9 классе, «Духовно-нравственная культура России» в 5 классе (17 ч за год). Иностранный язык: 2 ч в 5 классе, в 6–7 классах в 2026/27 остаётся 3 ч (ФРП английского языка для 5 класса пока рассчитана на 3 ч). Перед утверждением плана школы сверяйте часы с действующей редакцией приказа № 370.',
     rows: [
       ['Русский язык', [5, 6, 4, 3, 3]],
       ['Литература', [3, 3, 2, 2, 3]],
-      ['Иностранный язык', [3, 3, 3, 3, 3]],
+      ['Иностранный язык', [2, 3, 3, 3, 3]],
       ['Математика', [5, 5, 0, 0, 0]],
       ['Алгебра', [0, 0, 3, 3, 3]],
       ['Геометрия', [0, 0, 2, 2, 2]],
       ['Вероятность и статистика', [0, 0, 1, 1, 1]],
       ['Информатика', [0, 0, 1, 1, 1]],
-      ['История', [2, 2, 2, 2, 2]],
-      ['Обществознание', [0, 1, 1, 1, 1]],
+      ['История', [3, 3, 3, 3, 2]],
+      ['Обществознание', [0, 0, 0, 0, 1]],
       ['География', [1, 1, 2, 2, 2]],
       ['Физика', [0, 0, 2, 2, 3]],
       ['Химия', [0, 0, 0, 2, 2]],
       ['Биология', [1, 1, 1, 2, 2]],
-      ['ОДНКНР', [0, 1, 1, 0, 0]],
+      ['Духовно-нравственная культура России', [0.5, 0, 0, 0, 0]],
       ['Изобразительное искусство', [1, 1, 1, 0, 0]],
       ['Музыка', [1, 1, 1, 1, 0]],
       ['Труд (технология)', [2, 2, 2, 1, 1]],
       ['Физическая культура', [2, 2, 2, 2, 2]],
       ['Основы безопасности и защиты Родины', [0, 0, 0, 1, 1]],
     ],
-    total: [27, 29, 30, 31, 32], max: [29, 30, 32, 33, 33],
+    total: [26.5, 28, 30, 31, 32], max: [29, 30, 32, 33, 33],
   },
 };
 
@@ -101,6 +105,7 @@ const SUBJECT_MAP = {
   'Русский язык': 'Русский язык', 'Литературное чтение': 'Литературное чтение', 'Окружающий мир': 'Окружающий мир',
   'Основы религиозных культур и светской этики': 'ОРКСЭ', 'Изобразительное искусство': 'Изобразительное искусство',
   'Музыка': 'Музыка', 'Труд (технология)': 'Труд (технология)', 'Физическая культура': 'Физическая культура',
+  'Обществознание': 'Обществознание',
   'История': 'История', 'Физика': 'Физика', 'Химия': 'Химия', 'Биология': 'Биология', 'Информатика': 'Информатика',
 };
 

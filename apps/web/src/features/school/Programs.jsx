@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../../core/store.js';
-import { PLANS, DOCS, findProgram, findPrograms, isSampleResults } from './fop.js';
+import { PLANS, DOCS, findProgram, findPrograms, isSampleResults, fmtHours } from './fop.js';
 import RuOnly from './RuOnly.jsx';
 
 const Doc = ({ k }) => (
@@ -32,7 +32,7 @@ export default function Programs() {
       <div>
         <div className="h2">📋 Темы федеральных программ, демо</div>
         <p className="text-sm font-semibold text-ink/60 mt-1">
-          Учебный план и содержание обучения по документам Минпросвещения России. Сейчас доступны разделы и темы программ: все предметы 1–4 классов (ОРКСЭ по всем шести модулям, английский язык со 2 класса), а в 5–9 классах математика, английский язык, история, физика, химия, биология и информатика. Остальные предметы 5–9 классов добавляются. Это справка, она не заменяет полный текст действующей программы и утверждённый план школы.
+          Учебный план и содержание обучения по документам Минпросвещения России. Сейчас доступны разделы и темы программ: все предметы 1–4 классов (ОРКСЭ по всем шести модулям, английский язык со 2 класса), а в 5–9 классах математика, английский язык, история, обществознание, физика, химия, биология и информатика. Остальные предметы 5–9 классов добавляются. Это справка, она не заменяет полный текст действующей программы и утверждённый план школы.
         </p>
       </div>
       <RuOnly />
@@ -57,14 +57,14 @@ export default function Programs() {
               return (
                 <li key={s}>
                   <button onClick={() => { setSubject(s); setMod(0); }} aria-pressed={current === s} className={`w-full flex items-center justify-between gap-2 rounded-xl px-3 py-2 text-left text-sm font-bold transition ${current === s ? 'bg-primary text-white' : 'hover:bg-soft'}`}>
-                    <span>{has ? '📘 ' : ''}{s}</span><span className="shrink-0 opacity-70">{h[gi]}</span>
+                    <span>{has ? '📘 ' : ''}{s}</span><span className="shrink-0 opacity-70">{fmtHours(h[gi])}</span>
                   </button>
                 </li>
               );
             })}
           </ul>
           <div className="mt-2 border-t border-black/5 px-2 pt-2 text-xs font-bold text-ink/60">
-            Итого обязательная часть: {plan.total[gi]} ч · максимум с частью школы: {plan.max[gi]} ч
+            Итого обязательная часть: {fmtHours(plan.total[gi])} ч · максимум с частью школы: {fmtHours(plan.max[gi])} ч
           </div>
           {plan.note && <p className="px-2 pt-2 text-[11px] font-semibold text-ink/50">{plan.note}</p>}
           <p className="px-2 pt-2 text-[11px] font-semibold text-ink/50">📘 темы программы есть в демо. Источник плана: <Doc k={plan.doc} />.</p>
@@ -75,7 +75,7 @@ export default function Programs() {
           {current && !program && (
             <div className="space-y-2">
               <div className="h3 font-black text-lg">{current}, {g} класс</div>
-              <p className="font-semibold text-ink/70">По учебному плану: {rows.find(([s]) => s === current)[1][gi]} ч в неделю.</p>
+              <p className="font-semibold text-ink/70">По учебному плану: {fmtHours(rows.find(([s]) => s === current)[1][gi])} ч в неделю.</p>
               <p className="text-sm font-semibold text-ink/60">Темы этого предмета в Репетитор пока не добавлены. Официальные документы: <Doc k="edsoo" />.</p>
             </div>
           )}
@@ -122,6 +122,7 @@ export default function Programs() {
         <div className="font-black text-ink">Документы</div>
         <p>• <Doc k="noo" /></p>
         <p>• <Doc k="ooo" /></p>
+        <p>• <Doc k="ooo808" /></p>
         <p>• Для детей с ОВЗ и домашнего обучения: <Doc k="faopNoo" />; <Doc k="faopOoo" />. В Репетиторе есть режим доступности (кнопка ♿ в меню): крупный шрифт, без анимаций, чтение выделенного вслух.</p>
         <p>• <Doc k="fpu" />. Учебники из перечня принадлежат издательствам, их тексты здесь не публикуются.</p>
       </div>
