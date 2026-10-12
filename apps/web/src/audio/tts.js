@@ -31,21 +31,18 @@ function nativePlugin(name) {
 }
 function nativeTTS() { return nativePlugin('TextToSpeech'); }
 
-const LANGS = { en: 'en-US', ru: 'ru-RU', vi: 'vi-VN' };
+const LANGS = { en: 'en-US', ru: 'ru-RU' };
 const F_HINTS = {
   en: ['female', 'samantha', 'aria', 'jenny', 'zira', 'victoria', 'karen', 'moira', 'tessa', 'sonia', 'libby', 'ava', 'allison', 'susan', 'google us english'],
   ru: ['milena', 'irina', 'svetlana', 'female', 'жен', 'google русский'],
-  vi: ['linh', 'hoaimy', 'hoai my', 'hoa my', 'google tiếng việt', 'female'],
 };
 const M_HINTS = {
   en: ['male', 'david', 'mark', 'daniel', 'guy', 'ryan', 'alex', 'fred', 'arthur', 'george', 'thomas', 'oliver', 'aaron', 'christopher'],
   ru: ['pavel', 'dmitry', 'male', 'муж'],
-  vi: ['namminh', 'nam minh', 'hoang', 'male'],
 };
 const NOTICE = {
   ru: { tap: '🔊 Нажмите, чтобы включить звук', none: '🔇 В браузере нет голоса для этого языка. Установите голос в настройках системы или откройте сайт в Chrome/Edge.', fail: '🔇 Не удалось воспроизвести речь. Проверьте громкость и попробуйте ещё раз.' },
   en: { tap: '🔊 Tap to enable sound', none: '🔇 No voice for this language in your browser. Install one in system settings or use Chrome/Edge.', fail: '🔇 Speech could not play. Check the volume and try again.' },
-  vi: { tap: '🔊 Chạm để bật âm thanh', none: '🔇 Trình duyệt chưa có giọng đọc cho ngôn ngữ này. Hãy cài giọng trong cài đặt hệ thống hoặc dùng Chrome/Edge.', fail: '🔇 Không phát được giọng nói. Hãy kiểm tra âm lượng và thử lại.' },
 };
 const notice = (key) => (NOTICE[uiLang()] || NOTICE.en)[key];
 
@@ -64,7 +61,6 @@ if (synthesis) {
 const languageKey = (lang) => {
   const value = String(lang || 'en-US').toLowerCase();
   if (value === 'ru' || value.startsWith('ru-')) return 'ru';
-  if (value === 'vi' || value.startsWith('vi-')) return 'vi';
   return 'en';
 };
 const normalizeLang = (lang) => LANGS[languageKey(lang)] || 'en-US';
@@ -118,14 +114,14 @@ function visemeFor(value) {
   if (!s) return 'rest';
   if (/^(oo|ou|ow|w|q)/.test(s)) return 'W';
   const ch = s[0];
-  if ('aаăâя'.includes(ch)) return 'A';
-  if ('eёеэê'.includes(ch)) return 'E';
+  if ('aая'.includes(ch)) return 'A';
+  if ('eёеэ'.includes(ch)) return 'E';
   if ('iіїйыy'.includes(ch)) return 'I';
-  if ('oоơô'.includes(ch)) return 'O';
-  if ('uуưю'.includes(ch)) return 'U';
+  if ('oо'.includes(ch)) return 'O';
+  if ('uую'.includes(ch)) return 'U';
   if ('mbpмбп'.includes(ch)) return 'M';
   if ('fvфв'.includes(ch)) return 'F';
-  if ('lntdлнтдđ'.includes(ch)) return 'L';
+  if ('lntdлнтд'.includes(ch)) return 'L';
   return 'E';
 }
 function visemeUnits(value) {
@@ -480,6 +476,6 @@ export const tts = {
     const by = (key) => voices.filter((v) => languageKey(v.lang) === key && String(v.lang || '').toLowerCase().startsWith(key)).map((v) => ({
       name: v.name, lang: v.lang, default: !!v.default, localService: v.localService !== false,
     }));
-    return { webSpeech, native: !!nativeTTS(), gestureSeen, lastError: tts.lastError, voicesByLang: { en: by('en'), ru: by('ru'), vi: by('vi') } };
+    return { webSpeech, native: !!nativeTTS(), gestureSeen, lastError: tts.lastError, voicesByLang: { en: by('en'), ru: by('ru') } };
   },
 };
