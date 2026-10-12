@@ -17,6 +17,7 @@ const TOPICS = ['basics', 'family', 'food', 'travel', 'school', 'hobbies', 'natu
 // Must match data/teachers.js. Any other stored id (e.g. removed teachers) is reset.
 const TEACHER_IDS = ['emma', 'james', 'sofia', 'alex'];
 const validTeacher = (id) => (TEACHER_IDS.includes(id) ? id : null);
+const fixUser = (u) => (u && u.teacherId != null && !validTeacher(u.teacherId) ? { ...u, teacherId: null } : u);
 
 function seedDb() {
   const students = [
@@ -366,14 +367,15 @@ function makeHttpApi(base) {
     if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || 'http_' + res.status);
     return res.status === 204 ? null : res.json();
   }
+  // The API wraps users as { user }; unwrap and drop removed teacher ids on every auth path.
+  const userOf = (r) => fixUser(r?.user ?? r ?? null);
   return {
     demo: false,
-    async register(p) { const r = await call('/api/auth/register', { method: 'POST', body: p }); setTokens(r.tokens); return r.user; },
-    async login(p) { const r = await call('/api/auth/login', { method: 'POST', body: p }); setTokens(r.tokens); return r.user; },
+    async register(p) { const r = await call('/api/auth/register', { method: 'POST', body: p }); setTokens(r.tokens); return userOf(r); },
+    async login(p) { const r = await call('/api/auth/login', { method: 'POST', body: p }); setTokens(r.tokens); return userOf(r); },
     async logout() { try { await call('/api/auth/logout', { method: 'POST', body: { refreshToken: tokens?.refresh } }); } catch {} setTokens(null); },
-    // /api/me responds with { user }; unwrap it so the app gets the same shape as login().
-    async current() { if (!tokens) return null; try { const r = await call('/api/me'); return r?.user ?? r ?? null; } catch { return null; } },
-    async updateProfile(patch) { return call('/api/me', { method: 'PATCH', body: patch }); },
+    async current() { if (!tokens) return null; try { return userOf(await call('/api/me')); } catch { return null; } },
+    async updateProfile(patch) { return userOf(await call('/api/me', { method: 'PATCH', body: patch })); },
     async addAttempt(p) { return call('/api/progress/attempt', { method: 'POST', body: p }); },
     async getStats() { return call('/api/progress/stats'); },
     async earn(p) { return call('/api/economy/earn', { method: 'POST', body: p }); },
