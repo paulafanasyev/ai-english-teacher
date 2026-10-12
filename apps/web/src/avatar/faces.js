@@ -21,20 +21,6 @@ export const FACES = {
     eyes: '#4D6D67', brow: '#6A5554', lips: '#A64D4B', blush: '#D88D7D',
     hairStyle: 'sidepart', faceShape: 'long', eyeShape: 'almond', accessory: 'glasses', accessoryColor: '#334E58',
   },
-  linh: {
-    id: 'linh', name: 'Linh', gender: 'f', nationality: 'Vietnamese', vibe: 'graceful',
-    bg: '#F8E5E7', clothing: '#3E7CA6', clothingDark: '#285A78', clothingStyle: 'collar',
-    skin: '#D99770', skinLight: '#F0B58B', hair: '#211D26', hairLight: '#655263',
-    eyes: '#3D6E77', brow: '#6B4B57', lips: '#B34E68', blush: '#E28B92',
-    hairStyle: 'longStraight', faceShape: 'oval', eyeShape: 'almond', accessory: 'earrings', accessoryColor: '#E6AA4B',
-  },
-  minh: {
-    id: 'minh', name: 'Minh', gender: 'm', nationality: 'Vietnamese', vibe: 'patient',
-    bg: '#F7F0D1', clothing: '#2F7FB0', clothingDark: '#205A7D', clothingStyle: 'crew',
-    skin: '#B96F4D', skinLight: '#DA9369', hair: '#171B23', hairLight: '#52616A',
-    eyes: '#4C765E', brow: '#62504D', lips: '#914842', blush: '#C87567',
-    hairStyle: 'texturedCrop', faceShape: 'angular', eyeShape: 'soft', accessory: 'glasses', accessoryColor: '#24445B',
-  },
   sofia: {
     id: 'sofia', name: 'Sofia', gender: 'f', nationality: 'Spanish', vibe: 'bold',
     bg: '#DDEAF6', clothing: '#C55543', clothingDark: '#8F382E', clothingStyle: 'collar',

@@ -1,23 +1,18 @@
 {
   "introVideo": {
     "en": "assets/video/intro-en.mp4",
-    "ru": "assets/video/intro-ru.mp4",
-    "vi": "assets/video/intro-vi.mp4"
+    "ru": "assets/video/intro-ru.mp4"
   },
   "avatars": {
     "emma": "assets/avatars/emma.webp",
     "james": "assets/avatars/james.webp",
     "sofia": "assets/avatars/sofia.webp",
-    "alex": "assets/avatars/alex.webp",
-    "linh": "assets/avatars/linh.webp",
-    "minh": "assets/avatars/minh.webp"
+    "alex": "assets/avatars/alex.webp"
   },
   "voices": {
     "emma": "assets/voice/emma.mp3",
     "james": "assets/voice/james.mp3",
     "sofia": "assets/voice/sofia.mp3",
-    "alex": "assets/voice/alex.mp3",
-    "linh": "assets/voice/linh.mp3",
-    "minh": "assets/voice/minh.mp3"
+    "alex": "assets/voice/alex.mp3"
   }
 }
