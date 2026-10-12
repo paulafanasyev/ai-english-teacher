@@ -51,53 +51,9 @@
       'footer.by': 'Based on “Svetlana” by the non-profit “Mir Samozanyatykh” · Developer: Pavel Afanasyev', 'footer.privacy': 'Privacy',
       greet: ["Hi there! I'm Emma, your tutor and a teacher's helper.", "I'll help you with English and math. Let's get started!"],
     },
-    vi: {
-      'meta.title': 'Svetlana Tutor: trợ lý cho học sinh và giáo viên',
-      'nav.features': 'Tiếng Anh', 'nav.math': 'Toán', 'nav.school': 'Cho giáo viên', 'nav.faq': 'Hỏi đáp', 'nav.team': 'Liên hệ', 'nav.open': 'Mở',
-      'hero.badge': 'Trợ lý cho học sinh và giáo viên · Miễn phí · Ngay trên trình duyệt',
-      'hero.title': 'Gia sư <span class="grad">dạy bạn tư duy</span>',
-      'hero.lead': 'Tiếng Anh với giáo viên tương tác bằng giọng nói và toán lớp 5–9, nơi gợi ý mở từng bước và đáp án không được đưa ngay. Dành cho học sinh, giáo viên và phụ huynh. Chạy trên trình duyệt, không cần tải gì.',
-      'hero.open': 'Bắt đầu miễn phí', 'hero.apk': 'Android APK', 'hero.hear': 'Chào Emma',
-      'hero.t1': 'Tiếng Anh A1–B2 có giọng nói', 'hero.t2': 'Toán 5–9 “Tự suy nghĩ”', 'hero.t3': 'Bảng điều khiển demo cho giáo viên và phụ huynh',
-      'stats.subjects': 'môn: tiếng Anh và toán', 'stats.teachers': 'giáo viên phong cách Pixar', 'stats.langs': 'ngôn ngữ giao diện', 'stats.free': 'miễn phí',
-      'features.kicker': 'Tiếng Anh', 'features.title': 'Tiếng Anh: nói ngay từ bài đầu',
-      'f1.t': 'Giáo viên tương tác bằng giọng nói', 'f1.d': 'Giọng nói, môi cử động và mắt chớp. Giáo viên đọc đề, khen và gợi ý.',
-      'f2.t': 'Trả lời bằng giọng nói', 'f2.d': 'Nói vào micro: ứng dụng nhận dạng và chấm phát âm. Gõ chữ cũng được.',
-      'f3.t': 'Bài học và trò chơi', 'f3.d': 'Bài học ngắn, đấu từ vựng, nhật ký và phần thưởng để học mỗi ngày.',
-      'f4.t': 'Bài thi', 'f4.d': 'Kiểm tra trình độ: nghe, đọc, viết và nói với phần nhận xét chi tiết.',
-      'f5.t': 'Dữ liệu ở trên thiết bị của bạn', 'f5.d': 'Ở phiên bản công khai, tài khoản và tiến độ được lưu trong trình duyệt và không gửi đi đâu. Có tài khoản demo để dùng thử.',
-      'f6.t': 'AI thông minh tùy chọn', 'f6.d': 'Mọi thứ chạy mà không cần tải mô hình. Muốn hội thoại thông minh hơn? Bật AI cục bộ trong cài đặt.',
-      'math.kicker': 'Toán 5–9', 'math.title': 'Tự suy nghĩ: gợi ý thay cho đáp án có sẵn',
-      'm1.t': 'Gợi ý từng bước', 'm1.d': 'Trước là câu hỏi gợi mở, sau đó là gợi ý, rồi một bước giải. Gợi ý tiếp theo chỉ mở sau một lần thử mới.',
-      'm2.t': 'Chấm chính xác', 'm2.d': 'Đáp án được chấm bằng toán học chính xác, không phải mạng nơ-ron: phân số, số thập phân, phương trình và biểu thức có ngoặc. Lỗi thường gặp được giải thích.',
-      'm3.t': 'Chủ đề ở trường và kỳ thi OGE', 'm3.d': 'Phân số, số âm, tỉ lệ, phương trình, lũy thừa, phương trình bậc hai, phần trăm và cấp số, theo kỳ thi OGE của Nga.',
-      'school.kicker': 'Cho giáo viên và phụ huynh', 'school.title': 'Không chỉ dành cho học sinh',
-      'school.note': 'Hiện các bảng điều khiển chạy ở chế độ demo: ở phiên bản công khai, dữ liệu lưu trong một trình duyệt. Lớp học chung trên nhiều thiết bị chưa được kết nối.',
-      'sc1.t': 'Bảng điều khiển giáo viên', 'sc1.d': 'Thấy chủ đề yếu của từng học sinh và số gợi ý các em dùng. Giao bài tập toán cho cả lớp chỉ trong vài bước.',
-      'sc2.t': 'Sổ điểm', 'sc2.d': 'Bài tập đã nộp tự động được cập nhật vào sổ điểm kèm điểm và nhận xét. Giáo viên có thể thêm ghi chú riêng.',
-      'sc3.t': 'Nhật ký cho phụ huynh', 'sc3.d': 'Phụ huynh xem điểm, tiến độ và chuỗi ngày học của con mà không cần gọi điện hay nhắn tin.',
-      'teachers.kicker': 'Giáo viên', 'teachers.title': 'Chọn giáo viên của bạn',
-      'how.kicker': 'Bắt đầu', 'how.title': 'Ba bước để bắt đầu học',
-      's1.t': 'Mở ứng dụng', 's1.d': 'Trên trình duyệt điện thoại hoặc máy tính. Không cần cài đặt.',
-      's2.t': 'Chọn môn', 's2.d': 'Tiếng Anh với giáo viên tương tác bằng giọng nói hoặc toán theo lớp của bạn.',
-      's3.t': 'Tự học', 's3.d': 'Hãy thử, lấy gợi ý từng bước và nhận điểm khi tự suy nghĩ.',
-      'faq.kicker': 'Hỏi đáp', 'faq.title': 'Câu hỏi thường gặp',
-      'q1': 'Có cần tải AI không?', 'a1': 'Không. Bài học, chấm bài, giọng nói và micro dùng được ngay. Bạn có thể bật mô hình cục bộ trong cài đặt nếu muốn, nó chỉ giúp hội thoại tự do thông minh hơn.',
-      'q6': 'Phần toán có giúp ôn thi OGE không?', 'a6': 'Có. Chủ đề lớp 5–9 theo chương trình phổ thông Nga, và chế độ “Tự suy nghĩ” dạy cách giải chứ không chép đáp án.',
-      'q2': 'Không nghe thấy giáo viên?', 'a2': 'Chạm vào màn hình một lần: trình duyệt chỉ cho phát âm thanh sau khi chạm. Kiểm tra âm lượng và chế độ im lặng. Giọng nói chạy tốt nhất trên Chrome, Edge và Safari.',
-      'q3': 'Bật micro thế nào?', 'a3': 'Bấm nút micro và cho phép truy cập. Nếu bị chặn, bấm biểu tượng ổ khóa trên thanh địa chỉ và bật micro. Chrome cần Internet để nhận dạng giọng nói.',
-      'q4': 'Có thật sự miễn phí?', 'a4': 'Có. Không thuê bao, không trả phí. Tiến độ lưu trên thiết bị của bạn.',
-      'q5': 'Có dùng ngoại tuyến được không?', 'a5': 'Có, sau lần truy cập đầu tiên, ứng dụng được lưu vào bộ nhớ đệm. Chỉ nhận dạng giọng nói của Chrome cần mạng.',
-      'q7': '“Svetlana” là gì?', 'a7': '“Svetlana” là dự án của tổ chức phi lợi nhuận “Mir Samozanyatykh” (АНО ЦПС «Мир Самозанятых»). Gia sư là dịch vụ giáo dục của dự án cho học sinh, giáo viên và phụ huynh.',
-      'team.dev': 'Nhà phát triển', 'team.devName': 'Pavel Afanasyev', 'team.baseRole': 'Dựa trên dự án', 'team.base': '“Svetlana”', 'team.org': 'Tổ chức phi lợi nhuận “Mir Samozanyatykh”',
-      'final.title': 'Emma và các bài tập đang chờ bạn',
-      'footer.by': 'Dựa trên “Svetlana” của tổ chức “Mir Samozanyatykh” · Nhà phát triển: Pavel Afanasyev', 'footer.privacy': 'Quyền riêng tư',
-      greet: ['Xin chào! Mình là Emma, gia sư của bạn và trợ lý của thầy cô.', 'Mình sẽ giúp bạn học tiếng Anh và toán nhé!'],
-      greetEn: ["Hi there! I'm Emma, your tutor and a teacher's helper.", "I'll help you with English and math!"],
-    },
     ru: { greet: ['Привет! Я Эмма, твой репетитор и помощник учителя.', 'Помогу с английским и математикой. Давай начнём!'], 'meta.title': document.title },
   };
-  const VOICE_LANG = { ru: 'ru-RU', en: 'en-US', vi: 'vi-VN' };
+  const VOICE_LANG = { ru: 'ru-RU', en: 'en-US' };
   const nodes = $$('[data-i18n]');
   nodes.forEach((el) => { I18N.ru[el.dataset.i18n] = el.innerHTML; });
   const saved = (() => { try { return localStorage.getItem('aet_site_lang'); } catch { return null; } })();
@@ -157,7 +113,7 @@
   requestAnimationFrame(frame);
 
   // Floating words drifting up behind the content.
-  const WORDS = ['Hello!', 'Привет', 'Xin chào', '½ + ¼', 'Great job!', 'x²', 'I can do it', '⭐', 'Thank you', 'Спасибо', '3x = 12', 'How are you?', '🧮', 'π', 'Well done!'];
+  const WORDS = ['Hello!', 'Привет', '½ + ¼', 'Great job!', 'x²', 'I can do it', '⭐', 'Thank you', 'Спасибо', '3x = 12', 'How are you?', '🧮', 'π', 'Well done!', 'Молодец!'];
   if (!reduced) {
     const box = $('#floaters');
     const count = innerWidth < 680 ? 9 : 16;
@@ -198,7 +154,7 @@
   const parseString = (src) => (src.match(/['"](data:image\/[^'"]+)['"]/) || [])[1];
   async function loadFull(id) { return parseModule(await fetchText(`${id}.js`)); }
   async function loadBase(id) {
-    if (['alex', 'linh', 'minh'].includes(id)) return parseString(await fetchText(`${id}/base.js`));
+    if (id === 'alex') return parseString(await fetchText(`${id}/base.js`));
     return loadFull(id).then((d) => d.base);
   }
 
@@ -246,8 +202,8 @@
   const mouth = (k) => { ['A', 'O', 'E'].forEach((m) => { target[m] = m === k ? 1 : 0; }); };
   const visemeOf = (ch) => {
     const c = ch.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-    if ('aаяă'.includes(c)) return 'A';
-    if ('oоuуwюơư'.includes(c)) return 'O';
+    if ('aая'.includes(c)) return 'A';
+    if ('oоuуwю'.includes(c)) return 'O';
     if ('mbpмбп'.includes(c)) return null;
     return 'E';
   };
@@ -275,7 +231,7 @@
   let voices = [];
   const loadVoices = () => { try { voices = synth.getVoices(); } catch {} };
   if (synth) { loadVoices(); synth.addEventListener?.('voiceschanged', loadVoices); }
-  const FEMALE = /female|samantha|aria|jenny|zira|victoria|karen|tessa|sonia|libby|ava|allison|susan|milena|irina|svetlana|linh|hoaimy|hoai my|google us english|google русский|google tiếng việt/i;
+  const FEMALE = /female|samantha|aria|jenny|zira|victoria|karen|tessa|sonia|libby|ava|allison|susan|milena|irina|svetlana|google us english|google русский/i;
   function pickVoice(code, attempt) {
     const key = code.slice(0, 2);
     let list = voices.filter((v) => (v.lang || '').toLowerCase().replace('_', '-').startsWith(key));
@@ -312,11 +268,8 @@
   function pulseOnly() { startTalking(); setTimeout(stopTalking, 2600); }
   function greet() {
     const dict = I18N[lang];
-    let lines = dict.greet; let code = VOICE_LANG[lang];
     loadVoices();
-    const has = voices.some((v) => (v.lang || '').toLowerCase().startsWith(code.slice(0, 2)));
-    if (!has && voices.length && dict.greetEn) { lines = dict.greetEn; code = 'en-US'; }
-    say(lines, code);
+    say(dict.greet, VOICE_LANG[lang] || 'ru-RU');
   }
 
   /* ---------------- greeting bubble ---------------- */

@@ -14,7 +14,7 @@ export const AI_SYSTEM_PROMPT = [
 ].join(' ');
 
 const textOf = (input) => typeof input === 'string' ? input : (input?.text || input?.answer || input?.sentence || '');
-const localeOf = (ctx) => ['en', 'ru', 'vi'].includes(ctx?.locale) ? ctx.locale : 'en';
+const localeOf = (ctx) => ['en', 'ru'].includes(ctx?.locale) ? ctx.locale : 'en';
 const levelOf = (ctx) => ctx?.level || ctx?.user?.level || 'A2';
 const teacherOf = (ctx) => ctx?.teacher || ctx?.user?.teacher || { name: 'your teacher', tagline: 'kind and supportive' };
 const taglineOf = (teacher, ctx) => typeof teacher?.tagline === 'string' ? teacher.tagline : (teacher?.tagline?.[localeOf(ctx)] || teacher?.tagline?.en || 'supportive');
@@ -112,7 +112,7 @@ const TASKS = {
     parse(raw) { const explanation = plain(raw, 'explanation'); return explanation ? { explanation } : null; },
     fallback(input, ctx) {
       const sentence = textOf(input), found = checkText(sentence), first = found[0];
-      const fallback = first ? `${first.tip?.[localeOf(ctx)] || first.tip?.en || 'Check the word order.'} Example: ${first.fix}.` : (localeOf(ctx) === 'ru' ? 'Проверь порядок слов и форму глагола. Пример: I am happy.' : localeOf(ctx) === 'vi' ? 'Hãy kiểm tra trật tự từ và dạng động từ. Ví dụ: I am happy.' : 'Check word order and verb form. Example: I am happy.');
+      const fallback = first ? `${first.tip?.[localeOf(ctx)] || first.tip?.en || 'Check the word order.'} Example: ${first.fix}.` : (localeOf(ctx) === 'ru' ? 'Проверь порядок слов и форму глагола. Пример: I am happy.' : 'Check word order and verb form. Example: I am happy.');
       return { explanation: fallback };
     },
   },

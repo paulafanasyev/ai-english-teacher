@@ -10,13 +10,14 @@
 
 ## Что внутри
 
-- голосовая практика с анимированными SVG-учителями (lip-sync по виземам, моргание, эмоции);
-- озвучка на EN/RU/VI через браузерный или нативный TTS, с понятными ошибками и fallback;
+- голосовая практика с анимированными учителями (lip-sync по виземам, моргание, эмоции);
+- озвучка на EN/RU через браузерный или нативный TTS, с понятными ошибками и fallback;
 - уроки A1–B2, XP, серии занятий и мини-игры;
 - математика 5–9 класс в режиме «Подумай сам»: подсказки по шагам, решение только после попыток, точная проверка ответов без ИИ (`apps/web/src/features/math`, тесты: `npm test`);
 - демо-кабинет учителя и родителя: слабые темы, домашка по математике, журнал (в публичной сборке данные в одном браузере);
+- школьный модуль (демо): темы ФОП по математике и английскому, автоплан уроков с экспортом в CSV, классы и чат, дистанционный урок через Jitsi, режим доступности;
 - тренировка IELTS / TOEFL: reading, listening, writing (с оценкой от локального ИИ), speaking;
-- интерфейс на русском, английском и вьетнамском;
+- интерфейс на русском и английском;
 - local-first режим: прогресс хранится в `localStorage`, отдельный API не нужен;
 - встроенный in-browser LLM (WebLLM, Qwen2.5 0.5B по умолчанию) включается в Настройках и работает на устройстве через WebGPU. Его «должностная инструкция» — реестр задач в `apps/web/src/ai/tasks.js` (tutor_reply, correct_sentence, explain_grammar, grade_writing, speaking_feedback, translate_hint, generate_exercise, placement_estimate, safety_filter); у каждой задачи есть валидация и rule-based fallback, поэтому приложение работает и без модели.
 
@@ -31,6 +32,8 @@ npm run dev
 ```
 
 Для production-сборки: `npm run build && npm run preview`. Тесты математики: `npm test`.
+
+Разовая чистка старых вьетнамских полей в сгенерированных данных (из корня репозитория): `node scripts/strip-vi.mjs`.
 
 Голосовой ввод зависит от разрешений браузера/ОС. Для локальной AI-модели нужен современный Chrome или Edge с WebGPU; первый запуск скачивает модель (~300–1100 МБ), дальше она берётся из кэша браузера. Без WebGPU всё работает в базовом режиме.
 
@@ -47,16 +50,17 @@ Capacitor-конфигурация и Android/iOS workflow остаются в �
 ```text
 apps/web        — React 18 + Vite SPA, HashRouter, PWA, local-first API
 apps/web/src/ai — WebLLM-движок, каталог моделей и реестр задач ИИ
-apps/web/src/avatar — SVG-учителя с lip-sync
+apps/web/src/avatar — учителя с lip-sync
 apps/web/src/features/math — математика «Подумай сам» с точной проверкой
+apps/web/src/features/school — темы ФОП, план уроков, классы и чат (демо)
 apps/api        — необязательный Express API
-site/           — статический маркетинговый сайт (RU/EN/VI) + privacy policy
+site/           — статический маркетинговый сайт (RU/EN) + privacy policy
 .github/workflows — GitHub Pages deploy и web CI
 ```
 
 ## English (short)
 
-**Svetlana Tutor** is a free helper for students and teachers, based on the “Svetlana” project of the non-profit “Mir Samozanyatykh” (АНО ЦПС «Мир Самозанятых»), developed by Pavel Afanasyev. Local-first React/Vite SPA: progress lives in browser `localStorage`; an optional in-browser LLM (WebLLM over WebGPU) powers tutoring, corrections and writing feedback, with rule-based fallbacks everywhere. Includes English with voice-enabled teachers, a grade 5–9 math tutor with step-by-step hints and exact answer checking, and demo teacher/parent dashboards. Run `cd apps/web && npm install && npm run dev`.
+**Svetlana Tutor** is a free helper for students and teachers, based on the “Svetlana” project of the non-profit “Mir Samozanyatykh” (АНО ЦПС «Мир Самозанятых»), developed by Pavel Afanasyev. Local-first React/Vite SPA in Russian and English: progress lives in browser `localStorage`; an optional in-browser LLM (WebLLM over WebGPU) powers tutoring, corrections and writing feedback, with rule-based fallbacks everywhere. Includes English with voice-enabled teachers, a grade 5–9 math tutor with step-by-step hints and exact answer checking, demo teacher/parent dashboards and a demo school module. Run `cd apps/web && npm install && npm run dev`.
 
 ## Разработка / Developers
 

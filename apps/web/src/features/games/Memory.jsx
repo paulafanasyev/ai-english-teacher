@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useApp, useT, useLocale } from '../../core/store.js';
+import { useApp, useT } from '../../core/store.js';
 import { api } from '../../core/api.js';
 import { vocabulary, shuffle } from '../../data/index.js';
 import { sfx } from '../../audio/sfx.js';
@@ -8,13 +8,13 @@ import { Confetti } from '../../ui/kit.jsx';
 
 const PAIRS = 8;
 
-function buildDeck(level, locale) {
+function buildDeck(level) {
   let pool = vocabulary.filter((w) => w.level === level && w.en.length <= 12);
   if (pool.length < PAIRS) pool = vocabulary.filter((w) => w.en.length <= 12);
   const words = shuffle(pool).slice(0, PAIRS);
   const cards = words.flatMap((w) => [
     { key: w.id + '_en', pair: w.id, text: w.en, side: 'en' },
-    { key: w.id + '_tr', pair: w.id, text: locale === 'vi' ? w.vi : w.ru, side: 'tr' },
+    { key: w.id + '_tr', pair: w.id, text: w.ru, side: 'tr' },
   ]);
   return shuffle(cards);
 }
@@ -22,8 +22,7 @@ function buildDeck(level, locale) {
 export default function Memory() {
   const { user, setUser } = useApp();
   const t = useT();
-  const locale = useLocale();
-  const [deck, setDeck] = useState(() => buildDeck(user.level, locale));
+  const [deck, setDeck] = useState(() => buildDeck(user.level));
   const [open, setOpen] = useState([]); // keys currently flipped
   const [matched, setMatched] = useState([]); // pair ids
   const [moves, setMoves] = useState(0);
@@ -38,7 +37,7 @@ export default function Memory() {
   }, [deck]);
 
   const restart = () => {
-    setDeck(buildDeck(user.level, locale));
+    setDeck(buildDeck(user.level));
     setOpen([]); setMatched([]); setMoves(0); setSec(0); setDone(null);
     lock.current = false;
   };

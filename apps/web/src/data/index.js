@@ -1,21 +1,43 @@
-import vocabulary from './generated/vocabulary.json';
-import grammar from './generated/grammar.json';
+import vocabularyRaw from './generated/vocabulary.json';
+import grammarRaw from './generated/grammar.json';
 import listeningRaw from './generated/listening.json';
+import questRaw from './generated/story/quest.json';
+import scenariosRaw from './generated/story/scenarios.json';
+import phrasesRaw from './generated/story/phrases.json';
+
+// The app is Russian/English only. Generated packs may still carry legacy
+// "vi" fields until `node scripts/strip-vi.mjs` is run; drop them on load so
+// nothing Vietnamese reaches the UI.
+export function stripVi(value) {
+  if (Array.isArray(value)) return value.map(stripVi);
+  if (value && typeof value === 'object') {
+    const out = {};
+    for (const [key, item] of Object.entries(value)) {
+      if (key === 'vi') continue;
+      out[key] = stripVi(item);
+    }
+    return out;
+  }
+  return value;
+}
+
+const vocabulary = stripVi(vocabularyRaw);
+const grammar = stripVi(grammarRaw);
+const quest = stripVi(questRaw);
+const scenarios = stripVi(scenariosRaw);
+const phrases = stripVi(phrasesRaw);
 
 // Normalize dialogues to the engine shape regardless of source field names:
-// lines → {s, t}; questions → {q:{en,ru,vi}, options, answer}
-const listening = listeningRaw.map((d) => ({
+// lines → {s, t}; questions → {q:{en,ru}, options, answer}
+const listening = stripVi(listeningRaw).map((d) => ({
   ...d,
   lines: d.lines.map((ln) => ({ s: ln.s ?? ln.speaker ?? 'A', t: ln.t ?? ln.en ?? ln.text ?? '' })),
   questions: d.questions.map((qq) => ({
-    q: qq.q && typeof qq.q === 'object' ? qq.q : { en: qq.en ?? qq.q ?? '', ru: qq.ru ?? '', vi: qq.vi ?? '' },
+    q: qq.q && typeof qq.q === 'object' ? qq.q : { en: qq.en ?? qq.q ?? '', ru: qq.ru ?? '' },
     options: qq.options,
     answer: qq.answer,
   })),
 }));
-import quest from './generated/story/quest.json';
-import scenarios from './generated/story/scenarios.json';
-import phrases from './generated/story/phrases.json';
 
 export { vocabulary, grammar, listening, quest, scenarios, phrases };
 

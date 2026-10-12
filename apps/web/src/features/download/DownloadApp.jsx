@@ -115,7 +115,7 @@ export default function DownloadApp({ links = STORE_LINKS, autoRedirect = false 
           Твой ИИ-учитель — <br className="hidden sm:block" />всегда в кармане
         </h2>
         <p className="mx-auto mt-4 max-w-xl text-base font-medium text-white/85 sm:text-lg">
-          Живые аватары-преподаватели, подготовка к IELTS/TOEFL и геймификация.
+          Озвученные аватары-преподаватели, подготовка к IELTS/TOEFL и геймификация.
           Скачай на своё устройство или установи как приложение прямо из браузера.
         </p>
 
@@ -153,7 +153,7 @@ export default function DownloadApp({ links = STORE_LINKS, autoRedirect = false 
         )}
 
         <p className="mt-6 text-xs font-medium text-white/60">
-          Доступно на Android и iOS · Работает офлайн после установки · Русский · English · Tiếng Việt
+          Доступно на Android и iOS · Работает офлайн после установки · Русский · English
         </p>
       </div>
     </section>

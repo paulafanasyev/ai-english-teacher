@@ -145,7 +145,7 @@ function Unit({ unit, onBack, onComplete, onNext }) {
   const t = useT();
   const locale = useLocale();
   const { setUser } = useApp();
-  const tr = (it) => (locale === 'ru' ? it.ru : locale === 'vi' ? (it.vi || it.en) : it.en);
+  const tr = (it) => (locale === 'ru' ? it.ru : it.en);
 
   const [tab, setTab] = useState('words'); // words | phrases | quiz
   const quiz = useMemo(() => buildQuiz(unit.pack), [unit]);
@@ -199,7 +199,7 @@ function Unit({ unit, onBack, onComplete, onNext }) {
           {unit.phrases.map((p) => (
             <div key={p.src} className="card p-4">
               <div className="font-black">{p.src}</div>
-              <div className="text-sm font-semibold text-ink/55 mt-0.5">{locale === 'ru' ? p.ru : locale === 'vi' ? (p.vi || p.en) : p.en}</div>
+              <div className="text-sm font-semibold text-ink/55 mt-0.5">{locale === 'ru' ? p.ru : p.en}</div>
             </div>
           ))}
         </div>

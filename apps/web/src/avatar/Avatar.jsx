@@ -5,7 +5,7 @@ import { FRAME_CLS, renderAvatarSVG } from './svg.js';
 
 // Pixar-style portraits: one base render + feathered RGBA overlays that are
 // cross-faded for lip-sync (A / O / E), blinking and a happy smile.
-const PIXAR = new Set(['emma', 'james', 'sofia', 'alex', 'linh', 'minh']);
+const PIXAR = new Set(['emma', 'james', 'sofia', 'alex']);
 const LAYERS = ['A', 'O', 'E', 'happy', 'blink'];
 const MOUTHS = ['A', 'O', 'E'];
 // Viseme from the TTS engine -> mouth overlay (null = closed lips of the base render).
@@ -19,8 +19,6 @@ const LOADERS = {
   james: () => import('./pixar/james.js'),
   sofia: () => import('./pixar/sofia.js'),
   alex: () => import('./pixar/alex.js'),
-  linh: () => import('./pixar/linh.js'),
-  minh: () => import('./pixar/minh.js'),
 };
 const cache = {};
 function usePortrait(id) {

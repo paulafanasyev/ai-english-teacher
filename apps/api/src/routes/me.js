@@ -9,18 +9,32 @@ const router = Router();
 
 router.use(requireAuth);
 
+// Must match apps/web/src/data/teachers.js. Removed teachers (e.g. linh, minh) are reset to null.
+const TEACHER_IDS = new Set(['emma', 'james', 'sofia', 'alex']);
+const LOCALES = ['ru', 'en'];
+
 function publicUser(user) {
   const { passwordHash, ...rest } = user;
   return rest;
 }
 
+// Repairs stored values that the app no longer supports.
+async function heal(user) {
+  const fix = {};
+  if (user.teacherId != null && !TEACHER_IDS.has(user.teacherId)) fix.teacherId = null;
+  if (user.locale != null && !LOCALES.includes(user.locale)) fix.locale = 'ru';
+  if (Object.keys(fix).length === 0) return user;
+  return prisma.user.update({ where: { id: user.id }, data: fix });
+}
+
 // GET /api/me
 router.get('/', async (req, res, next) => {
   try {
-    const user = await prisma.user.findUnique({ where: { id: req.user.id } });
-    if (!user) {
+    const found = await prisma.user.findUnique({ where: { id: req.user.id } });
+    if (!found) {
       return res.status(404).json({ error: 'User not found' });
     }
+    const user = await heal(found);
     res.json({ user: publicUser(user) });
   } catch (err) {
     next(err);
@@ -29,8 +43,8 @@ router.get('/', async (req, res, next) => {
 
 const patchSchema = z.object({
   name: z.string().trim().min(1).max(120).optional(),
-  locale: z.string().trim().min(2).max(10).optional(),
-  teacherId: z.string().trim().min(1).max(64).nullable().optional(),
+  locale: z.enum(LOCALES).optional(),
+  teacherId: z.string().trim().refine((id) => TEACHER_IDS.has(id), 'Unknown teacher').nullable().optional(),
   level: z.string().trim().min(1).max(10).optional(),
 });
 
