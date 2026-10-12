@@ -9,17 +9,17 @@ import { audioCtx } from '../audio/engine.js';
 import { sfx } from '../audio/sfx.js';
 import { Coin, Xp } from '../ui/kit.jsx';
 
-const L_PROGRAMS = { ru: 'Темы ФОП', en: 'Curriculum topics', vi: 'Chủ đề chương trình' };
-const L_CLASS = { ru: 'Мой класс', en: 'My class', vi: 'Lớp của em' };
-const L_CLASSES = { ru: 'Классы и чат', en: 'Classes & chat', vi: 'Lớp và chat' };
-const L_PLANNER = { ru: 'План уроков', en: 'Lesson plan', vi: 'Kế hoạch' };
-const L_A11Y = { ru: 'Доступность', en: 'Accessibility', vi: 'Trợ năng' };
-const L_READ = { ru: 'Прочитать выделенное', en: 'Read selection aloud', vi: 'Đọc phần đã chọn' };
+const L_PROGRAMS = { ru: 'Темы ФОП', en: 'Curriculum topics' };
+const L_CLASS = { ru: 'Мой класс', en: 'My class' };
+const L_CLASSES = { ru: 'Классы и чат', en: 'Classes & chat' };
+const L_PLANNER = { ru: 'План уроков', en: 'Lesson plan' };
+const L_A11Y = { ru: 'Доступность', en: 'Accessibility' };
+const L_READ = { ru: 'Прочитать выделенное', en: 'Read selection aloud' };
 
 const NAV = [
   { to: '/', icon: '🏠', key: 'nav.home' },
   { to: '/lesson', icon: '📖', key: 'nav.lesson' },
-  { to: '/math', icon: '🧮', key: 'nav.math', label: { ru: 'Математика', en: 'Math', vi: 'Toán' } },
+  { to: '/math', icon: '🧮', key: 'nav.math', label: { ru: 'Математика', en: 'Math' } },
   { to: '/classroom', icon: '👥', key: 'nav.classroom', label: L_CLASS },
   { to: '/talk', icon: '💬', key: 'nav.talk' },
   { to: '/games', icon: '🎮', key: 'nav.games' },
@@ -51,7 +51,7 @@ function useA11y(on) {
   }, [on]);
 }
 
-function readSelection(locale) {
+function readSelection() {
   try {
     const synth = window.speechSynthesis;
     if (!synth) return;
@@ -59,7 +59,7 @@ function readSelection(locale) {
     synth.cancel();
     if (!text) return;
     const u = new SpeechSynthesisUtterance(text.slice(0, 4000));
-    u.lang = /[\u0400-\u04FF]/.test(text) ? 'ru-RU' : locale === 'vi' ? 'vi-VN' : 'en-US';
+    u.lang = /[\u0400-\u04FF]/.test(text) ? 'ru-RU' : 'en-US';
     u.rate = 0.95;
     synth.speak(u);
   } catch {}
@@ -133,7 +133,7 @@ export default function Layout({ children }) {
           </button>
           <button className="btn-ghost w-full !py-2 text-sm" aria-pressed={!!prefs.a11y} onClick={toggleA11y}>♿ {a11yName}: {prefs.a11y ? 'ON' : 'OFF'}</button>
           {prefs.a11y && (
-            <button className="btn-ghost w-full !py-2 text-sm" onMouseDown={(e) => e.preventDefault()} onClick={() => readSelection(locale)}>🔊 {readName}</button>
+            <button className="btn-ghost w-full !py-2 text-sm" onMouseDown={(e) => e.preventDefault()} onClick={readSelection}>🔊 {readName}</button>
           )}
           <div className="card p-3 flex items-center gap-3">
             {isStaff
@@ -157,7 +157,7 @@ export default function Layout({ children }) {
           <div className="ml-auto flex items-center gap-2">
             <Lang /><Xp n={user.xp} /><Coin n={user.coins} />
             <button aria-label={a11yName} aria-pressed={!!prefs.a11y} title={a11yName} onClick={toggleA11y} className={`text-xl rounded-lg px-1 ${prefs.a11y ? 'bg-primary text-white' : ''}`}>♿</button>
-            {prefs.a11y && <button aria-label={readName} title={readName} className="text-xl" onMouseDown={(e) => e.preventDefault()} onClick={() => readSelection(locale)}>🔊</button>}
+            {prefs.a11y && <button aria-label={readName} title={readName} className="text-xl" onMouseDown={(e) => e.preventDefault()} onClick={readSelection}>🔊</button>}
             <button aria-label={musicName} aria-pressed={!!prefs.musicOn} title={musicName} onClick={() => setPref('musicOn', !prefs.musicOn)} className="text-xl">{prefs.musicOn ? '🎵' : '🔇'}</button>
           </div>
         </header>
