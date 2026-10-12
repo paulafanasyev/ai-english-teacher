@@ -1,13 +1,16 @@
-import { AI_MODELS, DEFAULT_MODEL_ID, getModel } from './models.js';
+import { AI_MODELS, DEFAULT_MODEL_ID, getModel, isCloudModel, SVETLANA_CHAT_URL } from './models.js';
 
 const STORAGE_KEY = 'aet_ai';
 const WEBLLM_URL = 'https://esm.run/@mlc-ai/web-llm@0.2.85';
+// «Светлана онлайн»: вместо локальной модели запросы идут на сервер единой Светланы.
+const CLOUD = Object.freeze({ cloud: true });
 const listeners = new Set();
 const jobs = [];
 let webllm = null;
 let engine = null;
 let loadPromise = null;
 let supportPromise = null;
+let cloudPromise = null;
 let running = false;
 
 const readSettings = () => {
@@ -15,13 +18,15 @@ const readSettings = () => {
 };
 const initialSettings = readSettings();
 const hasNavigator = typeof navigator !== 'undefined';
+const initialModelId = AI_MODELS.some((m) => m.id === initialSettings.modelId) ? initialSettings.modelId : DEFAULT_MODEL_ID;
 const state = {
-  status: hasNavigator && navigator.gpu ? 'idle' : 'unsupported',
+  status: (hasNavigator && navigator.gpu) || isCloudModel(initialModelId) ? 'idle' : 'unsupported',
   supported: false,
+  cloudAvailable: false,
   progress: 0,
   progressText: '',
   error: '',
-  modelId: AI_MODELS.some((m) => m.id === initialSettings.modelId) ? initialSettings.modelId : DEFAULT_MODEL_ID,
+  modelId: initialModelId,
   enabled: initialSettings.enabled === true,
 };
 
@@ -31,26 +36,54 @@ function persist(patch) {
   listeners.forEach((listener) => listener({ ...state }));
 }
 function notify() { listeners.forEach((listener) => listener({ ...state })); }
+const busyStatus = () => state.status === 'ready' || state.status === 'downloading';
+const idleStatus = (modelId = state.modelId) => (state.supported || isCloudModel(modelId) ? 'idle' : 'unsupported');
 
 export async function detectWebGPU() {
   if (!hasNavigator || !navigator.gpu || typeof navigator.gpu.requestAdapter !== 'function') {
-    persist({ supported: false, status: 'unsupported' });
+    persist({ supported: false, status: busyStatus() ? state.status : idleStatus() });
     return false;
   }
   try {
     const adapter = await navigator.gpu.requestAdapter();
     const supported = !!adapter;
-    persist({ supported, status: supported ? (state.status === 'unsupported' ? 'idle' : state.status) : 'unsupported' });
+    persist({ supported, status: busyStatus() ? state.status : (supported || isCloudModel(state.modelId) ? 'idle' : 'unsupported') });
     return supported;
   } catch {
-    persist({ supported: false, status: 'unsupported' });
+    persist({ supported: false, status: busyStatus() ? state.status : idleStatus() });
     return false;
   }
 }
 
+/** Отвечает ли сервер Светланы для Репетитора (без отправки данных ученика). */
+export function checkCloud(force = false) {
+  if (cloudPromise && !force) return cloudPromise;
+  cloudPromise = (async () => {
+    if (typeof fetch !== 'function') return false;
+    const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    const timer = controller ? setTimeout(() => controller.abort(), 6000) : null;
+    try {
+      const res = await fetch(SVETLANA_CHAT_URL, { method: 'GET', credentials: 'omit', cache: 'no-store', signal: controller?.signal });
+      const data = res.ok ? await res.json().catch(() => ({})) : {};
+      const ok = data?.configured === true;
+      persist({ cloudAvailable: ok });
+      return ok;
+    } catch {
+      persist({ cloudAvailable: false });
+      return false;
+    } finally {
+      if (timer) clearTimeout(timer);
+    }
+  })();
+  return cloudPromise;
+}
+
 // If the learner already opted in earlier, the weights are in the browser cache:
 // warm the model back up on boot so AI mode survives a page reload.
-if (hasNavigator && navigator.gpu) {
+if (isCloudModel(initialModelId)) {
+  if (initialSettings.enabled) setTimeout(() => { aiEngine.load(initialModelId).catch(() => {}); }, 0);
+  if (hasNavigator && navigator.gpu) supportPromise = detectWebGPU();
+} else if (hasNavigator && navigator.gpu) {
   supportPromise = detectWebGPU().then((ok) => {
     if (ok && initialSettings.enabled) setTimeout(() => { aiEngine.load(state.modelId).catch(() => {}); }, 0);
     return ok;
@@ -68,17 +101,19 @@ export const aiEngine = {
     return () => listeners.delete(listener);
   },
   async checkSupport() { return supportPromise || detectWebGPU(); },
+  checkCloud,
   selectModel(modelId) {
     const model = getModel(modelId);
     if (!model) return state.modelId;
     if (engine && state.modelId !== model.id) engine = null;
-    persist({ modelId: model.id, enabled: false, status: state.status === 'unsupported' ? 'unsupported' : 'idle', error: '' });
+    persist({ modelId: model.id, enabled: false, status: idleStatus(model.id), error: '' });
     return model.id;
   },
   async load(modelId = state.modelId) {
+    const model = getModel(modelId);
+    if (model.cloud) return loadCloud(model.id);
     const supported = await this.checkSupport();
     if (!supported) throw new Error('WebGPU is not available in this browser.');
-    const model = getModel(modelId);
     if (state.status === 'ready' && engine && state.modelId === model.id) return engine;
     // A model can be changed while a previous download is in flight. Wait for
     // that load instead of returning its engine under the newly selected id.
@@ -125,7 +160,8 @@ export const aiEngine = {
   },
   async enable(modelId = state.modelId) { return this.load(modelId); },
   disable() {
-    persist({ enabled: false, status: state.supported ? 'idle' : 'unsupported', error: '' });
+    if (engine === CLOUD) engine = null;
+    persist({ enabled: false, status: idleStatus(), error: '' });
   },
   async clearCache() {
     try {
@@ -137,7 +173,7 @@ export const aiEngine = {
         await Promise.all(keys.filter((key) => /mlc|webllm/i.test(key)).map((key) => caches.delete(key)));
       }
       engine = null;
-      persist({ enabled: false, status: state.supported ? 'idle' : 'unsupported', progress: 0, progressText: '', error: '' });
+      persist({ enabled: false, status: idleStatus(), progress: 0, progressText: '', error: '' });
       return true;
     } catch (error) {
       persist({ error: error?.message || String(error) });
@@ -157,6 +193,45 @@ export const aiEngine = {
   },
 };
 
+async function loadCloud(modelId) {
+  if (state.status === 'ready' && engine === CLOUD && state.modelId === modelId) return engine;
+  persist({ modelId, status: 'downloading', progress: 0, progressText: 'Connecting to Svetlana…', error: '' });
+  const ok = await checkCloud(true);
+  if (state.modelId !== modelId) return null;
+  if (!ok) {
+    engine = null;
+    const message = 'Svetlana server is not available right now. Basic mode keeps working.';
+    persist({ status: 'error', enabled: false, error: message, progressText: '' });
+    throw new Error(message);
+  }
+  engine = CLOUD;
+  persist({ enabled: true, status: 'ready', progress: 1, progressText: 'Ready — Svetlana online.', error: '' });
+  return engine;
+}
+
+/** Запрос к единой Светлане. Системный промпт задаёт сервер (профиль «Репетитор»), а не браузер. */
+async function cloudChat(messages, opts, signal) {
+  const turns = (messages || []).filter((m) => m && m.role !== 'system' && m.content);
+  const last = turns[turns.length - 1];
+  let message = String(last?.content || '').slice(0, 7800);
+  if (!message.trim()) throw new Error('Empty request');
+  if (opts.json) message += '\n\nReturn JSON only, no markdown.';
+  const history = turns.slice(0, -1).slice(-6)
+    .map((m) => ({ role: m.role === 'assistant' ? 'assistant' : 'user', content: String(m.content).slice(0, 2000) }))
+    .filter((m) => m.content.trim());
+  const res = await fetch(SVETLANA_CHAT_URL, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ message, history }),
+    credentials: 'omit',
+    signal,
+  });
+  if (!res.ok) throw new Error(`Svetlana server error ${res.status}`);
+  const data = await res.json();
+  if (typeof data?.content !== 'string' || !data.content.trim()) throw new Error('Empty answer');
+  return data.content.trim();
+}
+
 async function pump() {
   if (running || !jobs.length) return;
   running = true;
@@ -165,6 +240,12 @@ async function pump() {
     if (job.signal?.aborted) throw new DOMException('Request aborted', 'AbortError');
     if (!engine || state.status !== 'ready') throw new Error('The local AI model is not loaded.');
     const opts = job.options || {};
+    if (engine === CLOUD) {
+      const text = await cloudChat(job.messages, opts, job.signal);
+      opts.onToken?.(text);
+      job.resolve(text);
+      return;
+    }
     const request = {
       messages: job.messages,
       stream: true,
