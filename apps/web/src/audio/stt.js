@@ -26,7 +26,6 @@ function nativeSR() { return nativePlugin('SpeechRecognition'); }
 function normalizeLang(lang) {
   const value = String(lang || 'en-US').toLowerCase();
   if (value === 'ru' || value.startsWith('ru-')) return 'ru-RU';
-  if (value === 'vi' || value.startsWith('vi-')) return 'vi-VN';
   return 'en-US';
 }
 function errorCode(error) {
@@ -59,15 +58,6 @@ const MESSAGES = {
     unsupported: '🎤 This browser can\u2019t recognise speech. Use Chrome or Edge, or type your answer.',
     insecure: '🔒 The microphone only works over https or on localhost.',
     error: '🎤 Speech recognition failed. Try again or type your answer.',
-  },
-  vi: {
-    'not-allowed': '🎤 Micro đang bị chặn. Bấm biểu tượng ổ khóa trên thanh địa chỉ → Micro → Cho phép, rồi thử lại.',
-    'audio-capture': '🎤 Không tìm thấy micro hoặc micro đang được ứng dụng khác dùng.',
-    network: '🌐 Nhận dạng giọng nói của Chrome cần Internet. Hãy kiểm tra kết nối hoặc nhập câu trả lời.',
-    'no-speech': '🤫 Mình chưa nghe rõ. Bấm micro và nói to hơn một chút nhé.',
-    unsupported: '🎤 Trình duyệt này không nhận dạng giọng nói. Hãy dùng Chrome hoặc Edge, hoặc nhập câu trả lời.',
-    insecure: '🔒 Micro chỉ hoạt động qua https hoặc localhost.',
-    error: '🎤 Không nhận dạng được. Hãy thử lại hoặc nhập câu trả lời.',
   },
 };
 export function sttMessage(code, locale = uiLang()) {

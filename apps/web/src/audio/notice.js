@@ -10,7 +10,6 @@ export function uiLang() {
     value = prefs.locale || root.localStorage.getItem('aet_locale') || '';
   } catch { /* storage may be blocked */ }
   value = String(value || root.document?.documentElement?.lang || root.navigator?.language || 'ru').toLowerCase();
-  if (value.startsWith('vi')) return 'vi';
   if (value.startsWith('en')) return 'en';
   return 'ru';
 }
