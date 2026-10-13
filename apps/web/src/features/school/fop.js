@@ -1,4 +1,3 @@
-// Official federal curricula (ФОП) data and lesson-plan helpers. Content: Minprosveshcheniya documents (public).
 import math from '../../data/fop/math.json';
 import english from '../../data/fop/english.json';
 import russianNoo from '../../data/fop/russian_noo.json';
@@ -16,199 +15,23 @@ import chemistryOoo from '../../data/fop/chemistry_ooo.json';
 import biologyOoo from '../../data/fop/biology_ooo.json';
 import informaticsOoo from '../../data/fop/informatics_ooo.json';
 import socialOoo from '../../data/fop/social_ooo.json';
+import literatureOoo from '../../data/fop/literature_ooo.json';
 
-// Display punctuation: numeric ranges get an en dash, word pairs a slash, other dashes a colon.
-// Titles in «guillemets» and a short theme name before the first colon («Композиторы – детям: …») are kept verbatim.
-export function tidy(t) {
-  const s = String(t)
-    .replace(/(\d)\s*[-–—]\s*(\d)/g, '$1–$2')
-    .replace(/([A-Za-z)])\s[-–—]\s(?=[A-Za-z(])/g, '$1 / ');
-  const head = s.match(/^[^:.;«»]{1,60}?(?=: )/);
-  const keep = head && /\s[–—]\s/.test(head[0]) ? head[0] : '';
-  return keep + s.slice(keep.length).replace(/«[^»]*»|\s[–—]\s/g, (m) => (m.startsWith('«') ? m : ': '));
-}
-const tidyProgram = (p) => ({
-  ...p,
-  sections: p.sections.map((s) => ({ title: tidy(s.title), topics: s.topics.map(tidy) })),
-  results: (p.results || []).map(tidy),
-});
-
-export const PROGRAMS = [
-  ...russianNoo, ...readingNoo, ...mathNoo, ...worldNoo, ...orkseNoo, ...artNoo, ...musicNoo, ...techNoo, ...peNoo,
-  ...math, ...historyOoo, ...socialOoo, ...physicsOoo, ...chemistryOoo, ...biologyOoo, ...informaticsOoo,
-  ...english,
-].map(tidyProgram);
-
-export const DOCS = {
-  noo: { title: 'ФОП НОО, приказ Минпросвещения России № 372 от 18.05.2023', url: 'http://publication.pravo.gov.ru/document/0001202307130044' },
-  ooo: { title: 'ФОП ООО, приказ Минпросвещения России № 370 от 18.05.2023 (ред. от 10.11.2025)', url: 'http://publication.pravo.gov.ru/document/0001202307140040' },
-  ooo808: { title: 'Изменения в ФОП ООО, приказ Минпросвещения России № 808 от 10.11.2025', url: 'http://publication.pravo.gov.ru/document/0001202602120006' },
-  faopNoo: { title: 'ФАОП НОО для обучающихся с ОВЗ, приказ № 1023 от 24.11.2022', url: 'http://publication.pravo.gov.ru/Document/View/0001202303220005' },
-  faopOoo: { title: 'ФАОП ООО для обучающихся с ОВЗ, приказ № 1025 от 24.11.2022', url: 'http://publication.pravo.gov.ru/Document/View/0001202303220006' },
-  fpu: { title: 'Федеральный перечень учебников, приказ № 495 от 26.06.2025 и его изменения', url: 'http://publication.pravo.gov.ru/document/0001202507290005' },
-  edsoo: { title: 'Единое содержание общего образования (edsoo.ru)', url: 'https://edsoo.ru/normativnye-dokumenty/' },
-};
-
-// Federal curriculum, variant 1 (5-day week): weekly hours by grade, mandatory part.
-// Fractional hours (0.5) mean a yearly total spread over part of the year (17 h).
-export const fmtHours = (h) => String(h).replace('.', ',');
-export const PLANS = {
-  'НОО': {
-    label: '1–4 классы', grades: [1, 2, 3, 4], doc: 'noo',
-    note: 'Базовая структура учебного плана. Перед утверждением плана школы сверяйте часы с действующей редакцией приказа № 372: в 2024–2025 годах в него вносились изменения.',
-    rows: [
-      ['Русский язык', [5, 5, 5, 5]],
-      ['Литературное чтение', [4, 4, 4, 4]],
-      ['Иностранный язык', [0, 2, 2, 2]],
-      ['Математика', [4, 4, 4, 4]],
-      ['Окружающий мир', [2, 2, 2, 2]],
-      ['Основы религиозных культур и светской этики', [0, 0, 0, 1]],
-      ['Изобразительное искусство', [1, 1, 1, 1]],
-      ['Музыка', [1, 1, 1, 1]],
-      ['Труд (технология)', [1, 1, 1, 1]],
-      ['Физическая культура', [2, 2, 2, 2]],
-    ],
-    total: [20, 22, 22, 23], max: [21, 23, 23, 23],
-  },
-  'ООО': {
-    label: '5–9 классы', grades: [5, 6, 7, 8, 9], doc: 'ooo',
-    note: 'Вариант 1 на 2026/27 учебный год по ФОП ООО в редакции приказов № 704, № 729 и № 808: история 3 ч в 5–8 классах, обществознание только в 9 классе, «Духовно-нравственная культура России» в 5 классе (17 ч за год). Иностранный язык: 2 ч в 5 классе, в 6–7 классах в 2026/27 остаётся 3 ч (ФРП английского языка для 5 класса пока рассчитана на 3 ч). Перед утверждением плана школы сверяйте часы с действующей редакцией приказа № 370.',
-    rows: [
-      ['Русский язык', [5, 6, 4, 3, 3]],
-      ['Литература', [3, 3, 2, 2, 3]],
-      ['Иностранный язык', [2, 3, 3, 3, 3]],
-      ['Математика', [5, 5, 0, 0, 0]],
-      ['Алгебра', [0, 0, 3, 3, 3]],
-      ['Геометрия', [0, 0, 2, 2, 2]],
-      ['Вероятность и статистика', [0, 0, 1, 1, 1]],
-      ['Информатика', [0, 0, 1, 1, 1]],
-      ['История', [3, 3, 3, 3, 2]],
-      ['Обществознание', [0, 0, 0, 0, 1]],
-      ['География', [1, 1, 2, 2, 2]],
-      ['Физика', [0, 0, 2, 2, 3]],
-      ['Химия', [0, 0, 0, 2, 2]],
-      ['Биология', [1, 1, 1, 2, 2]],
-      ['Духовно-нравственная культура России', [0.5, 0, 0, 0, 0]],
-      ['Изобразительное искусство', [1, 1, 1, 0, 0]],
-      ['Музыка', [1, 1, 1, 1, 0]],
-      ['Труд (технология)', [2, 2, 2, 1, 1]],
-      ['Физическая культура', [2, 2, 2, 2, 2]],
-      ['Основы безопасности и защиты Родины', [0, 0, 0, 1, 1]],
-    ],
-    total: [26.5, 28, 30, 31, 32], max: [29, 30, 32, 33, 33],
-  },
-};
-
-const SUBJECT_MAP = {
-  'Математика': 'Математика', 'Алгебра': 'Алгебра', 'Геометрия': 'Геометрия',
-  'Вероятность и статистика': 'Вероятность и статистика', 'Иностранный язык': 'Иностранный (английский) язык',
-  'Русский язык': 'Русский язык', 'Литературное чтение': 'Литературное чтение', 'Окружающий мир': 'Окружающий мир',
-  'Основы религиозных культур и светской этики': 'ОРКСЭ', 'Изобразительное искусство': 'Изобразительное искусство',
-  'Музыка': 'Музыка', 'Труд (технология)': 'Труд (технология)', 'Физическая культура': 'Физическая культура',
-  'Обществознание': 'Обществознание',
-  'История': 'История', 'Физика': 'Физика', 'Химия': 'Химия', 'Биология': 'Биология', 'Информатика': 'Информатика',
-};
-
-// Programs whose results list is a short selection rather than the full official list.
-const SAMPLE_RESULTS = new Set([...math, ...english].map((p) => p.id));
-export const isSampleResults = (program) => SAMPLE_RESULTS.has(program.id);
-
-// All programs for a plan subject and grade. Subjects with modules (ОРКСЭ) give one program per module: «ОРКСЭ: <модуль>».
-export function findPrograms(planSubject, grade) {
-  const s = SUBJECT_MAP[planSubject];
-  return s ? PROGRAMS.filter((p) => p.grade === grade && (p.subject === s || p.subject.startsWith(`${s}: `))) : [];
-}
-
-export function findProgram(planSubject, grade) {
-  return findPrograms(planSubject, grade)[0];
-}
-
-// Split an official paragraph into sentence-sized lesson topics.
-export function splitTopic(text) {
-  return String(text).split(/(?<=[.;])\s+(?=[А-ЯЁA-Z«(])/).map((s) => s.trim()).filter(Boolean);
-}
-
-export function defaultDays(hoursPerWeek) {
-  return ({ 1: [3], 2: [2, 4], 3: [1, 3, 5], 4: [1, 2, 4, 5] })[hoursPerWeek] || [1, 2, 3, 4, 5];
-}
-
-export function schoolYearStart(now = new Date()) {
-  const y = now.getMonth() >= 6 ? now.getFullYear() : now.getFullYear() - 1;
-  return `${y}-09-01`;
-}
-
-// Strict YYYY-MM-DD check: rejects impossible dates like 2025-02-31.
-export function isValidDate(s) {
-  if (typeof s !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(s)) return false;
-  const d = new Date(`${s}T12:00:00`);
-  return !Number.isNaN(d.getTime())
-    && d.getFullYear() === Number(s.slice(0, 4))
-    && d.getMonth() + 1 === Number(s.slice(5, 7))
-    && d.getDate() === Number(s.slice(8, 10));
-}
-
-export const isWeekday = (d) => Number.isInteger(d) && d >= 1 && d <= 6;
-
-// Checks the chosen weekdays (1 = Monday ... 6 = Saturday) against the weekly hours. Fewer days than hours means paired lessons.
-export function checkDays(days, perWeek) {
-  const valid = [...new Set(Array.isArray(days) ? days : [])].filter(isWeekday);
-  const n = valid.length;
-  if (!n) return { ok: false, msg: 'Выберите дни уроков.' };
-  if (n > perWeek) return { ok: false, msg: `По программе ${perWeek} ч в неделю: выберите не больше ${perWeek} дн.` };
-  if (n < perWeek) return { ok: true, paired: true };
-  return { ok: true };
-}
-
-const ymd = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-
-// Dates for `count` lessons: `perWeek` lessons a week over the chosen weekdays (1 = Monday).
-// Every chosen day gets at least one lesson; extra hours become paired lessons on the first days.
-export function lessonDates(start, days, perWeek, count) {
-  const sorted = [...new Set(days)].filter(isWeekday).sort((a, b) => a - b);
-  if (!sorted.length || count <= 0 || !isValidDate(start)) return [];
-  const total = Math.max(perWeek, sorted.length, 1);
-  const slots = {};
-  for (let i = 0; i < total; i += 1) { const wd = sorted[i % sorted.length]; slots[wd] = (slots[wd] || 0) + 1; }
-  const out = [];
-  const d = new Date(`${start}T12:00:00`);
-  for (let guard = 0; out.length < count && guard < 800; guard += 1) {
-    const n = slots[d.getDay()] || 0;
-    for (let k = 0; k < n && out.length < count; k += 1) out.push(ymd(d));
-    d.setDate(d.getDate() + 1);
-  }
-  return out;
-}
-
-// Calendar-thematic plan: distribute the yearly hours over the official topics of the chosen sections.
-export function buildPlan(program, { start, days, secs }) {
-  const units = [];
-  program.sections.forEach((s, si) => {
-    if (secs && !secs.includes(si)) return;
-    s.topics.forEach((t) => splitTopic(t).forEach((u) => units.push({ section: s.title, topic: u })));
-  });
-  const total = program.hours_per_year;
-  if (!units.length || !total) return [];
-  const lessons = [];
-  if (units.length > total) {
-    const per = units.length / total;
-    for (let i = 0; i < total; i += 1) {
-      const grp = units.slice(Math.floor(i * per), Math.floor((i + 1) * per));
-      lessons.push({ section: grp[0].section, topic: grp.map((g) => g.topic).join(' ') });
-    }
-  } else {
-    const base = Math.floor(total / units.length);
-    const extra = total % units.length;
-    units.forEach((u, i) => {
-      const n = base + (i < extra ? 1 : 0);
-      for (let k = 0; k < n; k += 1) lessons.push({ section: u.section, topic: n > 1 ? `${u.topic} (урок ${k + 1} из ${n})` : u.topic });
-    });
-  }
-  const dates = lessonDates(start, days, program.hours_per_week, lessons.length);
-  return lessons.map((l, i) => ({ n: i + 1, date: dates[i] || '', ...l, hw: '' }));
-}
-
-export function toCSV(rows) {
-  const esc = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`;
-  const head = ['№', 'Дата', 'Раздел', 'Тема урока', 'Домашнее задание'];
-  return `\ufeff${[head, ...rows.map((r) => [r.n, r.date, r.section, r.topic, r.hw])].map((r) => r.map(esc).join(';')).join('\r\n')}`;
-}
+export const PROGRAMS=[...russianNoo,...readingNoo,...mathNoo,...worldNoo,...orkseNoo,...artNoo,...musicNoo,...techNoo,...peNoo,...literatureOoo,...math,...historyOoo,...socialOoo,...physicsOoo,...chemistryOoo,...biologyOoo,...informaticsOoo,...english];
+export const DOCS={noo:{title:'ФОП НОО, приказ № 372 от 18.05.2023',url:'http://publication.pravo.gov.ru/document/0001202307130044'},ooo:{title:'ФОП ООО, приказ № 370 от 18.05.2023 (ред. от 10.11.2025)',url:'http://publication.pravo.gov.ru/document/0001202307140040'},ooo808:{title:'Изменения в ФОП ООО, приказ № 808 от 10.11.2025',url:'http://publication.pravo.gov.ru/document/0001202602120006'},faopNoo:{title:'ФАОП НОО, приказ № 1023 от 24.11.2022',url:'http://publication.pravo.gov.ru/Document/View/0001202303220005'},faopOoo:{title:'ФАОП ООО, приказ № 1025 от 24.11.2022',url:'http://publication.pravo.gov.ru/Document/View/0001202303220006'},fpu:{title:'ФПУ, приказ № 436 от 22.06.2026',url:'http://publication.pravo.gov.ru/document/0001202607230005'},edsoo:{title:'Единое содержание общего образования',url:'https://edsoo.ru/normativnye-dokumenty/'}};
+export const PLANS={'НОО':{label:'1–4 классы',grades:[1,2,3,4],doc:'noo',rows:[['Русский язык',[5,5,5,5]],['Литературное чтение',[4,4,4,4]],['Иностранный язык',[0,2,2,2]],['Математика',[4,4,4,4]],['Окружающий мир',[2,2,2,2]],['Основы религиозных культур и светской этики',[0,0,0,1]],['Изобразительное искусство',[1,1,1,1]],['Музыка',[1,1,1,1]],['Труд (технология)',[1,1,1,1]],['Физическая культура',[2,2,2,2]]],total:[20,22,22,23],max:[21,23,23,23]},'ООО':{label:'5–9 классы',grades:[5,6,7,8,9],doc:'ooo',rows:[['Русский язык',[5,6,4,3,3]],['Литература',[3,3,2,2,3]],['Иностранный язык',[2,3,3,3,3]],['Математика',[5,5,0,0,0]],['Алгебра',[0,0,3,3,3]],['Геометрия',[0,0,2,2,2]],['Вероятность и статистика',[0,0,1,1,1]],['Информатика',[0,0,1,1,1]],['История',[3,3,3,3,2]],['Обществознание',[0,0,0,0,1]],['География',[1,1,2,2,2]],['Физика',[0,0,2,2,3]],['Химия',[0,0,0,2,2]],['Биология',[1,1,1,2,2]],['Духовно-нравственная культура России',[.5,0,0,0,0]],['Изобразительное искусство',[1,1,1,0,0]],['Музыка',[1,1,1,1,0]],['Труд (технология)',[2,2,2,1,1]],['Физическая культура',[2,2,2,2,2]],['Основы безопасности и защиты Родины',[0,0,0,1,1]]],total:[26.5,28,30,31,32],max:[29,30,32,33,33]}};
+const MAP={'Математика':'Математика','Алгебра':'Алгебра','Геометрия':'Геометрия','Вероятность и статистика':'Вероятность и статистика','Иностранный язык':'Иностранный (английский) язык','Русский язык':'Русский язык','Литературное чтение':'Литературное чтение','Окружающий мир':'Окружающий мир','Основы религиозных культур и светской этики':'ОРКСЭ','Изобразительное искусство':'Изобразительное искусство','Музыка':'Музыка','Труд (технология)':'Труд (технология)','Физическая культура':'Физическая культура','Литература':'Литература','Обществознание':'Обществознание','География':'География','История':'История','Физика':'Физика','Химия':'Химия','Биология':'Биология','Информатика':'Информатика'};
+export const fmtHours=h=>String(h).replace('.',',');
+export const isSampleResults=()=>false;
+export function findPrograms(s,g){const x=MAP[s];return x?PROGRAMS.filter(p=>p.grade===g&&(p.subject===x||p.subject.startsWith(`${x}: `))):[];}
+export function findProgram(s,g){return findPrograms(s,g)[0];}
+export function splitTopic(t){return String(t).split(/(?<=[.;])\s+(?=[А-ЯЁA-Z«(])/).map(x=>x.trim()).filter(Boolean);}
+export function defaultDays(h){return({1:[3],2:[2,4],3:[1,3,5],4:[1,2,4,5]})[h]||[1,2,3,4,5];}
+export function schoolYearStart(now=new Date()){const y=now.getMonth()>=6?now.getFullYear():now.getFullYear()-1;return `${y}-09-01`;}
+export function isValidDate(s){if(typeof s!=='string'||!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(s))return false;const d=new Date(`${s}T12:00:00`);return !Number.isNaN(d.getTime())&&d.toISOString().slice(0,10)===s;}
+export const isWeekday=d=>Number.isInteger(d)&&d>=1&&d<=6;
+export function checkDays(days,per){const v=[...new Set(Array.isArray(days)?days:[])].filter(isWeekday);if(!v.length)return{ok:false,msg:'Выберите дни уроков.'};if(v.length>per)return{ok:false,msg:`По программе ${per} ч в неделю: выберите не больше ${per} дн.`};return{ok:true,paired:v.length<per};}
+const ymd=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+export function lessonDates(start,days,per,count){const a=[...new Set(days)].filter(isWeekday).sort((x,y)=>x-y);if(!a.length||count<=0||!isValidDate(start))return[];const out=[],d=new Date(`${start}T12:00:00`);for(let i=0;out.length<count&&i<800;i++,d.setDate(d.getDate()+1))if(a.includes(d.getDay()))out.push(ymd(d));return out;}
+export function buildPlan(program,{start,days,secs}){const u=[];program.sections.forEach((s,i)=>{if(secs&&!secs.includes(i))return;s.topics.forEach(t=>splitTopic(t).forEach(topic=>u.push({section:s.title,topic})))});const n=Math.min(program.hours_per_year,u.length),dates=lessonDates(start,days,program.hours_per_week,n);return u.slice(0,n).map((x,i)=>({n:i+1,date:dates[i]||'',...x,hw:''}));}
+export function toCSV(rows){const e=v=>`\"${String(v??'').replace(/\"/g,'\"\"')}\"`;return `\ufeff${[['№','Дата','Раздел','Тема урока','Домашнее задание'],...rows.map(r=>[r.n,r.date,r.section,r.topic,r.hw])].map(r=>r.map(e).join(';')).join('\\r\\n')}`;}
