@@ -27,6 +27,7 @@ export function findPrograms(s,g){const x=MAP[s];return x?PROGRAMS.filter(p=>p.g
 export function findProgram(s,g){return findPrograms(s,g)[0];}
 export function splitTopic(t){return String(t).split(/(?<=[.;])\s+(?=[А-ЯЁA-Z«(])/).map(x=>x.trim()).filter(Boolean);}
 export function defaultDays(h){return({1:[3],2:[2,4],3:[1,3,5],4:[1,2,4,5]})[h]||[1,2,3,4,5];}
+export function schoolYearStart(now=new Date()){const y=now.getMonth()>=6?now.getFullYear():now.getFullYear()-1;return `${y}-09-01`;}
 export function isValidDate(s){if(typeof s!=='string'||!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(s))return false;const d=new Date(`${s}T12:00:00`);return !Number.isNaN(d.getTime())&&d.toISOString().slice(0,10)===s;}
 export const isWeekday=d=>Number.isInteger(d)&&d>=1&&d<=6;
 export function checkDays(days,per){const v=[...new Set(Array.isArray(days)?days:[])].filter(isWeekday);if(!v.length)return{ok:false,msg:'Выберите дни уроков.'};if(v.length>per)return{ok:false,msg:`По программе ${per} ч в неделю: выберите не больше ${per} дн.`};return{ok:true,paired:v.length<per};}
