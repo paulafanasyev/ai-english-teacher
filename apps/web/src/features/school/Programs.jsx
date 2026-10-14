@@ -32,7 +32,7 @@ export default function Programs() {
       <div>
         <div className="h2">📋 Федеральные рабочие программы</div>
         <p className="text-sm font-semibold text-ink/60 mt-1">
-          Учебный план и содержание обучения по документам Минпросвещения России. Для всех предметов обязательной части учебного плана 1–9 классов доступны разделы, темы и планируемые предметные результаты (ОРКСЭ по всем шести модулям, английский язык со 2 класса). Это справка, она не заменяет полный текст действующей программы и утверждённый план школы.
+          Учебный план и содержание обучения по документам Минпросвещения России. Для всех предметов обязательной части учебного плана 1–9 классов доступны разделы, темы и планируемые предметные результаты (ОРКСЭ по всем шести модулям, английский язык со 2 класса). Для 10–11 классов добавлен универсальный профиль (базовый уровень), кроме обществознания; по литературе 11 класса пока нет предметных результатов. Это справка, она не заменяет полный текст действующей программы и утверждённый план школы.
         </p>
       </div>
       <RuOnly />
@@ -95,6 +95,7 @@ export default function Programs() {
                 </div>
                 {canPlan && <button className="btn-primary !py-2 text-sm" onClick={() => nav(`/planner?p=${program.id}`)}>🗓️ Составить план уроков</button>}
               </div>
+              {program.note && <p className="rounded-xl bg-soft/60 px-3 py-2 text-sm font-semibold text-ink/70">ℹ️ {program.note}</p>}
               {program.sections.map((s) => (
                 <details key={s.title} className="rounded-2xl bg-soft/60 p-3" open>
                   <summary className="cursor-pointer font-black">{s.title}</summary>
@@ -105,7 +106,7 @@ export default function Programs() {
               ))}
               {program.results?.length > 0 && (
                 <details className="rounded-2xl bg-soft/60 p-3">
-                  <summary className="cursor-pointer font-black">Планируемые предметные результаты{isSampleResults(program) ? ' (выборка)' : program.subject === 'Музыка' ? ` за весь период ${program.grade <= 4 ? 'начальной' : 'основной'} школы (по модулям)` : ' к концу года'}</summary>
+                  <summary className="cursor-pointer font-black">Планируемые предметные результаты{isSampleResults(program) ? ' (выборка)' : program.results_scope === 'period' ? ' за весь период среднего общего образования (10–11 классы)' : program.subject === 'Музыка' ? ` за весь период ${program.grade <= 4 ? 'начальной' : 'основной'} школы (по модулям)` : ' к концу года'}</summary>
                   <ul className="mt-2 list-disc space-y-1 pl-5 text-sm font-semibold text-ink/80">
                     {program.results.map((t, i) => <li key={i}>{t}</li>)}
                   </ul>
@@ -123,6 +124,7 @@ export default function Programs() {
         <p>• <Doc k="noo" /></p>
         <p>• <Doc k="ooo" /></p>
         <p>• <Doc k="ooo808" /></p>
+        <p>• <Doc k="soo" /></p>
         <p>• Для детей с ОВЗ и домашнего обучения: <Doc k="faopNoo" />; <Doc k="faopOoo" />. В Репетиторе есть режим доступности (кнопка ♿ в меню): крупный шрифт, без анимаций, чтение выделенного вслух.</p>
         <p>• <Doc k="fpu" />. Учебники из перечня принадлежат издательствам, их тексты здесь не публикуются.</p>
       </div>
