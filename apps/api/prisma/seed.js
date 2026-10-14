@@ -181,7 +181,7 @@ async function main() {
   const teacher = await prisma.user.upsert({
     where: { email: 'teacher@demo.example.com' },
     update: { role: 'TEACHER' },
-    create: { email: 'teacher@demo.example.com', passwordHash: teacherPass, name: 'Maria Petrova', role: 'TEACHER', level: 'C1', locale: 'ru' },
+    create: { email: 'teacher@demo.example.com', passwordHash: teacherPass, name: 'Мария Петрова', role: 'TEACHER', level: 'C1', locale: 'ru' },
   });
 
   const classStudents = seededStudents.slice(0, 6);
