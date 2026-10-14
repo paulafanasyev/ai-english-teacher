@@ -9,7 +9,7 @@
     "build": "vite build",
     "build:demo": "VITE_PUBLISHED=1 SINGLE=1 vite build --outDir dist-demo",
     "preview": "vite preview",
-    "test": "node --test src/features/math/*.test.js",
+    "test": "node --test src/features/math/*.test.js src/features/school/*.test.js",
     "cap:sync": "npm run build && npx cap sync",
     "cap:add:android": "npx cap add android",
     "cap:add:ios": "npx cap add ios",
