@@ -1,4 +1,4 @@
-/* Светлана Репетитор landing: i18n, animated background, talking Emma. */
+/* Светлана Репетитор landing: i18n, animated background, talking Svetlana. */
 (() => {
   'use strict';
   const $ = (s, r = document) => r.querySelector(s);
@@ -14,7 +14,7 @@
       'hero.badge': 'A helper for students and teachers · Free · Right in your browser',
       'hero.title': 'A tutor that <span class="grad">teaches you to think</span>',
       'hero.lead': 'English with voice-enabled teachers and math for grades 5–9, where hints open step by step and the answer is never handed out right away. For students, teachers and parents. Works in the browser, nothing to download.',
-      'hero.open': 'Start for free', 'hero.apk': 'Android APK', 'hero.hear': 'Say hi to Emma',
+      'hero.open': 'Start for free', 'hero.apk': 'Android APK', 'hero.hear': 'Say hi to Svetlana',
       'hero.t1': 'English A1–B2 with voice', 'hero.t2': 'Math 5–9 “Think it through”', 'hero.t3': 'Teacher and parent demo dashboards',
       'stats.subjects': 'subjects: English and math', 'stats.teachers': 'Pixar-style teachers', 'stats.langs': 'interface languages', 'stats.free': 'free',
       'features.kicker': 'English', 'features.title': 'English: speak from the first lesson',
@@ -30,7 +30,7 @@
       'm3.t': 'School and OGE topics', 'm3.d': 'Fractions, negative numbers, proportions, equations, powers, quadratic equations, percentages and progressions, in line with the Russian OGE exam.',
       'school.kicker': 'For teachers and parents', 'school.title': 'A helper for more than just students',
       'school.note': 'Dashboards currently run in demo mode: in the published version data is stored in one browser. A shared class across several devices is not connected yet.',
-      'sc1.t': 'Teacher dashboard', 'sc1.d': 'See each student’s weak topic and how many hints they take. Assign math homework to the whole class in a couple of steps.',
+      'sc1.t': 'Teacher dashboard', 'sc1.d': 'See each student’s weak topic and how many hints they take. Assign homework to the whole class in a couple of steps, and Svetlana checks the answers right away.',
       'sc2.t': 'Gradebook', 'sc2.d': 'Finished homework goes to the gradebook with a mark and a comment. Teachers can add their own entries.',
       'sc3.t': 'Parent diary', 'sc3.d': 'Parents see their child’s marks, progress and streak without extra calls or chats.',
       'teachers.kicker': 'Teachers', 'teachers.title': 'Pick your teacher',
@@ -47,11 +47,11 @@
       'q5': 'Does it work offline?', 'a5': 'Yes, after the first visit the app is cached. Only Chrome speech recognition needs a connection.',
       'q7': 'What is “Svetlana”?', 'a7': '“Svetlana” is a project of the non-profit “Mir Samozanyatykh” (АНО ЦПС «Мир Самозанятых»). The Tutor is its education service for students, teachers and parents.',
       'team.dev': 'Developer', 'team.devName': 'Pavel Afanasyev', 'team.baseRole': 'Based on the project', 'team.base': '“Svetlana”', 'team.org': 'Non-profit “Mir Samozanyatykh”',
-      'final.title': 'Emma and your exercises are waiting',
+      'final.title': 'Svetlana and your exercises are waiting',
       'footer.by': 'Based on “Svetlana” by the non-profit “Mir Samozanyatykh” · Developer: Pavel Afanasyev', 'footer.privacy': 'Privacy',
-      greet: ["Hi there! I'm Emma, your tutor and a teacher's helper.", "I'll help you with English and math. Let's get started!"],
+      greet: ["Hi there! I'm Svetlana, your tutor and a teacher's helper.", "I'll help you with English and math. Let's get started!"],
     },
-    ru: { greet: ['Привет! Я Эмма, твой репетитор и помощник учителя.', 'Помогу с английским и математикой. Давай начнём!'], 'meta.title': document.title },
+    ru: { greet: ['Привет! Я Светлана, твой репетитор и помощник учителя.', 'Помогу с английским и математикой. Давай начнём!'], 'meta.title': document.title },
   };
   const VOICE_LANG = { ru: 'ru-RU', en: 'en-US' };
   const nodes = $$('[data-i18n]');
@@ -158,7 +158,7 @@
     return loadFull(id).then((d) => d.base);
   }
 
-  /* ---------------- Emma: portrait, blink, lip-sync ---------------- */
+  /* ---------------- Svetlana: portrait, blink, lip-sync ---------------- */
   const emmaBtn = $('#emma');
   const face = $('#emmaFace');
   const layers = {};
@@ -168,7 +168,7 @@
   const emmaData = loadFull('emma').then((data) => {
     const pct = (v) => `${(v / data.size) * 100}%`;
     const base = new Image();
-    base.className = 'base'; base.alt = 'Emma'; base.src = data.base; base.decoding = 'async';
+    base.className = 'base'; base.alt = 'Светлана'; base.src = data.base; base.decoding = 'async';
     face.appendChild(base);
     ['happy', 'A', 'O', 'E', 'blink'].forEach((k) => {
       const l = data.layers[k]; if (!l) return;
