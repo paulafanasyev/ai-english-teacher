@@ -30,9 +30,9 @@ export default function Programs() {
   return (
     <div className="space-y-5">
       <div>
-        <div className="h2">📋 Темы федеральных программ, демо</div>
+        <div className="h2">📋 Федеральные рабочие программы</div>
         <p className="text-sm font-semibold text-ink/60 mt-1">
-          Учебный план и содержание обучения по документам Минпросвещения России. Сейчас доступны разделы и темы программ: все предметы 1–4 классов (ОРКСЭ по всем шести модулям, английский язык со 2 класса), а в 5–9 классах математика, английский язык, история, обществознание, физика, химия, биология и информатика. Остальные предметы 5–9 классов добавляются. Это справка, она не заменяет полный текст действующей программы и утверждённый план школы.
+          Учебный план и содержание обучения по документам Минпросвещения России. Для всех предметов обязательной части учебного плана 1–9 классов доступны разделы, темы и планируемые предметные результаты (ОРКСЭ по всем шести модулям, английский язык со 2 класса). Это справка, она не заменяет полный текст действующей программы и утверждённый план школы.
         </p>
       </div>
       <RuOnly />
@@ -67,7 +67,7 @@ export default function Programs() {
             Итого обязательная часть: {fmtHours(plan.total[gi])} ч · максимум с частью школы: {fmtHours(plan.max[gi])} ч
           </div>
           {plan.note && <p className="px-2 pt-2 text-[11px] font-semibold text-ink/50">{plan.note}</p>}
-          <p className="px-2 pt-2 text-[11px] font-semibold text-ink/50">📘 темы программы есть в демо. Источник плана: <Doc k={plan.doc} />.</p>
+          <p className="px-2 pt-2 text-[11px] font-semibold text-ink/50">📘 программа есть в Репетиторе. Источник плана: <Doc k={plan.doc} />.</p>
         </div>
 
         <div className="card p-5 min-w-0">
@@ -105,7 +105,7 @@ export default function Programs() {
               ))}
               {program.results?.length > 0 && (
                 <details className="rounded-2xl bg-soft/60 p-3">
-                  <summary className="cursor-pointer font-black">Планируемые предметные результаты{isSampleResults(program) ? ' (выборка)' : program.subject === 'Музыка' ? ' за весь период начальной школы (по модулям)' : ' к концу года'}</summary>
+                  <summary className="cursor-pointer font-black">Планируемые предметные результаты{isSampleResults(program) ? ' (выборка)' : program.subject === 'Музыка' ? ` за весь период ${program.grade <= 4 ? 'начальной' : 'основной'} школы (по модулям)` : ' к концу года'}</summary>
                   <ul className="mt-2 list-disc space-y-1 pl-5 text-sm font-semibold text-ink/80">
                     {program.results.map((t, i) => <li key={i}>{t}</li>)}
                   </ul>
