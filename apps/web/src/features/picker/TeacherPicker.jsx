@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp, useT, useLocale } from '../../core/store.js';
 import { api } from '../../core/api.js';
-import { TEACHERS, greetingUrl } from '../../data/teachers.js';
+import { TEACHERS } from '../../data/teachers.js';
+import { tts } from '../../audio/tts.js';
 import { pickL } from '../../i18n/index.js';
 import Avatar, { SpeechBubble } from '../../avatar/Avatar.jsx';
 import { sfx } from '../../audio/sfx.js';
@@ -16,23 +17,21 @@ export default function TeacherPicker({ firstTime = false }) {
   const nav = useNavigate();
   const [unlocks, setUnlocks] = useState([]);
   const [playingId, setPlayingId] = useState(null);
-  const audioRef = useRef(null);
 
   useEffect(() => { api.getUnlocks().then(setUnlocks).catch(() => {}); }, []);
-  useEffect(() => () => { audioRef.current?.pause(); }, []);
+  useEffect(() => () => { tts.stop(); }, []);
 
   const isUnlocked = (id) =>
     firstTime || !user.teacherId || id === user.teacherId || unlocks.some((u) => u.itemType === 'teacher' && u.itemId === id);
 
+  // The greeting is spoken with the teacher's TTS voice: the old recordings use the previous names.
   const playVoice = (teacher) => {
     sfx.click();
-    audioRef.current?.pause();
-    if (playingId === teacher.id) { setPlayingId(null); return; }
-    const a = new Audio(greetingUrl(teacher.id));
-    audioRef.current = a;
-    a.onended = () => setPlayingId(null);
-    a.onerror = () => setPlayingId(null);
-    a.play().then(() => setPlayingId(teacher.id)).catch(() => setPlayingId(null));
+    if (playingId === teacher.id) { tts.stop(); setPlayingId(null); return; }
+    const done = () => setPlayingId((p) => (p === teacher.id ? null : p));
+    setPlayingId(teacher.id);
+    const ok = tts.speak(teacher.greeting, teacher, { force: true, lang: 'en-US', onEnd: done });
+    if (!ok) setTimeout(done, 4000);
   };
 
   const choose = async (teacher) => {

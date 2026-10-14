@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useApp } from '../../core/store.js';
 import { school } from './schoolStore.js';
+import { MARKS } from './homeworkCheck.js';
+import { useAI } from '../../ai/useAI.js';
 import RuOnly from './RuOnly.jsx';
 
 function useSchoolDb() {
@@ -12,6 +14,152 @@ function useSchoolDb() {
 const SUBJECTS = ['Математика', 'Алгебра', 'Геометрия', 'Иностранный язык', 'Русский язык', 'Классное руководство', 'Другой предмет'];
 const input = 'w-full rounded-xl border border-black/10 bg-white px-3 py-2 font-semibold';
 const time = (t) => new Date(t).toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+const dayRu = (d) => (d ? new Date(`${d}T12:00:00`).toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' }) : '');
+const today = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
+
+function SvetlanaCheck({ check }) {
+  if (!check) return <p className="text-xs font-semibold text-ink/50">Светлана ещё не проверяла этот ответ.</p>;
+  return (
+    <div className="rounded-xl bg-violet-50 px-3 py-2 text-sm space-y-1">
+      <div className="font-black">👩‍🏫 Светлана{check.mark ? `: предварительно ${check.mark}` : ''}<span className="ml-1 text-[11px] font-bold text-ink/40">{check.source === 'llm' ? '(локальный ИИ)' : '(проверка по правилам)'}</span></div>
+      <p className="font-semibold">{check.verdict}</p>
+      {check.fixes.length > 0 && (
+        <ul className="space-y-0.5">
+          {check.fixes.map((f, i) => (
+            <li key={i} className="font-semibold"><span className="line-through text-red-600">{f.wrong}</span>{f.right && <> → <span className="text-green-700">{f.right}</span></>}{f.why && <span className="text-ink/60"> · {f.why}</span>}</li>
+          ))}
+        </ul>
+      )}
+      {check.advice && <p className="text-xs font-semibold text-ink/60">💡 {check.advice}</p>}
+    </div>
+  );
+}
+
+function TeacherMark({ sub, user }) {
+  const [mark, setMark] = useState(String(sub.mark || sub.check?.mark || 5));
+  const [comment, setComment] = useState(sub.comment || '');
+  return (
+    <div className="flex flex-wrap items-center gap-2">
+      <select aria-label={`Оценка: ${sub.name}`} className="rounded-xl border border-black/10 bg-white px-2 py-1.5 font-black" value={mark} onChange={(e) => setMark(e.target.value)}>
+        {MARKS.map((m) => <option key={m} value={m}>{m}</option>)}
+      </select>
+      <input aria-label={`Комментарий: ${sub.name}`} className="flex-1 min-w-[10rem] rounded-xl border border-black/10 bg-white px-3 py-1.5 text-sm font-semibold" value={comment} onChange={(e) => setComment(e.target.value)} placeholder="Комментарий ученику (необязательно)" />
+      <button className="btn-primary !py-1.5 text-sm" onClick={() => school.reviewHomework(sub.id, user.id, { mark: Number(mark), comment })}>{sub.mark ? 'Изменить оценку' : 'Поставить оценку'}</button>
+    </div>
+  );
+}
+
+function HomeworkTeacher({ cls, user, db }) {
+  const [title, setTitle] = useState('');
+  const [text, setText] = useState('');
+  const [expected, setExpected] = useState('');
+  const [due, setDue] = useState('');
+  const list = db.homework.filter((h) => h.classId === cls.id).sort((a, b) => b.createdAt - a.createdAt);
+  const add = () => { if (school.addHomework(cls.id, user, { title, text, expected, due })) { setTitle(''); setText(''); setExpected(''); setDue(''); } };
+  return (
+    <div className="card p-4 space-y-3">
+      <div className="font-black">🏠 Домашние задания</div>
+      <div className="grid gap-2 sm:grid-cols-[1fr_auto]">
+        <input aria-label="Название задания" className={input} value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Например: № 245, упр. 3 на с. 41" />
+        <label className="flex items-center gap-2 text-sm font-bold text-ink/60">Сдать до<input type="date" className="rounded-xl border border-black/10 bg-white px-2 py-2 font-semibold" min={today()} value={due} onChange={(e) => setDue(e.target.value)} /></label>
+      </div>
+      <textarea aria-label="Текст задания" className={input} rows={3} value={text} onChange={(e) => setText(e.target.value)} placeholder="Условие задания: что сделать и в каком виде прислать ответ" />
+      <input aria-label="Правильный ответ для проверки" className={input} value={expected} onChange={(e) => setExpected(e.target.value)} placeholder="Правильный ответ (необязательно, ученики его не видят, Светлана сверит с ним)" />
+      <button className="btn-primary !py-2" disabled={!title.trim()} onClick={add}>Задать классу</button>
+      {list.length === 0 && <p className="text-sm font-semibold text-ink/50">Заданий пока нет.</p>}
+      {list.map((h) => {
+        const subs = db.submissions.filter((x) => x.hwId === h.id);
+        return (
+          <details key={h.id} className="rounded-2xl bg-soft/60 p-3">
+            <summary className="cursor-pointer font-black">{h.title}{h.due ? ` · до ${dayRu(h.due)}` : ''} <span className="text-sm font-bold text-ink/50">· сдали {subs.length} из {cls.members.length}</span></summary>
+            <div className="mt-2 space-y-3">
+              {h.text && <p className="whitespace-pre-wrap text-sm font-semibold">{h.text}</p>}
+              {h.expected && <p className="text-xs font-bold text-ink/50">Ответ для проверки: {h.expected}</p>}
+              {subs.length === 0 && <p className="text-sm font-semibold text-ink/50">Ответов пока нет.</p>}
+              {subs.map((sub) => (
+                <div key={sub.id} className="rounded-xl bg-white p-3 space-y-2">
+                  <div className="text-xs font-black text-ink/50">{sub.name} · {time(sub.at)}{sub.mark ? ` · оценка ${sub.mark}` : ' · ждёт оценки'}</div>
+                  <p className="whitespace-pre-wrap text-sm font-semibold">{sub.text}</p>
+                  <SvetlanaCheck check={sub.check} />
+                  <TeacherMark key={`${sub.id}:${sub.at}`} sub={sub} user={user} />
+                </div>
+              ))}
+              <button className="text-xs font-bold text-ink/40 hover:text-red-600" onClick={() => { if (window.confirm(`Удалить задание «${h.title}» вместе с ответами учеников?`)) school.removeHomework(h.id, user.id); }}>Удалить задание</button>
+            </div>
+          </details>
+        );
+      })}
+    </div>
+  );
+}
+
+function HomeworkAnswer({ hw, cls, user, sub }) {
+  const ai = useAI();
+  const [text, setText] = useState('');
+  const [editing, setEditing] = useState(!sub);
+  const [busy, setBusy] = useState(false);
+  const send = async () => {
+    if (!text.trim() || busy) return;
+    setBusy(true);
+    let check = null;
+    try {
+      const r = await ai.runTask('check_homework', { subject: cls.subject, task: `${hw.title}\n${hw.text}`, answer: text, expected: hw.expected }, { locale: 'ru', timeoutMs: 40000 });
+      check = r?.data || null;
+    } catch { check = null; }
+    if (school.submitHomework(hw.id, user, text, check)) { setText(''); setEditing(false); }
+    setBusy(false);
+  };
+  if (sub && !editing) {
+    return (
+      <div className="space-y-2">
+        <div className="text-xs font-black text-ink/50">Твой ответ · {time(sub.at)}</div>
+        <p className="whitespace-pre-wrap rounded-xl bg-white px-3 py-2 text-sm font-semibold">{sub.text}</p>
+        <SvetlanaCheck check={sub.check} />
+        {sub.mark ? (
+          <p className="rounded-xl bg-green-50 px-3 py-2 text-sm font-black">✅ Оценка учителя: {sub.mark}{sub.comment ? ` · ${sub.comment}` : ''}</p>
+        ) : (
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs font-bold text-ink/50">Учитель ещё не поставил оценку.</span>
+            <button className="btn-ghost !py-1.5 text-sm" onClick={() => { setText(sub.text); setEditing(true); }}>Исправить и сдать заново</button>
+          </div>
+        )}
+      </div>
+    );
+  }
+  return (
+    <div className="space-y-2">
+      <textarea aria-label={`Ответ: ${hw.title}`} className={input} rows={4} value={text} onChange={(e) => setText(e.target.value)} placeholder="Напиши решение или ответ…" disabled={busy} />
+      <div className="flex flex-wrap gap-2">
+        <button className="btn-primary !py-2" disabled={!text.trim() || busy} onClick={send}>{busy ? 'Светлана проверяет…' : 'Сдать на проверку Светлане'}</button>
+        {sub && !busy && <button className="btn-ghost !py-2" onClick={() => setEditing(false)}>Отмена</button>}
+      </div>
+    </div>
+  );
+}
+
+function HomeworkStudent({ cls, user, db }) {
+  const list = db.homework.filter((h) => h.classId === cls.id).sort((a, b) => b.createdAt - a.createdAt);
+  return (
+    <div className="card p-4 space-y-3">
+      <div className="font-black">🏠 Домашние задания</div>
+      {list.length === 0 && <p className="text-sm font-semibold text-ink/50">Учитель пока не задал домашних заданий.</p>}
+      {list.map((h) => {
+        const sub = db.submissions.find((x) => x.hwId === h.id && x.studentId === user.id) || null;
+        const late = h.due && !sub && h.due < today();
+        return (
+          <details key={h.id} className="rounded-2xl bg-soft/60 p-3" open={!sub}>
+            <summary className="cursor-pointer font-black">{sub ? (sub.mark ? `✅ ${sub.mark} · ` : '📨 ') : late ? '⏰ ' : '📝 '}{h.title}{h.due ? ` · до ${dayRu(h.due)}` : ''}</summary>
+            <div className="mt-2 space-y-3">
+              {h.text && <p className="whitespace-pre-wrap text-sm font-semibold">{h.text}</p>}
+              <HomeworkAnswer hw={h} cls={cls} user={user} sub={sub} />
+            </div>
+          </details>
+        );
+      })}
+      <p className="text-[11px] font-semibold text-ink/50">Светлана проверяет ответ сразу и ставит предварительную оценку, окончательную ставит учитель. С включённым локальным ИИ (Настройки) разбор подробнее.</p>
+    </div>
+  );
+}
 
 function ClassTabs({ classes, cls, setSel }) {
   if (!classes.length) return null;
@@ -136,7 +284,10 @@ function TeacherView({ user, db }) {
             </div>
             <RemoteLesson cls={cls} user={user} />
           </div>
-          <Chat cls={cls} user={user} db={db} />
+          <div className="space-y-4 min-w-0">
+            <HomeworkTeacher cls={cls} user={user} db={db} />
+            <Chat cls={cls} user={user} db={db} />
+          </div>
         </div>
       )}
     </div>
@@ -173,7 +324,10 @@ function StudentView({ user, db }) {
             </div>
             <RemoteLesson cls={cls} user={user} />
           </div>
-          <Chat cls={cls} user={user} db={db} />
+          <div className="space-y-4 min-w-0">
+            <HomeworkStudent cls={cls} user={user} db={db} />
+            <Chat cls={cls} user={user} db={db} />
+          </div>
         </div>
       )}
     </div>
@@ -188,7 +342,7 @@ export default function ClassRoom() {
     <div className="space-y-5">
       <div>
         <div className="h2">👥 {isTeacher ? 'Мои классы' : 'Мой класс'}, демо</div>
-        <p className="text-sm font-semibold text-ink/60 mt-1">Демо-режим: школа, классы и чат хранятся в этом браузере (можно сразу проверить с демо-учителем и демо-учеником). Общий класс на разных устройствах заработает после переезда на сервер в России.</p>
+        <p className="text-sm font-semibold text-ink/60 mt-1">Демо-режим: школа, классы, чат и домашние задания хранятся в этом браузере (можно сразу проверить с демо-учителем и демо-учеником). Общий класс на разных устройствах заработает после переезда на сервер в России.</p>
       </div>
       <RuOnly />
       {isTeacher ? <TeacherView user={user} db={db} /> : <StudentView user={user} db={db} />}
