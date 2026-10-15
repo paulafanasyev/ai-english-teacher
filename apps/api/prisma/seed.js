@@ -1,6 +1,7 @@
-// Seed script: creates one admin user (from env, with a safe default) and
-// 12 demo students with realistic-looking Attempt history spread across the
-// last 30 days. Run with `npm run seed` (requires a live DATABASE_URL).
+// Seed script: creates one admin user (from env) and, outside production or with
+// SEED_DEMO=1, 12 demo students with realistic-looking Attempt history spread across
+// the last 30 days plus a demo teacher/parent/class. Run with `npm run seed`
+// (requires a live DATABASE_URL).
 
 import 'dotenv/config';
 import { PrismaClient } from '@prisma/client';
@@ -9,6 +10,11 @@ import bcrypt from 'bcryptjs';
 const prisma = new PrismaClient();
 
 const BCRYPT_COST = 12;
+const PRODUCTION = process.env.NODE_ENV === 'production';
+// Demo accounts use well-known passwords (Teacher_123, Parent_123, Demo_Student123):
+// never create them on a real server unless explicitly asked.
+const SEED_DEMO = process.env.SEED_DEMO === '1' || !PRODUCTION;
+const DEFAULT_ADMIN_PASSWORD = 'ChangeMe_123';
 
 const TASK_TYPES = ['vocab-card', 'gap-task', 'listening', 'speaking-drill', 'grammar-quiz'];
 const TOPICS = [
@@ -59,7 +65,10 @@ function daysAgo(n, hour = randInt(7, 22)) {
 
 async function main() {
   const adminEmail = process.env.SEED_ADMIN_EMAIL || 'admin@example.com';
-  const adminPassword = process.env.SEED_ADMIN_PASSWORD || 'ChangeMe_123';
+  const adminPassword = process.env.SEED_ADMIN_PASSWORD || DEFAULT_ADMIN_PASSWORD;
+  if (PRODUCTION && (adminPassword === DEFAULT_ADMIN_PASSWORD || adminPassword.length < 12)) {
+    throw new Error('Set a strong SEED_ADMIN_PASSWORD (12+ characters, not the default) before seeding production.');
+  }
 
   console.log(`==> Seeding admin user: ${adminEmail}`);
 
@@ -93,6 +102,12 @@ async function main() {
       update: {},
       create: setting,
     });
+  }
+
+  if (!SEED_DEMO) {
+    console.log('==> Production: demo students/teacher/parent skipped (set SEED_DEMO=1 to create them).');
+    console.log('==> Seed complete.');
+    return;
   }
 
   console.log(`==> Seeding ${STUDENT_NAMES.length} demo students with 30 days of attempts...`);
