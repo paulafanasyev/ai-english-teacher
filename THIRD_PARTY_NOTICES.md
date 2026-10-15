@@ -17,6 +17,26 @@ Before publishing or distributing a build, verify and retain:
 - **Mobile Agent / OX**: review the pinned pnpm dependency graph and each native module, including the separately built sing-box/libbox component. The app's former package metadata declared MIT; the repository-level proprietary notice does not change the licenses of dependencies or permissions already granted for historical revisions.
 - **AI English Teacher**: review the exact npm lockfile, WebLLM/model assets, teacher/avatar art, audio, video, and fonts. Model and media terms may differ from the code package license.
 
+## AI English Teacher — natural voices (Piper), added 2026-10-15
+
+Runtime code (bundled into the web build or loaded by it):
+- `@mintplex-labs/piper-tts-web` 1.0.5 — MIT (fork of `@diffusionstudio/vits-web`).
+- `onnxruntime-web` 1.18.0 — MIT. Its WebAssembly files are fetched at runtime from `cdnjs.cloudflare.com`.
+- Piper phonemizer WebAssembly (`@diffusionstudio/piper-wasm`, built from **espeak-ng — GPL-3.0**). It is **not** part of our bundle: the browser downloads it at runtime from `cdn.jsdelivr.net` when a natural voice is used. **Open legal question:** whether loading a GPL-3.0 component at runtime is compatible with the proprietary `LICENSE` of this app. Get a written opinion before a commercial release; the fallback is to switch natural voices off (Settings → «Естественные голоса», or remove `piperVoice.js`), which leaves browser/system TTS only.
+
+Voice models (downloaded on first use from `huggingface.co/diffusionstudio/piper-voices`, mirror of `rhasspy/piper-voices`; licenses per MODEL_CARD):
+
+| Voice | Teacher | License |
+|---|---|---|
+| `en_US-kristin-medium` | Светлана (EN) | Public domain (LibriVox) |
+| `en_GB-cori-medium` | Ольга (EN) | Public domain (LibriVox) |
+| `en_US-joe-medium` | Дмитрий (EN) | CC0 |
+| `en_GB-northern_english_male-medium` | Алексей (EN) | CC BY-SA 4.0 — attribution shown in Settings; share-alike applies to modified models |
+| `ru_RU-dmitri-medium` | Дмитрий (RU) | CC0 |
+| `ru_RU-denis-medium` | Алексей (RU) | CC0 |
+
+Deliberately **not** used: `hfc_female`, `hfc_male`, `ryan`, `ruslan` (CC BY-NC-SA, non-commercial), `irina` and `amy` (license unknown/unresolved). There is no cleanly licensed female Russian Piper voice, so Светлана and Ольга speak Russian with the browser/system voice.
+
 ## Audit status
 
 This document defines the boundary and release checklist; it is **not** a claim that every transitive dependency and every media/model asset has already been individually cleared. A release must not be marked license-audited until an SBOM/license report for its exact commit and asset inventory has been reviewed and retained.

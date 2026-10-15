@@ -200,11 +200,13 @@ router.get('/analytics', async (req, res, next) => {
     res.json({
       totals: {
         users: users.length,
+        students: users.filter((u) => u.role === 'STUDENT').length,
         attempts: attempts.length,
         overallAccuracy: attempts.length > 0 ? totalCorrect / attempts.length : 0,
       },
       activeLast7d: activeUserIds.size,
       avgAccuracyByTaskType,
+      byTaskType,
       attemptsPerDay,
       topTopics,
     });

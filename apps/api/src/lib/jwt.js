@@ -15,6 +15,11 @@ function getSecret() {
   if (!secret) {
     throw new Error('JWT_SECRET is not set');
   }
+  // In production refuse the documented placeholder or a short secret: anyone who
+  // knows it could forge admin tokens.
+  if (process.env.NODE_ENV === 'production' && (secret.length < 32 || /CHANGE_ME|changeme/i.test(secret))) {
+    throw new Error('JWT_SECRET is too weak for production: use at least 32 random characters (openssl rand -hex 64)');
+  }
   return secret;
 }
 

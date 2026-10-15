@@ -48,7 +48,8 @@ router.get('/', validate({ query: listQuery }), async (req, res, next) => {
       const myStudentIds = [...new Set(classes.flatMap((c) => c.enrollments.map((e) => e.studentId)))];
       if (where.classId && !myClassIds.includes(where.classId)) return res.status(403).json({ error: 'Forbidden' });
       if (where.studentId && !myStudentIds.includes(where.studentId)) return res.status(403).json({ error: 'Forbidden' });
-      if (!where.classId && !where.studentId) where.studentId = { in: myStudentIds };
+      // Only students of this teacher, even inside a class filter.
+      if (!where.studentId) where.studentId = { in: myStudentIds };
     } // ADMIN: unrestricted
 
     const entries = await prisma.journalEntry.findMany({
@@ -71,7 +72,14 @@ const createBody = z.object({
 router.post('/', requireRole('TEACHER', 'ADMIN'), validate({ body: createBody }), async (req, res, next) => {
   try {
     const { studentId, classId, kind, topic, mark, comment } = req.body;
-    if (req.user.role === 'TEACHER') {
+    if (classId) {
+      // The class must exist, belong to this teacher (admins: any class) and contain the student;
+      // otherwise one teacher could write into another teacher's class journal.
+      const cls = await prisma.class.findUnique({ where: { id: classId }, include: { enrollments: true } });
+      if (!cls) return res.status(404).json({ error: 'Class not found' });
+      if (req.user.role === 'TEACHER' && cls.teacherId !== req.user.id) return res.status(403).json({ error: 'Not your class' });
+      if (!cls.enrollments.some((e) => e.studentId === studentId)) return res.status(400).json({ error: 'Student is not in this class' });
+    } else if (req.user.role === 'TEACHER') {
       const classes = await prisma.class.findMany({ where: { teacherId: req.user.id }, include: { enrollments: true } });
       const ok = classes.some((c) => c.enrollments.some((e) => e.studentId === studentId));
       if (!ok) return res.status(403).json({ error: 'Student not in your class' });

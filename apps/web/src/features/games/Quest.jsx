@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp, useT, useLocale } from '../../core/store.js';
 import { api } from '../../core/api.js';
@@ -27,6 +27,7 @@ export default function Quest() {
   const [nCorrect, setNCorrect] = useState(0);
   const [feedback, setFeedback] = useState(null);
   const [emotion, flash] = useEmotion();
+  const finishing = useRef(false);
 
   const chapters = quest.chapters;
   const nextPlayable = chapters.findIndex((c) => !done.includes(c.id));
@@ -35,6 +36,7 @@ export default function Quest() {
   const beginTasks = (ch) => {
     const generated = ch.tasks.map((tt) => singleTask(TASK_MAP[tt] || 'vocab', { level: user.level, locale }));
     setTasks(generated); setTi(0); setNCorrect(0); setFeedback(null);
+    finishing.current = false;
     setView({ mode: 'tasks', ch });
   };
 
@@ -48,15 +50,21 @@ export default function Quest() {
   const nextTask = async () => {
     sfx.click(); setFeedback(null);
     if (ti + 1 < tasks.length) { setTi(ti + 1); return; }
+    if (finishing.current) return;
+    finishing.current = true;
     const ch = view.ch;
     const finalCorrect = nCorrect;
     if (finalCorrect >= 2) {
-      const nd = [...done, ch.id];
-      setDone(nd); storage.set(key, nd);
-      const u = await api.earn({ xp: ch.reward.xp, coins: ch.reward.coins }).catch(() => null);
-      if (u) setUser(u);
+      // Replaying a finished chapter is fine, but its reward is paid only once.
+      const firstTime = !done.includes(ch.id);
+      if (firstTime) {
+        const nd = [...done, ch.id];
+        setDone(nd); storage.set(key, nd);
+        const u = await api.earn({ xp: ch.reward.xp, coins: ch.reward.coins }).catch(() => null);
+        if (u) setUser(u);
+      }
       sfx.levelUp();
-      setView({ mode: 'finale', ch, ok: true });
+      setView({ mode: 'finale', ch, ok: true, rewarded: firstTime });
     } else {
       setView({ mode: 'finale', ch, ok: false });
     }
@@ -156,7 +164,7 @@ export default function Quest() {
       <div className="card p-5 mt-4 font-semibold leading-relaxed">
         {view.ok ? pickL(ch.finale, locale) : `${nCorrect}/${tasks.length} — ${t('games.again')}?`}
       </div>
-      {view.ok && <div className="chip mt-3">🎁 {t('quest.reward')}: ⭐ {ch.reward.xp} · 🪙 {ch.reward.coins}</div>}
+      {view.ok && view.rewarded && <div className="chip mt-3">🎁 {t('quest.reward')}: ⭐ {ch.reward.xp} · 🪙 {ch.reward.coins}</div>}
       <div className="flex gap-2 mt-5">
         {!view.ok && <button className="btn-primary flex-1" onClick={() => beginTasks(ch)}>🔁 {t('games.again')}</button>}
         <button className={view.ok ? 'btn-primary flex-1' : 'btn-ghost flex-1'} onClick={() => setView({ mode: 'map' })}>🗺️ {t('quest.continue')}</button>

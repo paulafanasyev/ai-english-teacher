@@ -14,13 +14,18 @@ const STATUS_CHIP = {
   soon: '!bg-black/5 text-ink/40',
 };
 
-// ---- progress persistence (per course → list of completed unit ids) ----
-const KEY = (id) => `aet_course_${id}`;
-function loadDone(id) {
-  try { return JSON.parse(localStorage.getItem(KEY(id)) || '[]'); } catch { return []; }
+// ---- progress persistence (per user + course → list of completed unit ids) ----
+const KEY = (userId, id) => `aet_course_${userId}_${id}`;
+const LEGACY_KEY = (id) => `aet_course_${id}`; // before progress was per user
+function loadDone(userId, id) {
+  try {
+    const own = localStorage.getItem(KEY(userId, id));
+    if (own) return JSON.parse(own);
+    return JSON.parse(localStorage.getItem(LEGACY_KEY(id)) || '[]');
+  } catch { return []; }
 }
-function saveDone(id, arr) {
-  try { localStorage.setItem(KEY(id), JSON.stringify(arr)); } catch { /* noop */ }
+function saveDone(userId, id, arr) {
+  try { localStorage.setItem(KEY(userId, id), JSON.stringify(arr)); } catch { /* noop */ }
 }
 
 const shuffle = (a) => a.slice().sort(() => 0.5 - Math.random());
@@ -76,19 +81,23 @@ export default function Courses() {
 function Course({ course, onBack }) {
   const t = useT();
   const locale = useLocale();
+  const { user } = useApp();
+  const userId = user?.id || 'guest';
   const units = course.units || [];
-  const [done, setDone] = useState(() => loadDone(course.id));
+  const [done, setDone] = useState(() => loadDone(userId, course.id));
   const [unit, setUnit] = useState(null);
 
   if (unit) {
     const idx = units.findIndex((u) => u.id === unit.id);
     return (
       <Unit
+        key={unit.id}
         unit={unit}
+        rewardable={!done.includes(unit.id)}
         onBack={() => setUnit(null)}
         onComplete={() => {
           const nd = done.includes(unit.id) ? done : [...done, unit.id];
-          setDone(nd); saveDone(course.id, nd);
+          setDone(nd); saveDone(userId, course.id, nd);
         }}
         onNext={units[idx + 1] ? () => setUnit(units[idx + 1]) : null}
       />
@@ -141,7 +150,8 @@ function Course({ course, onBack }) {
 }
 
 // ---------- Unit: words / phrases / quiz ----------
-function Unit({ unit, onBack, onComplete, onNext }) {
+// Coins/XP are paid only on the first pass of a unit; reviewing it later is free practice.
+function Unit({ unit, rewardable, onBack, onComplete, onNext }) {
   const t = useT();
   const locale = useLocale();
   const { setUser } = useApp();
@@ -156,8 +166,10 @@ function Unit({ unit, onBack, onComplete, onNext }) {
 
   const answer = async (opt, q) => {
     if (locked) return; setLocked(true);
-    if (opt.w === q.item.w) { setScore((s) => s + 1); sfx.correct?.(); try { setUser(await api.earn({ xp: 5, coins: 2 })); } catch {} }
-    else sfx.wrong?.();
+    if (opt.w === q.item.w) {
+      setScore((s) => s + 1); sfx.correct?.();
+      if (rewardable) { try { const u = await api.earn({ xp: 5, coins: 2 }); if (u) setUser(u); } catch {} }
+    } else sfx.wrong?.();
     setTimeout(() => {
       if (qi + 1 >= quiz.length) { setFinished(true); onComplete?.(); sfx.levelUp?.(); }
       else { setQi(qi + 1); setLocked(false); }
