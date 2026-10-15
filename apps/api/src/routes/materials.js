@@ -15,7 +15,7 @@ router.use(requireAuth, requireRole('ADMIN'));
 
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: MAX_UPLOAD_BYTES },
+  limits: { fileSize: MAX_UPLOAD_BYTES, files: 1 },
   fileFilter(req, file, cb) {
     if (!isAllowedMime(file.mimetype)) {
       return cb(new Error('Unsupported file type. Only PDF, DOCX, and TXT are allowed.'));
@@ -49,7 +49,9 @@ router.post('/upload', uploadSingle, async (req, res, next) => {
     try {
       text = await extractText(buffer, mimetype);
     } catch (extractErr) {
-      return res.status(400).json({ error: `Could not extract text: ${extractErr.message}` });
+      // Parser messages can expose library/file internals: log them, answer generically.
+      console.warn('[materials] text extraction failed:', extractErr?.message);
+      return res.status(400).json({ error: 'Could not extract text from this file' });
     }
 
     const material = await prisma.material.create({
