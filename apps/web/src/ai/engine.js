@@ -32,6 +32,21 @@ function persist(patch) {
 }
 function notify() { listeners.forEach((listener) => listener({ ...state })); }
 
+// Free the GPU/WASM memory of the current model. Only dropping the reference keeps
+// the weights resident until the tab closes (gigabytes on bigger models, and
+// mobile WebViews crash when a second model is loaded on top).
+async function dropEngine() {
+  const old = engine;
+  engine = null;
+  if (!old) return;
+  jobs.splice(0).forEach((job) => {
+    try { job.controller?.abort(); } catch { /* ignore */ }
+    job.reject(new DOMException('Model unloaded', 'AbortError'));
+  });
+  try { await old.interruptGenerate?.(); } catch { /* optional WebLLM API */ }
+  try { await old.unload?.(); } catch { /* optional WebLLM API */ }
+}
+
 export async function detectWebGPU() {
   if (!hasNavigator || !navigator.gpu || typeof navigator.gpu.requestAdapter !== 'function') {
     persist({ supported: false, status: 'unsupported' });
@@ -71,7 +86,7 @@ export const aiEngine = {
   selectModel(modelId) {
     const model = getModel(modelId);
     if (!model) return state.modelId;
-    if (engine && state.modelId !== model.id) engine = null;
+    if (engine && state.modelId !== model.id) dropEngine();
     persist({ modelId: model.id, enabled: false, status: state.status === 'unsupported' ? 'unsupported' : 'idle', error: '' });
     return model.id;
   },
@@ -86,6 +101,8 @@ export const aiEngine = {
       await loadPromise.catch(() => {});
       if (state.status === 'ready' && engine && state.modelId === model.id) return engine;
     }
+    // Never keep two models in memory at once.
+    await dropEngine();
     const requestedModelId = model.id;
     persist({ modelId: requestedModelId, status: 'downloading', progress: 0, progressText: 'Preparing local model…', error: '' });
     loadPromise = (async () => {
@@ -104,9 +121,9 @@ export const aiEngine = {
             });
           },
         });
-        // The selection may have changed while WebLLM was downloading. Do not
-        // expose the old engine as the newly selected model.
-        if (state.modelId !== requestedModelId) {
+        // The selection may have changed (or AI was switched off) while WebLLM was
+        // downloading. Do not expose the old engine as the newly selected model.
+        if (state.modelId !== requestedModelId || state.status !== 'downloading') {
           try { await loadedEngine?.unload?.(); } catch { /* optional WebLLM API */ }
           return null;
         }
@@ -125,10 +142,12 @@ export const aiEngine = {
   },
   async enable(modelId = state.modelId) { return this.load(modelId); },
   disable() {
+    dropEngine();
     persist({ enabled: false, status: state.supported ? 'idle' : 'unsupported', error: '' });
   },
   async clearCache() {
     try {
+      await dropEngine();
       if (!webllm) webllm = await import(/* @vite-ignore */ 'https://esm.run/@mlc-ai/web-llm@0.2.85');
       const clear = webllm.deleteModelAllInfoInCache || webllm.default?.deleteModelAllInfoInCache;
       if (typeof clear === 'function') await clear();
@@ -136,7 +155,6 @@ export const aiEngine = {
         const keys = await caches.keys();
         await Promise.all(keys.filter((key) => /mlc|webllm/i.test(key)).map((key) => caches.delete(key)));
       }
-      engine = null;
       persist({ enabled: false, status: state.supported ? 'idle' : 'unsupported', progress: 0, progressText: '', error: '' });
       return true;
     } catch (error) {
