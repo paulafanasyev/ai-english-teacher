@@ -11,7 +11,7 @@
 //    kept and replayed on the next tap, with a visible "tap to enable sound" hint.
 import { speechBus } from './speechBus.js';
 import { showNotice, hideNotice, uiLang } from './notice.js';
-import { piperEnabled, voiceIdFor, isStored, synth, prefetchVoice } from './piperVoice.js';
+import { piperEnabled, voiceIdFor, textLang, isStored, isWarm, synth, prefetchVoice } from './piperVoice.js';
 
 const root = typeof window !== 'undefined' ? window : null;
 const synthesis = root && 'speechSynthesis' in root ? root.speechSynthesis : null;
@@ -93,10 +93,19 @@ function pickVoice(lang, gender, attempt = 0) {
 }
 const hasVoiceFor = (lang) => voices.some((v) => languageKey(v.lang) === languageKey(lang) && String(v.lang || '').toLowerCase().startsWith(languageKey(lang)));
 
-function chunksFor(text) {
+// Abbreviations that end with a dot but do not end a sentence.
+const ABBR = /(?:^|[\s(])(?:mr|mrs|ms|dr|st|vs|etc|e\.g|i\.e|т\.е|т\.д|т\.п|т\.к|др|см|стр|г|им)\.$/iu;
+export function chunksFor(text) {
   const source = String(text || '').trim();
   if (!source) return [];
-  const sentences = source.match(/[^.!?。！？]+[.!?。！？]+|[^.!?。！？]+$/g) || [source];
+  // A sentence ends only where punctuation is followed by a space or the end ("2.5" stays whole).
+  const raw = source.match(/[\s\S]+?(?:[.!?。！？…]+(?=\s|$)|$)/gu) || [source];
+  const sentences = [];
+  raw.forEach((piece) => {
+    const prev = sentences[sentences.length - 1];
+    if (prev && ABBR.test(prev.trim())) sentences[sentences.length - 1] = prev + piece;
+    else sentences.push(piece);
+  });
   const chunks = [];
   sentences.forEach((sentence) => {
     let rest = sentence.trim();
@@ -196,6 +205,9 @@ function endJob(job) {
   if (!job || job.ended) return;
   job.ended = true;
   clearTimers(job);
+  try { job.releaseAudio?.(); } catch {}
+  job.releaseAudio = null;
+  job.piperResume = null;
   if (current === job) current = null;
   if (blockedJob === job) blockedJob = null;
   tts.speaking = false;
@@ -217,6 +229,7 @@ function cancelEngine() {
 function stopJob(job) {
   if (!job) return;
   clearTimers(job);
+  try { job.releaseAudio?.(); } catch {}
   try { job.audio?.pause?.(); } catch {}
   cancelEngine();
   try { nativeTTS()?.stop?.(); } catch {}
@@ -266,57 +279,105 @@ function waitForGesture(job) {
   showNotice(notice('tap'), { timeout: 0, onClick: () => tts.unlock() });
 }
 
-// Natural Piper voice: synthesize sentence by sentence (the next one is prepared
-// while the current one plays). Only used when the voice model is already cached.
+// Natural Piper voice. Sentences are grouped into ~160-char pieces; the next piece is
+// synthesized while the current one plays. Only used when the voice model is cached.
 function runPiper(job) {
   if (!job.voiceId || !isStored(job.voiceId) || !root || typeof root.Audio !== 'function' || typeof URL === 'undefined') return false;
-  const parts = chunksFor(job.text);
+  const parts = [];
+  chunksFor(job.text).forEach((chunk) => {
+    const last = parts.length - 1;
+    if (last >= 0 && parts[last].length + chunk.length < 160) parts[last] += ' ' + chunk;
+    else parts.push(chunk);
+  });
   if (!parts.length) { endJob(job); return true; }
+  const stale = () => !isCurrent(job) || job.piperFailed;
   const pending = [];
+  const ready = [];
+  // Watchdog per piece, armed when the piece reaches the engine (not while queued behind a stale job).
+  const arm = (i) => () => {
+    const warm = isWarm(job.voiceId);
+    job.timers.push(setTimeout(() => {
+      if (stale() || job.piperResume || ready[i]) return;
+      // Let the piece that is playing now finish, then continue with the browser voice.
+      if (i > 0 && job.piperPiece === i - 1 && job.audio && !job.audio.ended) job.piperFailAt = i;
+      else fallback(i);
+    }, warm ? 8000 : 20000));
+  };
   const make = (i) => {
     if (i >= parts.length) return null;
-    if (!pending[i]) pending[i] = synth(parts[i], job.voiceId);
+    if (!pending[i]) {
+      pending[i] = synth(parts[i], job.voiceId, stale, arm(i));
+      pending[i].catch(() => {}); // a failed prefetch is handled when that piece is played
+    }
     return pending[i];
   };
-  // Any Piper failure (model, autoplay, decoding) continues with the browser voice.
+  const release = () => { try { job.releaseAudio?.(); } catch {} job.releaseAudio = null; };
+  // Any real Piper failure continues with the browser voice from the same piece.
   const fallback = (i) => {
-    if (!isCurrent(job) || job.piperFailed) return;
+    if (stale()) return;
     job.piperFailed = true;
+    release();
     clearTimers(job);
     job.audio = null;
-    job.part = i;
+    job.text = parts.slice(i).join(' ');
+    job.part = 0;
     job.attempt = 0;
+    const native = nativeTTS();
+    if (native && runNative(job, native)) return;
     if (!runWeb(job)) failOrFallback(job, 'unsupported', 'Speech is not available');
   };
+  const play = (i, audio) => {
+    const started = () => {
+      if (stale() || job.audio !== audio) return;
+      hideNotice();
+      if (!job.piperStarted) { job.piperStarted = true; begin(job); }
+      job.piperPiece = i;
+      const ms = Number.isFinite(audio.duration) && audio.duration > 0 ? (audio.duration * 1000) / (audio.playbackRate || 1) : 0;
+      scheduleEstimated(job, parts[i], job.rate, now() - job.startedAt, ms, 0);
+    };
+    let result;
+    try { result = audio.play(); } catch { fallback(i); return; }
+    if (!result || typeof result.then !== 'function') { started(); return; }
+    result.then(started).catch((error) => {
+      if (stale() || job.audio !== audio) return;
+      if (error?.name === 'NotAllowedError') {
+        // Autoplay blocked: keep the ready audio and play it on the next tap.
+        clearTimers(job);
+        blockedJob = job;
+        job.piperResume = () => play(i, audio);
+        showNotice(notice('tap'), { timeout: 0, onClick: () => tts.unlock() });
+        return;
+      }
+      fallback(i);
+    });
+  };
   const playPart = (i) => {
-    if (!isCurrent(job) || job.piperFailed) return;
-    if (i >= parts.length) { endJob(job); return; }
+    if (stale()) return;
+    if (i >= parts.length) { release(); endJob(job); return; }
+    if (job.piperFailAt === i) { fallback(i); return; }
     make(i).then((blob) => {
-      if (!isCurrent(job) || job.piperFailed) return;
-      make(i + 1); // synthesize the next sentence while this one plays
-      let url;
+      pending[i] = null;
+      ready[i] = true;
+      if (stale() || !blob) return;
+      make(i + 1);
+      release();
+      let url = null;
       let audio;
-      try { url = URL.createObjectURL(blob); audio = new root.Audio(url); } catch { fallback(i); return; }
+      try { url = URL.createObjectURL(blob); audio = new root.Audio(url); } catch {
+        if (url) { try { URL.revokeObjectURL(url); } catch {} }
+        fallback(i); return;
+      }
       job.audio = audio;
-      const release = () => { try { URL.revokeObjectURL(url); } catch {} };
+      job.releaseAudio = () => { try { audio.pause(); } catch {} try { URL.revokeObjectURL(url); } catch {} };
       try { audio.playbackRate = Math.min(1.25, Math.max(0.8, job.rate || 1)); } catch {}
-      audio.onended = () => { release(); if (isCurrent(job) && job.audio === audio) playPart(i + 1); };
-      audio.onerror = () => { release(); if (job.audio === audio) fallback(i); };
-      const started = () => {
-        if (!isCurrent(job) || job.audio !== audio) return;
-        hideNotice();
-        begin(job);
-        const ms = Number.isFinite(audio.duration) && audio.duration > 0 ? (audio.duration * 1000) / (audio.playbackRate || 1) : 0;
-        scheduleEstimated(job, parts[i], job.rate, now() - job.startedAt, ms, 0);
-      };
-      let result;
-      try { result = audio.play(); } catch { release(); fallback(i); return; }
-      if (result && typeof result.then === 'function') result.then(started).catch(() => { release(); if (job.audio === audio) fallback(i); });
-      else started();
+      ['preservesPitch', 'mozPreservesPitch', 'webkitPreservesPitch'].forEach((key) => { try { if (key in audio) audio[key] = true; } catch {} });
+      audio.onended = () => { if (!stale() && job.audio === audio) playPart(i + 1); };
+      audio.onerror = () => { if (job.audio === audio) fallback(i); };
+      play(i, audio);
     }).catch(() => fallback(i));
   };
-  // Loading a voice for the first time in a session can take a moment; don't keep the child waiting.
-  job.timers.push(setTimeout(() => { if (!job.started) fallback(0); }, 7000));
+  // The turn is busy from now on (Talk waits for onEnd), even while the first piece is synthesized.
+  begin(job);
   playPart(0);
   return true;
 }
@@ -445,12 +506,21 @@ export const tts = {
   },
   // Called from user gestures. Never queues a dummy utterance (that wedged Chrome).
   unlock() {
+    gestureSeen = true;
+    const job = blockedJob;
+    if (job && isCurrent(job) && job.piperResume) {
+      // Replay the already synthesized Piper audio inside this gesture.
+      const resume = job.piperResume;
+      job.piperResume = null;
+      blockedJob = null;
+      hideNotice();
+      resume();
+      return true;
+    }
     if (nativeTTS()) return true;
     if (!webSpeech) return false;
-    gestureSeen = true;
     try { if (synthesis.paused) synthesis.resume(); } catch {}
     refreshVoices();
-    const job = blockedJob;
     if (job && isCurrent(job)) {
       blockedJob = null;
       hideNotice();
@@ -464,7 +534,8 @@ export const tts = {
     const source = String(text || '').trim();
     if (!source || (!voiceEnabled && !opts.force)) { try { opts.onEnd?.(); } catch {} return false; }
     if (sequence && sequence !== opts._sequence) { sequence.cancelled = true; endSequence(sequence); }
-    if (current) { clearTimers(current); try { current.audio?.pause?.(); } catch {} endJob(current); }
+    // Fully stop the previous job (Piper audio, Web Speech and native engines) before starting.
+    if (current) stopJob(current);
     blockedJob = null;
     this.lastError = null;
     const job = {
@@ -486,12 +557,17 @@ export const tts = {
       attempt: 0,
       voiceId: null,
       piperFailed: false,
+      piperStarted: false,
+      piperPiece: -1,
+      piperResume: null,
+      releaseAudio: null,
     };
     current = job;
     if (piperEnabled()) {
-      job.voiceId = voiceIdFor(teacher, job.lang);
+      // Russian explanations are sometimes passed with lang 'en-US': pick the voice by the text itself.
+      job.voiceId = voiceIdFor(teacher, textLang(source, job.lang));
       if (runPiper(job)) return true;
-      prefetchVoice(job.voiceId); // natural voice next time
+      prefetchVoice(job.voiceId); // natural voice next time (only on unmetered connections)
     }
     const native = nativeTTS();
     if (native && runNative(job, native)) return true;
