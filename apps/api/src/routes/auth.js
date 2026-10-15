@@ -143,11 +143,15 @@ router.post('/refresh', validate({ body: refreshSchema }), async (req, res, next
       return res.status(403).json({ error: 'Account is blocked' });
     }
 
-    // Revoke the presented token (rotation: one-time use).
-    await prisma.refreshToken.update({
-      where: { id: stored.id },
+    // Revoke the presented token (rotation: one-time use). Conditional update so two
+    // concurrent requests with the same token cannot both pass: only one flips revoked.
+    const revoked = await prisma.refreshToken.updateMany({
+      where: { id: stored.id, revoked: false },
       data: { revoked: true },
     });
+    if (revoked.count !== 1) {
+      return res.status(401).json({ error: 'Invalid or expired refresh token' });
+    }
 
     const tokens = await issueTokenPair(user);
 
