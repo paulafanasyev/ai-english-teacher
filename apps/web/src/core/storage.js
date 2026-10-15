@@ -1,5 +1,6 @@
 // Safe storage: falls back to in-memory when localStorage is unavailable
-// (e.g. sandboxed iframes with an opaque origin).
+// (e.g. sandboxed iframes with an opaque origin) or full (quota exceeded).
+// A value that could not be persisted stays readable from memory for this session.
 const mem = new Map();
 let ls = null;
 try {
@@ -11,16 +12,24 @@ try {
 export const storage = {
   get(key, fallback = null) {
     try {
-      const raw = ls ? ls.getItem(key) : mem.get(key);
+      const raw = mem.has(key) ? mem.get(key) : ls ? ls.getItem(key) : null;
       return raw == null ? fallback : JSON.parse(raw);
     } catch { return fallback; }
   },
+  // Returns true when the value was saved persistently.
   set(key, value) {
-    const raw = JSON.stringify(value);
-    try { ls ? ls.setItem(key, raw) : mem.set(key, raw); } catch { mem.set(key, raw); }
+    let raw;
+    try { raw = JSON.stringify(value); } catch { storage.lastError = 'serialize'; return false; }
+    if (ls) {
+      try { ls.setItem(key, raw); mem.delete(key); return true; } catch { storage.lastError = 'quota'; }
+    }
+    mem.set(key, raw);
+    return false;
   },
   del(key) {
-    try { ls ? ls.removeItem(key) : mem.delete(key); } catch { mem.delete(key); }
+    mem.delete(key);
+    try { ls?.removeItem(key); } catch { /* ignore */ }
   },
   persistent: !!ls,
+  lastError: null,
 };
