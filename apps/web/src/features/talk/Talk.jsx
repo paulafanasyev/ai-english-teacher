@@ -13,6 +13,8 @@ import { Confetti } from '../../ui/kit.jsx';
 import { useAI } from '../../ai/useAI.js';
 
 const MODE_COPY = { en: { local: 'AI: local model', basic: 'AI: basic mode', mic: 'Microphone error — type instead.' }, ru: { local: 'AI: локальная модель', basic: 'AI: базовый режим', mic: 'Ошибка микрофона — напиши ответ.' } };
+// A free-chat turn counts toward the reward only if it is a real English sentence (3+ words) and not a repeat.
+const countsAsTurn = (text, previous) => (text.match(/[A-Za-z']+/g) || []).length >= 3 && text.trim().toLowerCase() !== previous;
 
 export default function Talk() {
   const { user, setUser } = useApp();
@@ -33,6 +35,8 @@ export default function Talk() {
   const recRef = useRef(null);
   const okSteps = useRef(0);
   const logRef = useRef(null);
+  const finishing = useRef(false);
+  const lastFree = useRef('');
 
   useEffect(() => { logRef.current?.scrollTo({ top: 1e6, behavior: 'smooth' }); }, [messages, doneInfo]);
   useEffect(() => () => { tts.stop(); recRef.current?.stop(); }, []);
@@ -46,7 +50,7 @@ export default function Talk() {
     tts.unlock?.();
     sfx.click();
     const session = createScenarioSession(s);
-    sessionRef.current = session; okSteps.current = 0;
+    sessionRef.current = session; okSteps.current = 0; finishing.current = false; lastFree.current = '';
     setMode({ kind: 'scenario', s }); setMessages([]); setDoneInfo(null); setVoiceError('');
     // Intentionally synchronous: browser audio must be unlocked in this click handler.
     teacherSay(session.step.say);
@@ -55,12 +59,15 @@ export default function Talk() {
     tts.unlock?.();
     sfx.click();
     const chat = createFreeChat();
-    sessionRef.current = chat; okSteps.current = 0;
+    sessionRef.current = chat; okSteps.current = 0; finishing.current = false; lastFree.current = '';
     setMode({ kind: 'free' }); setMessages([]); setDoneInfo(null); setVoiceError('');
     teacherSay(chat.opener(user.name));
   };
   const finish = async (say = true) => {
     tts.stop(); recRef.current?.stop(); setListening(false);
+    // Leaving after the scenario already finished must not pay the session again.
+    if (finishing.current) return;
+    finishing.current = true;
     const steps = okSteps.current, xp = Math.min(60, steps * 8), coins = steps > 0 ? 8 + steps * 2 : 0;
     if (say && sessionRef.current?.farewell) teacherSay(sessionRef.current.farewell());
     const u = await api.earn({ xp, coins }).catch(() => null); if (u) setUser(u);
@@ -98,7 +105,8 @@ export default function Talk() {
         else if (res.ok) setTimeout(() => teacherSay(session.step.say), 300);
       });
     } else {
-      okSteps.current = Math.min(okSteps.current + 1, 20);
+      if (countsAsTurn(text, lastFree.current)) okSteps.current = Math.min(okSteps.current + 1, 20);
+      lastFree.current = text.trim().toLowerCase();
       const correction = await ai.runTask('correct_sentence', { sentence: text }, { locale, level: user.level });
       const errors = correction.data?.errors || [];
       if (errors.length) flash('encourage'); else if (Math.random() < 0.4) flash('happy');
