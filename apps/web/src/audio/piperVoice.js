@@ -8,7 +8,6 @@
 
 const KEY = 'aet_voice_engine';       // 'piper' (default) | 'browser'
 const STORED_KEY = 'aet_piper_stored'; // JSON array of voice ids verified in OPFS
-const NOCACHE_KEY = 'aet_piper_nocache'; // '1' when this browser could not persist a model
 
 // Teacher id -> Piper voice per language (null = use the browser voice).
 export const PIPER_VOICES = {
@@ -35,8 +34,10 @@ const ls = {
 
 export const piperSupported = () => !!(
   root && root.isSecureContext !== false && typeof root.WebAssembly === 'object' && typeof root.Worker === 'function'
-  && typeof root.navigator?.storage?.getDirectory === 'function' && ls.get(NOCACHE_KEY) !== '1'
+  && typeof root.navigator?.storage?.getDirectory === 'function'
 );
+let noCache = false; // this session could not persist a model (e.g. iOS WebView size limit)
+let removing = null; // promise while "delete all" runs
 export function piperEnabled() { return piperSupported() && ls.get(KEY) !== 'browser'; }
 export function setPiperEnabled(on) { ls.set(KEY, on ? 'piper' : 'browser'); emit(); }
 
@@ -78,6 +79,7 @@ export function forgetVoice(voiceId) { if (stored.delete(voiceId)) { saveStored(
 const pending = new Map(); // voiceId -> promise
 export function downloadVoice(voiceId) {
   if (!voiceId || !piperSupported()) return Promise.resolve(false);
+  if (removing) return removing.then(() => downloadVoice(voiceId));
   if (stored.has(voiceId)) return Promise.resolve(true);
   if (pending.has(voiceId)) return pending.get(voiceId);
   const state = { loaded: 0, total: 0 };
@@ -90,7 +92,7 @@ export function downloadVoice(voiceId) {
       // The library swallows OPFS write errors (e.g. iOS WebView file-size limits): verify.
       const ids = await m.stored();
       if (!(ids || []).includes(voiceId)) {
-        ls.set(NOCACHE_KEY, '1');
+        noCache = true;
         failed.set(voiceId, 'nocache');
         return false;
       }
@@ -114,7 +116,7 @@ function unmetered() {
   return !/Android|iPhone|iPad|iPod|Mobile/i.test(root?.navigator?.userAgent || '');
 }
 export function prefetchVoice(voiceId) {
-  if (!voiceId || !piperEnabled() || stored.has(voiceId) || pending.has(voiceId) || failed.has(voiceId) || !unmetered()) return;
+  if (!voiceId || noCache || removing || !piperEnabled() || stored.has(voiceId) || pending.has(voiceId) || failed.has(voiceId) || !unmetered()) return;
   downloadVoice(voiceId);
 }
 
@@ -139,10 +141,17 @@ function sessionFor(m, voiceId) {
 }
 
 // Returns a WAV Blob, or null when the request became stale before its turn.
-export function synth(text, voiceId, isStale = () => false) {
+// onTurn fires when this request actually reaches the (serialized) engine.
+export function synth(text, voiceId, isStale = () => false, onTurn = null) {
   const run = queue.then(async () => {
     if (isStale()) return null;
+    try { onTurn?.(); } catch {}
     const m = await lib();
+    if (!isWarm(voiceId)) {
+      // The browser may have evicted the model: never let playback silently re-download 63 MB.
+      const ids = await m.stored();
+      if (!(ids || []).includes(voiceId)) { forgetVoice(voiceId); throw new Error('not-cached'); }
+    }
     const session = await sessionFor(m, voiceId);
     if (isStale()) return null;
     return session.predict(text);
@@ -151,15 +160,20 @@ export function synth(text, voiceId, isStale = () => false) {
   return run;
 }
 
-export async function removeVoices() {
-  try {
-    const m = await lib();
-    await queue;
-    m.TtsSession._instance = null;
-    await m.flush();
-  } catch {}
-  active = null;
-  stored.clear(); saveStored();
-  failed.clear();
+export function removeVoices() {
+  if (removing) return removing;
+  removing = (async () => {
+    try {
+      await Promise.all([...pending.values()]);
+      const m = await lib();
+      await queue;
+      m.TtsSession._instance = null;
+      await m.flush();
+    } catch {}
+    active = null;
+    stored.clear(); saveStored();
+    failed.clear();
+  })().finally(() => { removing = null; emit(); });
   emit();
+  return removing;
 }
