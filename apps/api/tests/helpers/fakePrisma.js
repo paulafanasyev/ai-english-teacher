@@ -5,8 +5,8 @@
 // route code in src/routes/*.js actually calls: findUnique, findFirst,
 // findMany (no-filter — routes that need filtering do it in JS after a
 // findMany({}) call, matching how the real routes are written), create,
-// update (including { increment }/{ decrement } field operations), upsert,
-// delete, and $transaction (which receives a callback and must expose the
+// update (including { increment }/{ decrement } field operations), updateMany,
+// upsert, delete, and $transaction (which receives a callback and must expose the
 // same model API on the `tx` object it passes in).
 //
 // Each model is backed by a plain Map keyed by an internal primary key
@@ -182,6 +182,18 @@ function createModelStore({ keyField = 'id', defaults = () => ({}), autoKey = tr
       const updated = applyUpdateData(existing, data);
       store.set(storeKey, updated);
       return clone(updated);
+    },
+
+    // Like Prisma: updates every matching row and returns { count }.
+    async updateMany({ where, data } = {}) {
+      let count = 0;
+      for (const [k, r] of store.entries()) {
+        if (matchesWhere(r, where || {})) {
+          store.set(k, applyUpdateData(r, data));
+          count += 1;
+        }
+      }
+      return { count };
     },
 
     async upsert({ where, create, update }) {
