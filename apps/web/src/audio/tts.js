@@ -292,10 +292,21 @@ function runPiper(job) {
   if (!parts.length) { endJob(job); return true; }
   const stale = () => !isCurrent(job) || job.piperFailed;
   const pending = [];
+  const ready = [];
+  // Watchdog per piece, armed when the piece reaches the engine (not while queued behind a stale job).
+  const arm = (i) => () => {
+    const warm = isWarm(job.voiceId);
+    job.timers.push(setTimeout(() => {
+      if (stale() || job.piperResume || ready[i]) return;
+      // Let the piece that is playing now finish, then continue with the browser voice.
+      if (i > 0 && job.piperPiece === i - 1 && job.audio && !job.audio.ended) job.piperFailAt = i;
+      else fallback(i);
+    }, warm ? 8000 : 20000));
+  };
   const make = (i) => {
     if (i >= parts.length) return null;
     if (!pending[i]) {
-      pending[i] = synth(parts[i], job.voiceId, stale);
+      pending[i] = synth(parts[i], job.voiceId, stale, arm(i));
       pending[i].catch(() => {}); // a failed prefetch is handled when that piece is played
     }
     return pending[i];
@@ -311,6 +322,8 @@ function runPiper(job) {
     job.text = parts.slice(i).join(' ');
     job.part = 0;
     job.attempt = 0;
+    const native = nativeTTS();
+    if (native && runNative(job, native)) return;
     if (!runWeb(job)) failOrFallback(job, 'unsupported', 'Speech is not available');
   };
   const play = (i, audio) => {
@@ -318,6 +331,7 @@ function runPiper(job) {
       if (stale() || job.audio !== audio) return;
       hideNotice();
       if (!job.piperStarted) { job.piperStarted = true; begin(job); }
+      job.piperPiece = i;
       const ms = Number.isFinite(audio.duration) && audio.duration > 0 ? (audio.duration * 1000) / (audio.playbackRate || 1) : 0;
       scheduleEstimated(job, parts[i], job.rate, now() - job.startedAt, ms, 0);
     };
@@ -340,8 +354,10 @@ function runPiper(job) {
   const playPart = (i) => {
     if (stale()) return;
     if (i >= parts.length) { release(); endJob(job); return; }
+    if (job.piperFailAt === i) { fallback(i); return; }
     make(i).then((blob) => {
       pending[i] = null;
+      ready[i] = true;
       if (stale() || !blob) return;
       make(i + 1);
       release();
@@ -362,9 +378,6 @@ function runPiper(job) {
   };
   // The turn is busy from now on (Talk waits for onEnd), even while the first piece is synthesized.
   begin(job);
-  // Loading a voice for the first time can take a while on weak phones; don't keep the child waiting forever.
-  const limit = isWarm(job.voiceId) ? 8000 : 20000;
-  job.timers.push(setTimeout(() => { if (!job.piperStarted && !job.piperResume) fallback(0); }, limit));
   playPart(0);
   return true;
 }
@@ -545,6 +558,7 @@ export const tts = {
       voiceId: null,
       piperFailed: false,
       piperStarted: false,
+      piperPiece: -1,
       piperResume: null,
       releaseAudio: null,
     };
