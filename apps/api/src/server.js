@@ -3,6 +3,17 @@
 
 import 'dotenv/config';
 import { createApp } from './app.js';
+import { assertJwtSecret } from './lib/jwt.js';
+
+// Fail fast: without a strong JWT_SECRET every login would fail (or, worse,
+// tokens could be forged), so do not start listening at all.
+try {
+  assertJwtSecret();
+} catch (err) {
+  // eslint-disable-next-line no-console
+  console.error(`[startup] ${err.message}`);
+  process.exit(1);
+}
 
 const PORT = process.env.PORT ? Number(process.env.PORT) : 4000;
 

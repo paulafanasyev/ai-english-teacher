@@ -24,6 +24,14 @@ function getSecret() {
 }
 
 /**
+ * Fail fast at process start (server.js) instead of on the first auth request.
+ * Throws with a readable message when JWT_SECRET is missing or too weak.
+ */
+export function assertJwtSecret() {
+  getSecret();
+}
+
+/**
  * Sign a short-lived access token carrying minimal claims.
  */
 export function signAccessToken(user) {
