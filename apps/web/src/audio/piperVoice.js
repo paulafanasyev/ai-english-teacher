@@ -1,126 +1,165 @@
-// Natural neural voices (Piper TTS, MIT) running fully in the browser.
-// The library and each voice model (~60 MB) are downloaded on first use and
-// cached in the browser (OPFS). Until a voice is cached, speech uses the
-// browser's built-in voice and the model downloads in the background.
+// Natural neural voices (Piper TTS, @mintplex-labs/piper-tts-web) running in the browser.
+// Each voice model (~63 MB) is downloaded once and cached in the browser (OPFS).
+// Until a voice is cached the regular browser voice speaks.
+//
+// Only voices with a clear commercial-friendly license are used (see MODEL_CARD on
+// huggingface.co/rhasspy/piper-voices). There is no cleanly licensed female Russian
+// Piper voice, so Светлана and Ольга speak Russian with the browser voice.
 
-const KEY = 'aet_voice_engine'; // 'piper' (default) | 'browser'
+const KEY = 'aet_voice_engine';       // 'piper' (default) | 'browser'
+const STORED_KEY = 'aet_piper_stored'; // JSON array of voice ids verified in OPFS
+const NOCACHE_KEY = 'aet_piper_nocache'; // '1' when this browser could not persist a model
 
-// Teacher id -> Piper voice for each language.
+// Teacher id -> Piper voice per language (null = use the browser voice).
 export const PIPER_VOICES = {
-  emma:  { en: 'en_US-hfc_female-medium', ru: 'ru_RU-irina-medium' },   // Светлана
-  james: { en: 'en_US-ryan-medium',       ru: 'ru_RU-dmitri-medium' },  // Дмитрий
-  sofia: { en: 'en_US-amy-medium',        ru: 'ru_RU-irina-medium' },   // Ольга
-  alex:  { en: 'en_US-hfc_male-medium',   ru: 'ru_RU-denis-medium' },   // Алексей
+  emma:  { en: 'en_US-kristin-medium', ru: null },                    // Светлана · public domain
+  james: { en: 'en_US-joe-medium',     ru: 'ru_RU-dmitri-medium' },    // Дмитрий · CC0 / CC0
+  sofia: { en: 'en_GB-cori-medium',    ru: null },                     // Ольга · public domain
+  alex:  { en: 'en_GB-northern_english_male-medium', ru: 'ru_RU-denis-medium' }, // Алексей · CC BY-SA 4.0 / CC0
+};
+export const VOICE_CREDITS = {
+  'en_US-kristin-medium': 'Kristin (LibriVox), public domain',
+  'en_US-joe-medium': 'Joe, CC0',
+  'en_GB-cori-medium': 'Cori (LibriVox), public domain',
+  'en_GB-northern_english_male-medium': 'Northern English Male, CC BY-SA 4.0',
+  'ru_RU-dmitri-medium': 'Dmitri, CC0',
+  'ru_RU-denis-medium': 'Denis, CC0',
 };
 
 const root = typeof window !== 'undefined' ? window : null;
-const storageOk = () => { try { return !!(root && root.localStorage); } catch { return false; } };
-const opfsOk = () => !!(root && root.navigator && root.navigator.storage && typeof root.navigator.storage.getDirectory === 'function');
-export const piperSupported = () => !!(root && typeof root.WebAssembly === 'object' && opfsOk() && typeof root.Worker === 'function');
+const ls = {
+  get(key) { try { return root?.localStorage?.getItem(key) ?? null; } catch { return null; } },
+  set(key, value) { try { root?.localStorage?.setItem(key, value); } catch {} },
+  del(key) { try { root?.localStorage?.removeItem(key); } catch {} },
+};
 
-export function piperEnabled() {
-  if (!piperSupported()) return false;
-  if (!storageOk()) return true;
-  return root.localStorage.getItem(KEY) !== 'browser';
-}
-export function setPiperEnabled(on) {
-  if (storageOk()) root.localStorage.setItem(KEY, on ? 'piper' : 'browser');
-  emit();
-}
+export const piperSupported = () => !!(
+  root && root.isSecureContext !== false && typeof root.WebAssembly === 'object' && typeof root.Worker === 'function'
+  && typeof root.navigator?.storage?.getDirectory === 'function' && ls.get(NOCACHE_KEY) !== '1'
+);
+export function piperEnabled() { return piperSupported() && ls.get(KEY) !== 'browser'; }
+export function setPiperEnabled(on) { ls.set(KEY, on ? 'piper' : 'browser'); emit(); }
 
+// Which language the text really is: the app sometimes says Russian explanations with lang 'en-US'.
+export function textLang(text, requested) {
+  const cyr = (String(text).match(/[\u0400-\u04FF]/g) || []).length;
+  const lat = (String(text).match(/[A-Za-z]/g) || []).length;
+  if (cyr > lat) return 'ru';
+  if (lat > cyr * 3) return 'en';
+  return String(requested || 'en').toLowerCase().startsWith('ru') ? 'ru' : 'en';
+}
 export function voiceIdFor(teacher, lang) {
   const key = String(lang || 'en').toLowerCase().startsWith('ru') ? 'ru' : 'en';
   const map = PIPER_VOICES[teacher?.id] || (teacher?.gender === 'm' ? PIPER_VOICES.james : PIPER_VOICES.emma);
-  return map[key];
+  return map[key] || null;
 }
 
+// The library (and onnxruntime) is only loaded when a natural voice is actually used.
 let libPromise = null;
 function lib() {
   if (!libPromise) libPromise = import('@mintplex-labs/piper-tts-web').catch((error) => { libPromise = null; throw error; });
   return libPromise;
 }
 
-const stored = new Set();
-const downloading = new Map(); // voiceId -> { loaded, total, promise }
+const stored = new Set((() => { try { return JSON.parse(ls.get(STORED_KEY) || '[]'); } catch { return []; } })());
+const saveStored = () => ls.set(STORED_KEY, JSON.stringify([...stored]));
+const downloading = new Map(); // voiceId -> { loaded, total }
+const failed = new Map();      // voiceId -> 'network' | 'nocache'
 const listeners = new Set();
 function emit() { listeners.forEach((fn) => { try { fn(); } catch {} }); }
 export function onPiperChange(fn) { listeners.add(fn); return () => listeners.delete(fn); }
 
-let storedChecked = null;
-export function refreshStored() {
-  if (!piperSupported()) return Promise.resolve(stored);
-  storedChecked = lib()
-    .then((m) => m.stored())
-    .then((ids) => { stored.clear(); (ids || []).forEach((id) => stored.add(id)); emit(); return stored; })
-    .catch(() => stored);
-  return storedChecked;
-}
-export const isStored = (voiceId) => stored.has(voiceId);
+export const isStored = (voiceId) => !!voiceId && stored.has(voiceId);
+export const hasAnyStored = () => stored.size > 0;
 export const downloadState = (voiceId) => downloading.get(voiceId) || null;
+export const downloadError = (voiceId) => failed.get(voiceId) || null;
+export function forgetVoice(voiceId) { if (stored.delete(voiceId)) { saveStored(); emit(); } }
 
-function slowNetwork() {
-  const c = root?.navigator?.connection;
-  return !!(c && (c.saveData || /(^|-)2g$|^3g$/.test(String(c.effectiveType || ''))));
-}
-
+const pending = new Map(); // voiceId -> promise
 export function downloadVoice(voiceId) {
   if (!voiceId || !piperSupported()) return Promise.resolve(false);
   if (stored.has(voiceId)) return Promise.resolve(true);
-  if (downloading.has(voiceId)) return downloading.get(voiceId).promise;
-  const state = { loaded: 0, total: 0, promise: null };
+  if (pending.has(voiceId)) return pending.get(voiceId);
+  const state = { loaded: 0, total: 0 };
   downloading.set(voiceId, state);
+  failed.delete(voiceId);
   emit();
-  state.promise = lib()
-    .then((m) => m.download(voiceId, (p) => {
-      if (p && p.total) { state.loaded = p.loaded; state.total = p.total; emit(); }
-    }))
-    .then(() => { stored.add(voiceId); return true; })
-    .catch(() => false)
-    .finally(() => { downloading.delete(voiceId); emit(); });
-  return state.promise;
-}
-
-// Background download for the voice we just fell back from (not on metered/slow links).
-export function prefetchVoice(voiceId) {
-  if (!piperEnabled() || slowNetwork()) return;
-  const start = () => { if (!stored.has(voiceId)) downloadVoice(voiceId); };
-  if (storedChecked) storedChecked.then(start); else refreshStored().then(start);
-}
-
-export async function removeVoices() {
-  try { const m = await lib(); await m.flush(); } catch {}
-  sessions.clear();
-  stored.clear();
-  emit();
-}
-
-// One loaded session per voice (the library's own predict() keeps a single
-// global session, which would mix up teachers). Keep at most two in memory.
-const sessions = new Map();
-function sessionFor(voiceId) {
-  if (sessions.has(voiceId)) {
-    const s = sessions.get(voiceId); sessions.delete(voiceId); sessions.set(voiceId, s); return s;
-  }
-  const promise = lib().then(async (m) => {
-    const s = new m.TtsSession({ voiceId });
-    if (s.waitReady && typeof s.waitReady.then === 'function') await s.waitReady;
-    if (!s.ready) await s.init();
-    return s;
-  });
-  promise.catch(() => sessions.delete(voiceId));
-  sessions.set(voiceId, promise);
-  while (sessions.size > 2) sessions.delete(sessions.keys().next().value);
+  const promise = lib()
+    .then(async (m) => {
+      await m.download(voiceId, (p) => { if (p) { state.loaded = p.loaded || 0; state.total = p.total || 0; emit(); } });
+      // The library swallows OPFS write errors (e.g. iOS WebView file-size limits): verify.
+      const ids = await m.stored();
+      if (!(ids || []).includes(voiceId)) {
+        ls.set(NOCACHE_KEY, '1');
+        failed.set(voiceId, 'nocache');
+        return false;
+      }
+      stored.add(voiceId); saveStored();
+      return true;
+    })
+    .catch(() => { failed.set(voiceId, 'network'); return false; })
+    .finally(() => { downloading.delete(voiceId); pending.delete(voiceId); emit(); });
+  pending.set(voiceId, promise);
   return promise;
 }
 
-// Returns a WAV Blob for the text (the voice must already be cached).
-export async function synth(text, voiceId) {
-  const session = await sessionFor(voiceId);
-  return session.predict(text);
+// Background download only on unmetered connections; elsewhere the user taps "Download" in Settings.
+function unmetered() {
+  const c = root?.navigator?.connection;
+  if (c) {
+    if (c.saveData) return false;
+    if (c.type) return c.type === 'wifi' || c.type === 'ethernet';
+    return false;
+  }
+  return !/Android|iPhone|iPad|iPod|Mobile/i.test(root?.navigator?.userAgent || '');
+}
+export function prefetchVoice(voiceId) {
+  if (!voiceId || !piperEnabled() || stored.has(voiceId) || pending.has(voiceId) || failed.has(voiceId) || !unmetered()) return;
+  downloadVoice(voiceId);
 }
 
-if (piperSupported()) {
-  // Learn which voices are cached without blocking the first paint.
-  const kick = () => { if (piperEnabled()) refreshStored(); };
-  if (root.requestIdleCallback) root.requestIdleCallback(kick, { timeout: 4000 }); else setTimeout(kick, 1500);
+// TtsSession in the library is a singleton: one voice is loaded at a time and inference
+// is serialized, so switching voices replaces the session instead of mixing them up.
+let active = null; // { voiceId, ready: Promise<session> }
+let queue = Promise.resolve();
+export const isWarm = (voiceId) => !!active && active.voiceId === voiceId && active.loaded;
+function sessionFor(m, voiceId) {
+  if (active && active.voiceId === voiceId) return active.ready;
+  m.TtsSession._instance = null;
+  const entry = { voiceId, loaded: false, ready: null };
+  entry.ready = (async () => {
+    const s = new m.TtsSession({ voiceId });
+    await s.waitReady;
+    entry.loaded = true;
+    return s;
+  })();
+  entry.ready.catch(() => { if (active === entry) active = null; });
+  active = entry;
+  return entry.ready;
+}
+
+// Returns a WAV Blob, or null when the request became stale before its turn.
+export function synth(text, voiceId, isStale = () => false) {
+  const run = queue.then(async () => {
+    if (isStale()) return null;
+    const m = await lib();
+    const session = await sessionFor(m, voiceId);
+    if (isStale()) return null;
+    return session.predict(text);
+  });
+  queue = run.catch(() => {});
+  return run;
+}
+
+export async function removeVoices() {
+  try {
+    const m = await lib();
+    await queue;
+    m.TtsSession._instance = null;
+    await m.flush();
+  } catch {}
+  active = null;
+  stored.clear(); saveStored();
+  failed.clear();
+  emit();
 }
