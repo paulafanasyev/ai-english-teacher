@@ -1,12 +1,15 @@
 // Lightweight rule-based grammar checker for the student's free text.
 // Catches the classic mistakes of Russian-speaking learners and suggests a friendly fix.
+// Articles follow the SOUND, not the letter: "a university", "a one-way ticket", "an hour", "an honest boy".
+const VOWEL_LETTER_CONSONANT_SOUND = '(?!(?:uni|use|usu|uti|eu|ewe|one\\b|once\\b)\\w*)';
+const CONSONANT_LETTER_VOWEL_SOUND = '(?!(?:hour|honest|honou?r|heir|herb)\\w*)';
 const RULES = [
   { re: /\bi is\b/i, fix: 'I am', tip: { en: 'Use “I am”, not “I is”.', ru: 'С «I» всегда «am»: I am.' } },
   { re: /\bi am agree\b/i, fix: 'I agree', tip: { en: '“Agree” is a verb: I agree.', ru: '«Agree» — глагол: I agree (без am).' } },
-  { re: /\b(he|she|it) (go|like|want|play|watch|read|eat|study|live|work|have)\b/i, fix: (m) => `${m[1]} ${m[2] === 'have' ? 'has' : m[2] + (/(ch|sh|s|x|o)$/.test(m[2]) ? 'es' : 's')}`, tip: { en: 'After he/she/it add -s.', ru: 'После he/she/it добавляй -s.' } },
+  { re: /\b(he|she|it) (go|like|want|play|watch|read|eat|study|live|work|have)\b/i, fix: (m) => `${m[1]} ${m[2] === 'have' ? 'has' : m[2] === 'study' ? 'studies' : m[2] + (/(ch|sh|s|x|o)$/.test(m[2]) ? 'es' : 's')}`, tip: { en: 'After he/she/it add -s.', ru: 'После he/she/it добавляй -s.' } },
   { re: /\b(he|she|it) don'?t\b/i, fix: (m) => `${m[1]} doesn't`, tip: { en: 'He/she/it → doesn’t.', ru: 'He/she/it → doesn’t.' } },
-  { re: /\ba ([aeiou]\w*)/i, fix: (m) => `an ${m[1]}`, tip: { en: 'Before a vowel sound use “an”.', ru: 'Перед гласным звуком — «an».' } },
-  { re: /\ban ([bcdfghjklmnpqrstvwxyz]\w*)/i, fix: (m) => `a ${m[1]}`, tip: { en: 'Before a consonant sound use “a”.', ru: 'Перед согласным звуком — «a».' } },
+  { re: new RegExp(`\\ba ${VOWEL_LETTER_CONSONANT_SOUND}([aeiou]\\w*)`, 'i'), fix: (m) => `an ${m[1]}`, tip: { en: 'Before a vowel sound use “an”.', ru: 'Перед гласным звуком — «an».' } },
+  { re: new RegExp(`\\ban ${CONSONANT_LETTER_VOWEL_SOUND}([bcdfghjklmnpqrstvwxyz]\\w*)`, 'i'), fix: (m) => `a ${m[1]}`, tip: { en: 'Before a consonant sound use “a”.', ru: 'Перед согласным звуком — «a».' } },
   { re: /\bcan to (\w+)/i, fix: (m) => `can ${m[1]}`, tip: { en: 'After “can” no “to”.', ru: 'После «can» нет «to»: can swim.' } },
   { re: /\bwant (go|play|eat|see|watch|buy|read|visit|learn|be)\b/i, fix: (m) => `want to ${m[1]}`, tip: { en: 'Want + to: I want to go.', ru: 'Want + to: I want to go.' } },
   { re: /\bpeoples\b/i, fix: 'people', tip: { en: '“People” is already plural.', ru: '«People» уже множественное число.' } },
@@ -22,7 +25,7 @@ const RULES = [
 export function checkText(text) {
   const found = [];
   for (const rule of RULES) {
-    const m = text.match(rule.re);
+    const m = String(text || '').match(rule.re);
     if (m) {
       found.push({ wrong: m[0], fix: typeof rule.fix === 'function' ? rule.fix(m) : rule.fix, tip: rule.tip });
       if (found.length >= 2) break;
