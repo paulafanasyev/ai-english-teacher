@@ -16,6 +16,7 @@ command -v docker >/dev/null || { echo "❌ Docker не установлен —
 # ---------- .env ----------
 if [ ! -f .env ]; then
   echo "▶ Генерирую .env со случайными секретами"
+  umask 077
   cat > .env <<EOF
 POSTGRES_USER=app_user
 POSTGRES_PASSWORD=$(openssl rand -hex 24)
@@ -27,7 +28,8 @@ SEED_ADMIN_EMAIL=$ADMIN_EMAIL
 SEED_ADMIN_PASSWORD=$(openssl rand -base64 18)
 EOF
   chmod 600 .env
-  echo "✔ .env создан. Пароль администратора:"; grep '^SEED_ADMIN_PASSWORD=' .env
+  # Пароль не печатаем: он попал бы в историю терминала и логи.
+  echo "✔ .env создан (права 600). Пароль администратора: sudo grep SEED_ADMIN_PASSWORD $ROOT/.env"
 else
   echo "✔ .env уже существует — использую его"
 fi
@@ -46,8 +48,9 @@ done
 [ -z "$ok" ] && { echo "❌ API не поднялся. Логи: docker compose logs api"; exit 1; }
 
 # ---------- seed (однократно) ----------
+# В проде создаётся только админ; демо-ученики — только с SEED_DEMO=1.
 if [ ! -f .seeded ]; then
-  echo "▶ Загружаю демо-данные (seed)"
+  echo "▶ Создаю администратора и настройки (seed)"
   docker compose run --rm api npm run seed && touch .seeded
 else
   echo "✔ seed уже выполнялся (.seeded есть) — пропускаю"
@@ -83,9 +86,12 @@ server {
         proxy_http_version 1.1;
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-For \$remote_addr;
         proxy_set_header X-Forwarded-Proto \$scheme;
     }
+    add_header X-Content-Type-Options nosniff always;
+    add_header Referrer-Policy strict-origin-when-cross-origin always;
+    add_header X-Frame-Options SAMEORIGIN always;
     client_max_body_size 12m;
     gzip on;
     gzip_types text/css application/javascript application/json image/svg+xml;
