@@ -10,6 +10,7 @@ import { Toggle, Select } from '../../ui/kit.jsx';
 import { sfx } from '../../audio/sfx.js';
 import AISettings from './AISettings.jsx';
 import About from './About.jsx';
+import NaturalVoices from './NaturalVoices.jsx';
 
 const TEST = { ru: 'Привет! Это проверка звука.', en: 'Hi! This is a sound check.' };
 const TEST_LABEL = { ru: 'Проверить голос', en: 'Test voice' };
@@ -35,6 +36,7 @@ export default function Settings() {
         {prefs.musicOn && <><Select value={prefs.musicStyle} onChange={(v) => setPref('musicStyle', v)} options={music.styles.map((s) => ({ value: s, label: t('music.' + s) }))} /><div><div className="label mb-1">{t('settings.volume')}</div><input type="range" min="0" max="1" step="0.05" value={prefs.musicVol} onChange={(e) => setPref('musicVol', Number(e.target.value))} className="w-full accent-[rgb(var(--c-primary))]" /></div></>}
         <Toggle checked={prefs.sfxOn} onChange={(v) => setPref('sfxOn', v)} label={'✨ ' + t('settings.sfx')} />
         <Toggle checked={prefs.voiceOn} onChange={(v) => setPref('voiceOn', v)} label={'🗣 ' + t('settings.voice')} />
+        <NaturalVoices teacher={teacher} locale={locale} />
         <button className="btn-ghost !py-2 text-sm" onClick={testVoice}>▶️ {TEST_LABEL[locale] || TEST_LABEL.en}</button>
       </div>
       <div className="card p-5 flex items-center gap-4">
