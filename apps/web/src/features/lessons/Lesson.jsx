@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp, useT, useLocale } from '../../core/store.js';
 import { api } from '../../core/api.js';
@@ -31,8 +31,13 @@ export default function Lesson() {
   const [reward, setReward] = useState(null);
   const [hasMaterials, setHasMaterials] = useState(false);
   const streak = useRef(0);
+  const finishing = useRef(false);
 
-  useMemo(() => { api.listMaterials?.().then((m) => setHasMaterials(!!m?.length)).catch(() => {}); }, []);
+  useEffect(() => {
+    let alive = true;
+    api.listMaterials?.().then((m) => { if (alive) setHasMaterials(!!m?.length); }).catch(() => {});
+    return () => { alive = false; };
+  }, []);
   // e2e hook: #/lesson?auto=1 starts a lesson immediately (used by automated checks)
   useEffect(() => { if (window.location.hash.includes('auto=1')) start(); }, []); // eslint-disable-line
 
@@ -43,6 +48,7 @@ export default function Lesson() {
     const settings = await api.getSettings().catch(() => ({}));
     setTasks(generateLesson({ level: cfg.level, topic: cfg.topic, count: cfg.count, locale, settings, materialTasks }));
     setIdx(0); setResults([]); setFeedback(null); streak.current = 0;
+    finishing.current = false;
     track('lesson_start', { level: cfg.level, topic: cfg.topic });
     setPhase('run');
   };
@@ -73,6 +79,8 @@ export default function Lesson() {
     sfx.click();
     setFeedback(null);
     if (idx + 1 < tasks.length) { setIdx(idx + 1); return; }
+    if (finishing.current) return; // a double tap must not pay the lesson twice
+    finishing.current = true;
     const correct = results.filter((r) => r.correct).length;
     const xp = correct * 10, coins = 15 + correct * 2;
     const u = await api.earn({ xp, coins }).catch(() => null);
