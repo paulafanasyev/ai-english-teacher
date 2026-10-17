@@ -44,8 +44,13 @@ export async function printExtract(root) {
 // Сверка: какие строки ФОП (действующая редакция) отсутствуют в результатах корпуса ЕДСОО, и наоборот.
 const norm = s => String(s).replace(/ \[рис\.\]/g, '').toLowerCase().replace(/ё/g, 'е').replace(/[^a-zа-я0-9]+/g, ' ').trim();
 export async function diffExtract(root) {
-  const { loadChinese } = await import('./frp-chinese-plugin.js');
-  const { programs } = await loadChinese({ root });
+  // Пул: все программы из src/data/fop/*.json (массивы {id, results}) + сгенерированные плагином китайского.
+  const programs = [];
+  const dir = path.join(root, 'src/data/fop');
+  for (const f of fs.readdirSync(dir).filter(f => f.endsWith('.json'))) {
+    try { const a = JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8')); if (Array.isArray(a)) for (const q of a) if (q && q.id && Array.isArray(q.results)) programs.push(q); } catch {}
+  }
+  try { const { loadChinese } = await import('./frp-chinese-plugin.js'); programs.push(...(await loadChinese({ root })).programs); } catch {}
   const esc = s => s.replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A');
   const blocks = [];
   for (const x of await collect(root)) {
@@ -112,8 +117,8 @@ export async function fpuExtract(jobs) {
     if (!indexes.has(doc)) {
       const index = await get(`https://www.consultant.ru/document/cons_doc_${doc}/`);
       const links = new Map();
-      for (const m of index.matchAll(new RegExp(`\\[(\\d+(?:\\.\\d+)+)\\.?\\s([^\\]]*)\\]\\((https:\\/\\/www\\.consultant\\.ru\\/document\\/cons_doc_${doc}\\/[0-9a-f]+\\/)\\)`, 'g')))
-        if (!links.has(m[1])) links.set(m[1], { url: m[3], name: m[2].slice(0, 40) });
+      for (const m of index.matchAll(new RegExp(`\\[(\\d+(?:\\.\\d+)*)\\.?\\s([^\\]]*)\\]\\((https:\\/\\/www\\.consultant\\.ru\\/document\\/cons_doc_${doc}\\/[0-9a-f]+\\/)\\)`, 'g')))
+        if (!links.has(m[1])) links.set(m[1], { url: m[3], name: m[2] });
       indexes.set(doc, links);
     }
     return indexes.get(doc);
@@ -121,7 +126,7 @@ export async function fpuExtract(jobs) {
   const blocks = [];
   for (const job of jobs) {
     const links = await linksOf(job.doc || FPU_DOC);
-    if (job.list) { blocks.push(`#${job.doc} links=${links.size}\n` + [...links].map(([k, v]) => `${k} ${v.name} ${v.url.slice(-41, -31)}`).join('\n')); continue; }
+    if (job.list) { blocks.push(`#${job.doc} links=${links.size}\n` + [...links].filter(([, v]) => !job.grep || new RegExp(job.grep, 'i').test(v.name)).map(([k, v]) => `${k} ${v.name.slice(0, job.grep ? 110 : 40)} ${job.full ? v.url.slice(-41, -1) : v.url.slice(-41, -31)}`).join('\n')); continue; }
     const url = job.url || (links.get(job.section) || {}).url;
     if (!url) { blocks.push(`#${job.section} NO LINK`); continue; }
     if (job.urlOnly) { blocks.push(`#${job.section} ${url}`); continue; }
