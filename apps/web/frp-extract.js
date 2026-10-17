@@ -15,7 +15,8 @@ async function collect(root) {
         cache.set(job.url, await res.text());
       }
       const paras = cache.get(job.url).split('\n').map(x => x.replace(/\[\]\([^)]*\)/g, '').replace(/\s+/g, ' ').trim()).filter(Boolean);
-      const head = n => new RegExp(`к\\s+концу\\s+(?:обучения\\s+)?во?\\s+${n}\\s+класс`, 'i');
+      const ORD = ['', 'перв', 'втор', 'трет', 'четв', 'пят', 'шест', 'седьм', 'восьм', 'девят', 'десят', 'одиннадцат'];
+      const head = n => new RegExp(`к\\s+концу\\s+(?:обучения\\s+)?во?\\s+(?:${n}|(?:${n === '\\d+' ? ORD.slice(1).join('|') : ORD[n] || n})[а-я]*)\\s+класс`, 'i');
       const start = paras.findIndex(x => head(job.grade).test(x));
       const end = start < 0 ? -1 : paras.slice(start + 1).findIndex(x => head('\\d+').test(x) || /^\d+\.\d+\.?\s/.test(x) || /^Таблица \d/.test(x));
       const body = start < 0 ? [] : paras.slice(start, end < 0 ? paras.length : start + 1 + end);
@@ -42,6 +43,13 @@ export async function printExtract(root) {
 }
 
 // Сверка: какие строки ФОП (действующая редакция) отсутствуют в результатах корпуса ЕДСОО, и наоборот.
+// Общий счётчик аннотаций на шаг: первые 8 — notice, следующие 10 — warning.
+let EMITTED = 0;
+function emit(prefix, text) {
+  const esc = s => s.replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A');
+  for (let i = 0; i < text.length && EMITTED < 18; i += 1900, EMITTED++)
+    console.log(`::${EMITTED < 8 ? 'notice' : 'warning'} title=${prefix}${EMITTED}::${esc(text.slice(i, i + 1900))}`);
+}
 const norm = s => String(s).replace(/ \[рис\.\]/g, '').toLowerCase().replace(/ё/g, 'е').replace(/[^a-zа-я0-9]+/g, ' ').trim();
 export async function diffExtract(root) {
   // Пул: все программы из src/data/fop/*.json (массивы {id, results}) + сгенерированные плагином китайского.
@@ -51,7 +59,6 @@ export async function diffExtract(root) {
     try { const a = JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8')); if (Array.isArray(a)) for (const q of a) if (q && q.id && Array.isArray(q.results)) programs.push(q); } catch {}
   }
   try { const { loadChinese } = await import('./frp-chinese-plugin.js'); programs.push(...(await loadChinese({ root })).programs); } catch {}
-  const esc = s => s.replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A');
   const blocks = [];
   for (const x of await collect(root)) {
     const p = programs.find(q => q.id === x.id);
@@ -67,11 +74,13 @@ export async function diffExtract(root) {
     });
     const extra = pool.filter(c => norm(c).length > 20 && !fopHay.includes(` ${norm(c)} `));
     if (!fop.length) { blocks.push(`#${x.id} fop=0 paras=${x.paras}${x.error ? ' ERR ' + x.error : ''}\nPROBE:\n${(x.probe || []).join('\n')}`); continue; }
-    blocks.push(`#${x.id} fop=${fop.length} corpus=${pool.length} miss=${miss.length} extra=${extra.length}${x.error ? ' ERR ' + x.error : ''}\n${miss.join('\n')}\nEXTRA:\n${extra.slice(0, 5).join('\n')}`);
+    // Компактно: при расхождениях печатаем все строки ФОП по порядку, «*» — нет в корпусе; затем номера лишних строк корпуса.
+    const missSet = new Set(fop.filter(l => !hay.includes(` ${norm(l)} `)));
+    const body = missSet.size ? fop.map((l, i) => `${missSet.has(l) ? '*' : ' '}${i + 1}|${l}`).join('\n') : '';
+    const ex = extra.map(c => pool.indexOf(c) + 1).join(',');
+    blocks.push(`#${x.id} fop=${fop.length} corpus=${pool.length} miss=${miss.length} extra=${extra.length}${ex ? ' [' + ex + ']' : ''}${x.error ? ' ERR ' + x.error : ''}${body ? '\n' + body : ''}`);
   }
-  const text = blocks.join('\n');
-  for (let i = 0, n = 0; i < text.length && n < 18; i += 1900, n++)
-    console.log(`::${n < 8 ? 'notice' : 'warning'} title=d${n}::${esc(text.slice(i, i + 1900))}`);
+  emit('d', blocks.join('\n'));
 }
 
 // ФПУ (приказ № 436): по номеру раздела находим страницу КонсультантПлюс и печатаем строки таблиц.
@@ -165,10 +174,7 @@ export async function extractJobs(root) {
   const jobs = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')) : [];
   const fpu = jobs.filter(j => j.type === 'fpu');
   if (fpu.length) {
-    const esc = s => s.replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A');
-    const text = await fpuExtract(fpu);
-    for (let i = 0, n = 0; i < text.length && n < 18; i += 1900, n++)
-      console.log(`::${n < 8 ? 'notice' : 'warning'} title=f${n}::${esc(text.slice(i, i + 1900))}`);
+    emit('f', await fpuExtract(fpu));
   }
   if (jobs.some(j => j.type !== 'fpu')) await diffExtract(root);
   return [];
