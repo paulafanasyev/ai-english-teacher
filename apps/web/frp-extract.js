@@ -24,7 +24,7 @@ async function collect(root) {
       const lines = [];
       // Номера подпунктов ФОП (110.8.7.2.) убираем: в ФРП их нет.
       const NOTE = /^\((?:в ред\.|см\. текст|введен|абзац|пп?\.\s|подпункт)|consultant\.ru|^<\d+>/i;
-      for (const x0 of body) { const x = x0.replace(/^\d+(?:\.\d+)+\.?\s*/, '').replace(/Image \d+: Рисунок \d+/g, 'ё'); if (NOTE.test(x)) continue; if (IMG.test(x)) { if (lines.length && !lines[lines.length - 1].endsWith('[рис.]')) lines[lines.length - 1] += ' [рис.]'; } else lines.push(x); }
+      for (const x0 of body) { const x = x0.replace(/^\d+(?:\.\d+)+\.?\s*/, '').replace(/!?\[Image \d+: Рисунок \d+\]\([^)]*\)/g, 'ё').replace(/Image \d+: Рисунок \d+/g, 'ё').replace(/\[([^\]]+)\]\([^)]*\)/g, '$1'); if (NOTE.test(x)) continue; if (IMG.test(x)) { if (lines.length && !lines[lines.length - 1].endsWith('[рис.]')) lines[lines.length - 1] += ' [рис.]'; } else lines.push(x); }
       const probe = start < 0 ? paras.filter(x => /класс|^\d+(?:\.\d+)+/.test(x)).slice(0, 12).map(x => x.slice(0, 120)) : [];
       out.push({ id: job.id, grade: job.grade, skip: job.skip || 0, out: job.out, paras: paras.length, lines, probe });
     } catch (e) { out.push({ id: job.id, grade: job.grade, skip: 0, lines: [], error: String(e.message || e) }); }
