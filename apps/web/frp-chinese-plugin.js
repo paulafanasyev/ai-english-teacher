@@ -141,7 +141,15 @@ export async function loadChinese({ cacheDir = path.resolve('node_modules/.cache
     const ctl = JSON.parse(fs.readFileSync(path.join(root, 'src/data/fop/chinese_control.json'), 'utf8'));
     chineseControl = Object.fromEntries(Object.entries(ctl).map(([id, c]) => {
       const p = programs.find(x => x.id === id);
-      const { hit, total, misses } = controlScore(p ? [...p.results, ...p.content] : [], c.lines || []);
+      const pool = p ? [...p.results, ...p.content] : [];
+      const { hit, total } = controlScore(pool, c.lines || []);
+      const hay = ` ${norm(pool.join(' '))} `;
+      const misses = (c.lines || []).filter(x => norm(x).length > 20 && !hay.includes(` ${norm(x)} `)).map(x => {
+        const w = new Set(norm(x).split(' '));
+        let best = '', score = -1;
+        for (const l of pool) { const sc = norm(l).split(' ').filter(t => w.has(t)).length; if (sc > score) { score = sc; best = l; } }
+        return { ours: x.slice(0, 500), corpus: String(best).slice(0, 500) };
+      });
       return [id, { hit, total, misses }];
     }));
   } catch (e) { errors.push(`chinese_control: ${e.message || e}`); }
