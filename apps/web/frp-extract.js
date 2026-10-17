@@ -17,11 +17,12 @@ async function collect(root) {
       const paras = cache.get(job.url).split('\n').map(x => x.replace(/\[\]\([^)]*\)/g, '').replace(/\s+/g, ' ').trim()).filter(Boolean);
       const head = n => new RegExp(`к\\s+концу\\s+(?:обучения\\s+)?во?\\s+${n}\\s+класс`, 'i');
       const start = paras.findIndex(x => head(job.grade).test(x));
-      const end = start < 0 ? -1 : paras.slice(start + 1).findIndex(x => head('\\d+').test(x) || /^\d+(?:\.\d+)+\.?\s/.test(x));
+      const end = start < 0 ? -1 : paras.slice(start + 1).findIndex(x => head('\\d+').test(x) || /^\d+\.\d+\.?\s/.test(x) || /^Таблица \d/.test(x));
       const body = start < 0 ? [] : paras.slice(start, end < 0 ? paras.length : start + 1 + end);
       // Иероглифы и примеры в КонсультантПлюс даны картинками: на их месте ставим маркер [рис.].
       const lines = [];
-      for (const x of body) { if (IMG.test(x)) { if (lines.length && !lines[lines.length - 1].endsWith('[рис.]')) lines[lines.length - 1] += ' [рис.]'; } else lines.push(x); }
+      // Номера подпунктов ФОП (110.8.7.2.) убираем: в ФРП их нет.
+      for (const x0 of body) { const x = x0.replace(/^\d+(?:\.\d+)+\.?\s*/, ''); if (IMG.test(x)) { if (lines.length && !lines[lines.length - 1].endsWith('[рис.]')) lines[lines.length - 1] += ' [рис.]'; } else lines.push(x); }
       const probe = start < 0 ? paras.filter(x => /класс|^\d+(?:\.\d+)+/.test(x)).slice(0, 12).map(x => x.slice(0, 120)) : [];
       out.push({ id: job.id, grade: job.grade, skip: job.skip || 0, paras: paras.length, lines, probe });
     } catch (e) { out.push({ id: job.id, grade: job.grade, skip: 0, lines: [], error: String(e.message || e) }); }
