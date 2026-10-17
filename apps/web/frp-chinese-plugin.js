@@ -135,7 +135,17 @@ export async function loadChinese({ cacheDir = path.resolve('node_modules/.cache
       if (r.length) extraResults[job.id] = r; else errors.push(`${job.file}: нет результатов ${job.grade} класса`);
     }
   } catch (e) { errors.push(String(e.message || e)); }
-  return { programs, errors, extraResults, control };
+  // Сверка китайского с действующей редакцией ФОП (ред. от 10.11.2025): дословные фрагменты лежат в chinese_control.json.
+  let chineseControl = null;
+  try {
+    const ctl = JSON.parse(fs.readFileSync(path.join(root, 'src/data/fop/chinese_control.json'), 'utf8'));
+    chineseControl = Object.fromEntries(Object.entries(ctl).map(([id, c]) => {
+      const p = programs.find(x => x.id === id);
+      const { hit, total, misses } = controlScore(p ? [...p.results, ...p.content] : [], c.lines || []);
+      return [id, { hit, total, misses }];
+    }));
+  } catch (e) { errors.push(`chinese_control: ${e.message || e}`); }
+  return { programs, errors, extraResults, control, chineseControl };
 }
 
 export default function chineseFrp() {
@@ -148,10 +158,10 @@ export default function chineseFrp() {
     async load(id) {
       if (id !== '\0' + VID) return null;
       if (!mod) {
-        const { programs, errors, extraResults, control } = await loadChinese();
+        const { programs, errors, extraResults, control, chineseControl } = await loadChinese();
         console.log(`[chinese-frp] программ: ${programs.length}; доп. результаты: ${Object.keys(extraResults).join(', ')}; контроль: ${control ? `${control.hit}/${control.total}` : 'нет'}`);
         report = { programs: programs.map(p => ({ id: p.id, hours: p.hours_per_year, topics: p.sections.reduce((n, s) => n + s.topics.length, 0), content: p.content.length, results: p.results.length })),
-          extraResults: Object.fromEntries(Object.entries(extraResults).map(([k, v]) => [k, v.length])), control, errors };
+          extraResults: Object.fromEntries(Object.entries(extraResults).map(([k, v]) => [k, v.length])), control: control && { hit: control.hit, total: control.total }, chineseControl, errors };
         // В GitHub Actions отчёт выводится аннотацией (видна в API проверок без доступа к логам).
         if (process.env.GITHUB_ACTIONS === 'true') console.log(`::notice title=frp-report::${JSON.stringify(report).replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A')}`);
         if (process.env.GITHUB_ACTIONS === 'true' && (programs.length !== 10 || Object.keys(extraResults).length !== EXTRA_RESULTS.length))
