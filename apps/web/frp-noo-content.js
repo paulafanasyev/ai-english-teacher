@@ -2,7 +2,8 @@
 // При сборке страницы содержания по классам загружаются с consultant.ru и разбираются на разделы и абзацы.
 // Слова не меняются: только кавычки «», тире, склейка перечней и удаление сносок/примечаний КонсультантПлюс.
 // Если источник недоступен, сборка не падает: остаётся содержание из корпуса. В GitHub Actions сборка падает при неполноте.
-// Музыка в ФОП изложена модулями без деления по классам и здесь не обрабатывается.
+// Музыка: в ФОП (п. 166.6) содержание дано модулями без деления по классам; распределение тем по классам берём из корпуса
+// (ФРП ЕДСОО 2025), а текст каждой темы заменяем текстом «Содержание: …» соответствующего подпункта ФОП.
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -30,7 +31,8 @@ export const PAGES = [
   ['Физическая культура', 1, '168.3.2', 'c0837412925e5cee690e9ad933344c7a875d02c7'], ['Физическая культура', 2, '168.3.3', 'c0837412925e5cee690e9ad933344c7a875d02c7'],
   ['Физическая культура', 3, '168.3.4', 'c0837412925e5cee690e9ad933344c7a875d02c7'], ['Физическая культура', 4, '168.3.5', 'c0837412925e5cee690e9ad933344c7a875d02c7'],
 ];
-export const EXPECTED = PAGES.length + 5; // ОРКСЭ: 6 модулей на одной странице
+export const MUSIC = ['166.6', 'fa93888f44e4134baf8e18f48fbda2c043913d4b'];
+export const EXPECTED = PAGES.length + 5 + 4; // ОРКСЭ: 6 модулей на одной странице; музыка 1–4
 
 export function htmlLines(html) {
   return html.replace(/<(script|style)[\s\S]*?<\/\1>/gi, '').replace(/<img[^>]*>/gi, 'ё').replace(/<\/?(?:p|br|div|h\d|li|tr)\b[^>]*>/gi, '\n').replace(/<[^>]+>/g, '')
@@ -115,6 +117,34 @@ export function parseOrkse(lines) {
   return out;
 }
 
+// Музыка: подпункт 166.6.k.j «Название.» → текст после «Содержание:» (до «Виды деятельности обучающихся»).
+const key = s => String(s).toLowerCase().replace(/ё/g, 'е').replace(/[^a-zа-я0-9]+/g, ' ').trim();
+export function parseMusic(lines) {
+  const out = {};
+  let cur = null, on = false;
+  const a = lines.findIndex(x => x.startsWith('166.6.1.'));
+  for (const x of lines.slice(Math.max(0, a))) {
+    if (/^Открыть полный текст/.test(x)) break;
+    if (NOTE.test(x)) continue;
+    const m = x.match(NUM);
+    if (m && !m[1].startsWith('166.6.')) break;
+    if (m) { on = false; cur = m[1].split('.').length === 4 ? { title: typo(m[2]).replace(/\.$/, ''), text: [] } : null; if (cur) out[key(cur.title)] = cur; continue; }
+    if (!cur) continue;
+    if (/^Содержание:/.test(x)) { on = true; cur.text.push(typo(x.replace(/^Содержание:\s*/, ''))); continue; }
+    if (/^Виды деятельности/.test(x)) { on = false; continue; }
+    if (on) cur.text.push(typo(x));
+  }
+  return out;
+}
+export function musicSections(corpus, fop, miss) {
+  return corpus.sections.map(s => ({ title: s.title, topics: s.topics.map(t => {
+    const name = String(t).split(/:\s/)[0];
+    const f = fop[key(name)];
+    if (!f || !f.text.length) { miss.push(`${corpus.grade}: ${name}`); return t; }
+    return `${f.title}: ${f.text.join(' ')}`;
+  }) }));
+}
+
 async function page(hash, cacheDir) {
   const f = path.join(cacheDir, `${hash}.html`);
   if (fs.existsSync(f)) return fs.readFileSync(f, 'utf8');
@@ -136,6 +166,13 @@ export async function loadNooContent({ cacheDir = path.resolve('node_modules/.ca
       if (s.length) map[`${subject}|${grade}`] = s; else errors.push(`${sec}: разделы не найдены`);
     } catch (e) { errors.push(`${sec}: ${e.message || e}`); }
   }
+  try {
+    const fop = parseMusic(htmlLines(await page(MUSIC[1], cacheDir)));
+    const corpus = JSON.parse(fs.readFileSync(path.resolve('src/data/fop/music_noo.json'), 'utf8'));
+    const miss = [];
+    for (const p of corpus.filter(q => /^music-[1-4]$/.test(q.id))) map[`Музыка|${p.grade}`] = musicSections(p, fop, miss);
+    if (miss.length) errors.push(`музыка, нет в ФОП: ${miss.join('; ')}`);
+  } catch (e) { errors.push(`166.6: ${e.message || e}`); }
   return { map, errors };
 }
 
@@ -153,8 +190,8 @@ export default function nooContent() {
         if (process.env.GITHUB_ACTIONS === 'true') {
           const esc = s => s.replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A');
           const sum = Object.entries(map).map(([k, v]) => `#${k} s=${v.length} t=${v.reduce((a, s) => a + s.topics.length, 0)}\n` + v.map(s => `${s.title.slice(0, 60)} [${s.topics.length}]`).join('\n')).join('\n');
-          const dump = (map['Русский язык|2'] || []).map(s => `## ${s.title}\n${s.topics.join('\n')}`).join('\n');
-          const text = `n=${n}/${EXPECTED} errors=${errors.join(' | ')}\n${sum}\n=== Русский язык 2\n${dump}`;
+          const dump = (map['Музыка|3'] || []).map(s => `## ${s.title}\n${s.topics.join('\n')}`).join('\n');
+          const text = `n=${n}/${EXPECTED} errors=${errors.join(' | ')}\n${sum}\n=== Музыка 3\n${dump}`;
           for (let i = 0, k = 0; i < text.length && k < 18; i += 1900, k++) console.log(`::${k < 8 ? 'notice' : 'warning'} title=c${k}::${esc(text.slice(i, i + 1900))}`);
           if (n < EXPECTED) this.error(`Содержание НОО из ФОП: ${n} из ${EXPECTED}. ${errors.join(' | ')}`);
         }
