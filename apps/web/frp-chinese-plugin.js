@@ -1,14 +1,15 @@
 // ФРП «Китайский язык» (ЕДСОО, ред. 2025): НОО 2–4, второй иностранный ООО 5–9 и СОО 10–11.
 // Тексты берутся при сборке из машинного разбора официальных PDF edsoo.ru
-// (github.com/Bormotoon/program-constructor, src/data/frp) по зафиксированному коммиту,
-// переносятся без изменений и кэшируются. Если источник недоступен, сборка не падает:
-// китайский остаётся в разделе «официальные источники».
+// (github.com/Bormotoon/program-constructor, src/data/frp) по зафиксированному коммиту и кэшируются.
+// Слова не меняются: убираются только колонтитулы/номера страниц и восстанавливаются потерянные дефисы.
+// Если источник недоступен, сборка не падает: китайский остаётся в разделе «официальные источники».
 import fs from 'node:fs';
 import path from 'node:path';
 
 const SRC_COMMIT = '0efda7cf9967ec37abae7b70610d74bd0a46cb50';
 const BASE = `https://raw.githubusercontent.com/Bormotoon/program-constructor/${SRC_COMMIT}/src/data/frp/`;
 const VID = 'virtual:chinese-frp';
+const CHECK = 'Текст перенесён из машинного разбора официального PDF ЕДСОО: часы и выборочные фрагменты сверены с PDF, построчная сверка продолжается. Для документов школы используйте официальный PDF.';
 const OPT = 'Второй иностранный язык изучается по решению образовательной организации при наличии условий; минимальное число часов ФОП не устанавливает. Рекомендовано 2 ч в неделю.';
 export const JOBS = [
   { file: 'inostrannyj-kitajskij-yazyk-noo.json', level: 'НОО', grades: [2, 3, 4], id: 'chinese-noo-', subject: 'Иностранный (китайский) язык', hint: 'kitajskij',
@@ -22,11 +23,23 @@ export const JOBS = [
     doc: 'Федеральная рабочая программа среднего общего образования «Второй иностранный (китайский) язык» (базовый уровень, для 10–11 классов), ЕДСОО, ред. 2025' },
 ];
 
-const clean = s => String(s ?? '').replace(/\s+/g, ' ').trim();
+// При извлечении текста из PDF теряются дефисы в составных словах; восстанавливаем только известные случаи.
+const HYPHENS = [['духовнонравствен', 'духовно-нравствен'], ['коммуникативнокогнитив', 'коммуникативно-когнитив'], ['социальнотрудов', 'социально-трудов'],
+  ['лексикограмматическ', 'лексико-грамматическ'], ['покитайски', 'по-китайски'], ['порусски', 'по-русски'], ['репликклише', 'реплик-клише'],
+  ['утвердительноотрицательн', 'утвердительно-отрицательн'], ['видовременн', 'видо-временн'], ['научнопопулярн', 'научно-популярн'],
+  ['учебнопознавательн', 'учебно-познавательн'], ['информационнокоммуникацион', 'информационно-коммуникацион'], ['историкокультурн', 'историко-культурн'],
+  ['культурноисторическ', 'культурно-историческ'], ['художественноэстетическ', 'художественно-эстетическ'], ['ценностноориентацион', 'ценностно-ориентацион'],
+  ['социальнобытов', 'социально-бытов'], ['социальнокультурн', 'социально-культурн'], ['учебноисследовательск', 'учебно-исследовательск'],
+  ['проектноисследовательск', 'проектно-исследовательск'], ['эмоциональноценностн', 'эмоционально-ценностн'], ['причинноследственн', 'причинно-следственн'],
+  ['общественнополезн', 'общественно-полезн']];
+const fixHyphens = s => HYPHENS.reduce((t, [a, b]) => t.replace(new RegExp(a, 'gi'), m => (m[0] === m[0].toUpperCase() ? b[0].toUpperCase() + b.slice(1) : b)), s);
+// Остатки колонтитулов и номера страниц из PDF.
+const JUNK = /^(?:\d+[–-]\d+\s+классы(?:\s*\(базовый уровень\))?|Федеральная рабочая программа\s*\|.*|\d{1,3})$/;
+const clean = s => fixHyphens(String(s ?? '').replace(/\s+/g, ' ').trim());
 export function lines(v) {
   if (v == null) return [];
   if (Array.isArray(v)) return v.flatMap(x => lines(x && typeof x === 'object' ? (x.text ?? x.content ?? x.name ?? '') : x));
-  return String(v).replace(/\r/g, '').split('\n').map(s => s.trim()).filter(Boolean)
+  return String(v).replace(/\r/g, '').split('\n').map(clean).filter(s => s && !JUNK.test(s))
     .flatMap(p => (p.length > 700 ? p.split(/(?<=;)\s+/).map(s => s.trim()).filter(Boolean) : [p]));
 }
 function topicText(t) {
@@ -51,7 +64,7 @@ export function build(job, data) {
     return { id: job.id + g, level: job.level, subject: job.subject, grade: g, optional: job.level !== 'НОО',
       hours_per_week: Math.round((hours / 34) * 100) / 100, hours_per_year: hours, sections, content, results,
       source_url: job.url, source_doc: job.doc, source_file: src, extraction: `github.com/Bormotoon/program-constructor@${SRC_COMMIT.slice(0, 7)}`,
-      ...(job.level !== 'НОО' ? { note: OPT } : {}) };
+      verification: 'machine_extracted_spot_checked', note: job.level !== 'НОО' ? `${OPT} ${CHECK}` : CHECK };
   });
 }
 
@@ -87,6 +100,7 @@ export default function chineseFrp() {
       if (!mod) {
         const { programs, errors } = await loadChinese();
         errors.forEach(e => this.warn(`ФРП «Китайский язык»: ${e}`));
+        console.log(`[chinese-frp] программ: ${programs.length} (${programs.map(p => p.id).join(', ')})`);
         mod = `export const errors=${JSON.stringify(errors)};\nexport default ${JSON.stringify(programs)};`;
       }
       return mod;
