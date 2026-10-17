@@ -1,11 +1,12 @@
 // ФРП из корпуса github.com/Bormotoon/program-constructor (машинный разбор официальных PDF ЕДСОО, ред. 2025),
 // по зафиксированному коммиту, при сборке, с кэшем:
 // 1) китайский язык: НОО 2–4, второй иностранный ООО 5–9 и СОО 10–11;
-// 2) недостающие предметные результаты (литература 11, обществознание 10), только если корпус прошёл контроль
-//    на уже сверенных вручную результатах литературы 10 класса.
+// 2) предметные результаты обществознания 10 класса (новая программа, текст приказа № 729).
+// Контроль: результаты литературы 10 класса корпуса сравниваются с нашими, сверенными по ФОП СОО ред. от 10.11.2025.
+// Итог контроля (7 из 13 совпали): литература в корпусе в редакции до изменений, поэтому литературу оттуда не берём.
 // Слова не меняются: убираются только колонтитулы/номера страниц и восстанавливаются потерянные дефисы.
 // Если источник недоступен, сборка не падает (данные просто не появятся).
-// Исключение: в GitHub Actions сборка падает, если не собраны все 10 программ по китайскому. Отчёт: frp-report.json в сборке.
+// Исключение: в GitHub Actions сборка падает, если не собраны все 10 программ по китайскому и результаты обществознания 10.
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -75,7 +76,6 @@ export function build(job, data) {
 // social-soo-10: новая программа (приказ № 729), действует в 10 классе с 01.09.2026.
 // social-soo-11 не берём: в 2026/27 11 класс учится по прежней программе, а корпус содержит новую.
 export const EXTRA_RESULTS = [
-  { file: 'literatura-soo-bazovyj.json', grade: 11, id: 'literature-soo-11' },
   { file: 'obschestvoznanie-soo-bazovyj.json', grade: 10, id: 'social-soo-10', hint: '729' },
 ];
 // Контроль качества корпуса: результаты литературы 10 класса уже сверены у нас вручную (ФОП СОО ред. от 10.11.2025).
@@ -127,8 +127,8 @@ export async function loadChinese({ cacheDir = path.resolve('node_modules/.cache
     const data = await load(CONTROL, cacheDir, localDir);
     const ours = JSON.parse(fs.readFileSync(path.join(root, CONTROL.local), 'utf8')).find(p => p.id === CONTROL.id)?.results || [];
     control = { ...controlScore(gradeResults(data.subjectResults, CONTROL.grade), ours), keys: Object.keys(data.subjectResults || {}) };
-    if (control.ratio < CONTROL.min) errors.push(`контроль корпуса: литература 10 совпала ${control.hit}/${control.total}`);
-    else for (const job of EXTRA_RESULTS) {
+    control.passed = control.ratio >= CONTROL.min;
+    for (const job of EXTRA_RESULTS) {
       const d = await load(job, cacheDir, localDir);
       if (job.hint && !String(d.source || '').includes(job.hint)) { errors.push(`${job.file}: неожиданный источник ${d.source}`); continue; }
       const r = gradeResults(d.subjectResults, job.grade);
@@ -154,8 +154,8 @@ export default function chineseFrp() {
           extraResults: Object.fromEntries(Object.entries(extraResults).map(([k, v]) => [k, v.length])), control, errors };
         // В GitHub Actions отчёт выводится аннотацией (видна в API проверок без доступа к логам).
         if (process.env.GITHUB_ACTIONS === 'true') console.log(`::notice title=frp-report::${JSON.stringify(report).replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A')}`);
-        if (process.env.GITHUB_ACTIONS === 'true' && programs.length !== 10)
-          this.error(`ФРП из корпуса: программ ${programs.length} из 10. ${errors.join(' | ')}`);
+        if (process.env.GITHUB_ACTIONS === 'true' && (programs.length !== 10 || Object.keys(extraResults).length !== EXTRA_RESULTS.length))
+          this.error(`ФРП из корпуса: программ ${programs.length} из 10, доп. результатов ${Object.keys(extraResults).length} из ${EXTRA_RESULTS.length}. ${errors.join(' | ')}`);
         errors.forEach(e => this.warn(`ФРП из корпуса: ${e}`));
         mod = `export const errors=${JSON.stringify(errors)};\nexport const extraResults=${JSON.stringify(extraResults)};\nexport const control=${JSON.stringify(control)};\nexport default ${JSON.stringify(programs)};`;
       }
