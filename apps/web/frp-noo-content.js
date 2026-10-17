@@ -41,10 +41,13 @@ const typo = s => s.replace(/<\d+>/g, '').replace(/"([^"]*)"/g, '«$1»').replac
 const NUM = /^(\d+(?:\.\d+)+)\.?\s+(.*)$/;
 const NOTE = /^(?:КонсультантПлюс: примечание|Нумерация подпунктов дана|\((?:в ред\.|введен|абзац|пп?\.\s|подпункт)|-{5,}|<\d+>)/;
 const oneTitle = t => t.length < 150 && !/:/.test(t) && !/[.!?»)]\s+[А-ЯЁA-Z«]/.test(t.replace(/\.$/, ''));
+const FIXNUM = { '157.6.2. ': ['157.6.1.2.', '157.6.2. Мир моих увлечений'] };
 const STOP = /^(?:Изучение|Освоение)\s|универсальн[а-я]+ учебн/;
 
 // Разбор одной части страницы: sec — пункт класса (например '20.7' или '168.3.3').
 export function parse(lines, sec, { lit = false } = {}) {
+  // В тексте КонсультантПлюс у 157.6.1.2 ошибочно стоит номер 157.6.2 (см. примечание КонсультантПлюс); номера не выводятся, нужны только для структуры.
+  lines = lines.map(x => (FIXNUM[x.slice(0, x.indexOf(' ') + 1)] && x.startsWith(FIXNUM[x.slice(0, x.indexOf(' ') + 1)][1]) ? FIXNUM[x.slice(0, x.indexOf(' ') + 1)][0] + x.slice(x.indexOf(' ')) : x));
   const a = lines.findIndex(x => x.startsWith(`${sec}.1.`) || x.startsWith(`${sec}.1 `));
   if (a < 0) return [];
   const d0 = sec.split('.').length;
@@ -78,7 +81,7 @@ export function parse(lines, sec, { lit = false } = {}) {
     const text = typo(it.text);
     if (lit && it.num) {
       if (it.depth === d0 + 1) {
-        const title = (text.match(/^(.+?)\.(?:\s|$)/) || [, text])[1];
+        const title = (text.match(/^(.+?)(?<![А-ЯЁA-Z])\.(?:\s|$)/) || [, text])[1];
         while (stack.length) stack.pop();
         stack.push({ num: it.num, depth: it.depth, title });
       }
