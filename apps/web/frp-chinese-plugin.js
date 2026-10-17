@@ -1,9 +1,11 @@
-// ФРП «Китайский язык» (ЕДСОО, ред. 2025): НОО 2–4, второй иностранный ООО 5–9 и СОО 10–11.
-// Тексты берутся при сборке из машинного разбора официальных PDF edsoo.ru
-// (github.com/Bormotoon/program-constructor, src/data/frp) по зафиксированному коммиту и кэшируются.
+// ФРП из корпуса github.com/Bormotoon/program-constructor (машинный разбор официальных PDF ЕДСОО, ред. 2025),
+// по зафиксированному коммиту, при сборке, с кэшем:
+// 1) китайский язык: НОО 2–4, второй иностранный ООО 5–9 и СОО 10–11;
+// 2) недостающие предметные результаты (литература 11, обществознание 10), только если корпус прошёл контроль
+//    на уже сверенных вручную результатах литературы 10 класса.
 // Слова не меняются: убираются только колонтитулы/номера страниц и восстанавливаются потерянные дефисы.
-// Если источник недоступен, сборка не падает: китайский остаётся в разделе «официальные источники».
-// Исключение: в GitHub Actions сборка падает, чтобы зелёный CI гарантировал все 10 программ.
+// Если источник недоступен, сборка не падает (данные просто не появятся).
+// Исключение: в GitHub Actions сборка падает, чтобы зелёный CI гарантировал все данные и пройденный контроль.
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -69,6 +71,23 @@ export function build(job, data) {
   });
 }
 
+// Предметные результаты, которых нет в собственных данных Svetlana, из того же корпуса ФРП.
+// social-soo-10: новая программа (приказ № 729), действует в 10 классе с 01.09.2026.
+// social-soo-11 не берём: в 2026/27 11 класс учится по прежней программе, а корпус содержит новую.
+export const EXTRA_RESULTS = [
+  { file: 'literatura-soo-bazovyj.json', grade: 11, id: 'literature-soo-11' },
+  { file: 'obschestvoznanie-soo-bazovyj.json', grade: 10, id: 'social-soo-10', hint: '729' },
+];
+// Контроль качества корпуса: результаты литературы 10 класса уже сверены у нас вручную (ФОП СОО ред. от 10.11.2025).
+const CONTROL = { file: 'literatura-soo-bazovyj.json', grade: 10, local: 'src/data/fop/literature_soo.json', id: 'literature-soo-10', min: 0.9 };
+const norm = s => String(s).toLowerCase().replace(/ё/g, 'е').replace(/[^a-zа-я0-9]+/g, ' ').trim();
+export function controlScore(corpusLines, ours) {
+  const hay = ` ${norm(corpusLines.join(' '))} `;
+  const items = ours.filter(x => norm(x).length > 20);
+  const hit = items.filter(x => hay.includes(` ${norm(x)} `)).length;
+  return { hit, total: items.length, ratio: items.length ? hit / items.length : 0 };
+}
+
 async function load(job, cacheDir, localDir) {
   if (localDir) return JSON.parse(fs.readFileSync(path.join(localDir, job.file), 'utf8'));
   const cached = path.join(cacheDir, `${SRC_COMMIT.slice(0, 7)}-${job.file}`);
@@ -82,13 +101,26 @@ async function load(job, cacheDir, localDir) {
   return data;
 }
 
-export async function loadChinese({ cacheDir = path.resolve('node_modules/.cache/frp-chinese'), localDir = process.env.FRP_CHINESE_DIR } = {}) {
-  const programs = [], errors = [];
+export async function loadChinese({ cacheDir = path.resolve('node_modules/.cache/frp-chinese'), localDir = process.env.FRP_CHINESE_DIR, root = process.cwd() } = {}) {
+  const programs = [], errors = [], extraResults = {};
+  let control = null;
   for (const job of JOBS) {
     try { programs.push(...build(job, await load(job, cacheDir, localDir))); }
     catch (e) { errors.push(String(e.message || e)); }
   }
-  return { programs, errors };
+  try {
+    const data = await load(CONTROL, cacheDir, localDir);
+    const ours = JSON.parse(fs.readFileSync(path.join(root, CONTROL.local), 'utf8')).find(p => p.id === CONTROL.id)?.results || [];
+    control = controlScore(lines(data.subjectResults?.[String(CONTROL.grade)]), ours);
+    if (control.ratio < CONTROL.min) errors.push(`контроль корпуса: литература 10 совпала ${control.hit}/${control.total}`);
+    else for (const job of EXTRA_RESULTS) {
+      const d = await load(job, cacheDir, localDir);
+      if (job.hint && !String(d.source || '').includes(job.hint)) { errors.push(`${job.file}: неожиданный источник ${d.source}`); continue; }
+      const r = lines(d.subjectResults?.[String(job.grade)]);
+      if (r.length) extraResults[job.id] = r; else errors.push(`${job.file}: нет результатов ${job.grade} класса`);
+    }
+  } catch (e) { errors.push(String(e.message || e)); }
+  return { programs, errors, extraResults, control };
 }
 
 export default function chineseFrp() {
@@ -99,12 +131,12 @@ export default function chineseFrp() {
     async load(id) {
       if (id !== '\0' + VID) return null;
       if (!mod) {
-        const { programs, errors } = await loadChinese();
-        console.log(`[chinese-frp] программ: ${programs.length} (${programs.map(p => p.id).join(', ')})`);
-        if (process.env.GITHUB_ACTIONS === 'true' && (errors.length || programs.length !== 10))
-          this.error(`ФРП «Китайский язык»: собрано ${programs.length} из 10. ${errors.join(' | ')}`);
-        errors.forEach(e => this.warn(`ФРП «Китайский язык»: ${e}`));
-        mod = `export const errors=${JSON.stringify(errors)};\nexport default ${JSON.stringify(programs)};`;
+        const { programs, errors, extraResults, control } = await loadChinese();
+        console.log(`[chinese-frp] программ: ${programs.length}; доп. результаты: ${Object.keys(extraResults).join(', ')}; контроль: ${control ? `${control.hit}/${control.total}` : 'нет'}`);
+        if (process.env.GITHUB_ACTIONS === 'true' && (errors.length || programs.length !== 10 || Object.keys(extraResults).length !== EXTRA_RESULTS.length))
+          this.error(`ФРП из корпуса: программ ${programs.length} из 10, доп. результатов ${Object.keys(extraResults).length} из ${EXTRA_RESULTS.length}. ${errors.join(' | ')}`);
+        errors.forEach(e => this.warn(`ФРП из корпуса: ${e}`));
+        mod = `export const errors=${JSON.stringify(errors)};\nexport const extraResults=${JSON.stringify(extraResults)};\nexport const control=${JSON.stringify(control)};\nexport default ${JSON.stringify(programs)};`;
       }
       return mod;
     },

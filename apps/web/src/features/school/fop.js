@@ -46,7 +46,7 @@ import biologySoo from '../../data/fop/biology_soo.json';
 import peSoo from '../../data/fop/pe_soo.json';
 import obzrSoo from '../../data/fop/obzr_soo.json';
 import chineseSources from '../../data/fop/chinese_sources.json';
-import chineseFrp from 'virtual:chinese-frp';
+import chineseFrp, { extraResults } from 'virtual:chinese-frp';
 import resRussian5 from '../../data/fop/russian_5_results.json';
 import resRussian6 from '../../data/fop/russian_6_results.json';
 import resRussian7 from '../../data/fop/russian_7_results.json';
@@ -58,7 +58,8 @@ import resTech from '../../data/fop/tech_ooo_results.json';
 import resPe from '../../data/fop/pe_ooo_results.json';
 import resObzr from '../../data/fop/obzr_ooo_results.json';
 
-const RESULTS={...resRussian5,...resRussian6,...resRussian7,...resRussian8,...resRussian9,...resArt,...resMusic,...resTech,...resPe,...resObzr};
+// extraResults: литература 11 и обществознание 10 (новая программа) из корпуса ФРП, см. frp-chinese-plugin.js.
+const RESULTS={...(extraResults||{}),...resRussian5,...resRussian6,...resRussian7,...resRussian8,...resRussian9,...resArt,...resMusic,...resTech,...resPe,...resObzr};
 const withResults=p=>p.results?.length?p:{...p,results:RESULTS[p.id]||RESULTS[p.id.replace(/-\d+$/,'')]||p.results||[]};
 // ФРП «История» 2025: Первая мировая война и 1917 г. изучаются в 10 классе (курс «История России. 1914–1945 гг.»), а не в 9.
 const CONTENT_FIXES={'history-9':t=>t.replace(/\s*Россия в Первой мировой войне и революционные события 1917 г\./,'')};
