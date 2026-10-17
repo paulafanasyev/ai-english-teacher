@@ -88,7 +88,7 @@ export async function fpuExtract(jobs) {
         .map(l => l.trim().replace(/^\||\|$/g, '').split('|').map(c => c.replace(/\[([^\]]*)\]\([^)]*\)/g, '$1').replace(/\s+/g, ' ').trim().slice(0, 140)))
         .filter(c => c.some(Boolean));
       const keep = rows.filter(c => !job.grades || c.some(x => job.grades.some(g => new RegExp(`^${g}(?:\\s*[-–]\\s*\\d+)?$`).test(x))) || !/^\d/.test(c[0] || ''));
-      blocks.push(`#${job.section} ${url.split('/').slice(-2, -1)[0].slice(0, 10)} rows=${rows.length} keep=${keep.length}\n` + keep.map(c => c.join(' | ')).join('\n'));
+      blocks.push(`#${job.section} ${url} rows=${rows.length} keep=${keep.length}\n` + (rows.length ? keep.map(c => c.join(' | ')).join('\n') : (() => { const k = Math.max(0, md.indexOf(job.section + '.', md.indexOf(job.section) + job.section.length)); return `len=${md.length} at=${k}\n` + md.slice(k, k + 3000); })()));
     } catch (e) { blocks.push(`#${job.section} ERR ${e.message || e}`); }
   }
   return blocks.join('\n');
