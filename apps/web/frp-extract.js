@@ -39,5 +39,32 @@ export async function printExtract(root) {
   }
 }
 
-// Плагин вызывает extractJobs и печатает результат сам; печатаем здесь частями и возвращаем пустой список.
-export async function extractJobs(root) { await printExtract(root); return []; }
+// Сверка: какие строки ФОП (действующая редакция) отсутствуют в результатах корпуса ЕДСОО, и наоборот.
+const norm = s => String(s).replace(/ \[рис\.\]/g, '').toLowerCase().replace(/ё/g, 'е').replace(/[^a-zа-я0-9]+/g, ' ').trim();
+export async function diffExtract(root) {
+  const { loadChinese } = await import('./frp-chinese-plugin.js');
+  const { programs } = await loadChinese({ root });
+  const esc = s => s.replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A');
+  const blocks = [];
+  for (const x of await collect(root)) {
+    const p = programs.find(q => q.id === x.id);
+    const pool = p ? p.results : [];
+    const hay = ` ${norm(pool.join(' '))} `;
+    const fop = x.lines.slice(1).filter(l => norm(l).length > 20);
+    const fopHay = ` ${norm(fop.join(' '))} `;
+    const miss = fop.map((l, i) => [i + 1, l]).filter(([, l]) => !hay.includes(` ${norm(l)} `)).map(([i, l]) => {
+      const w = new Set(norm(l).split(' '));
+      let best = '', sc = -1;
+      for (const c of pool) { const k = norm(c).split(' ').filter(t => w.has(t)).length; if (k > sc) { sc = k; best = c; } }
+      return `F${i}: ${l}\nC: ${best}`;
+    });
+    const extra = pool.filter(c => norm(c).length > 20 && !fopHay.includes(` ${norm(c)} `));
+    blocks.push(`#${x.id} fop=${fop.length} corpus=${pool.length} miss=${miss.length} extra=${extra.length}${x.error ? ' ERR ' + x.error : ''}\n${miss.join('\n')}\nEXTRA:\n${extra.join('\n')}`);
+  }
+  const text = blocks.join('\n');
+  for (let i = 0, n = 0; i < text.length && n < 18; i += 1900, n++)
+    console.log(`::${n < 8 ? 'notice' : 'warning'} title=d${n}::${esc(text.slice(i, i + 1900))}`);
+}
+
+// Плагин вызывает extractJobs и печатает результат сам; печатаем здесь сверку и возвращаем пустой список.
+export async function extractJobs(root) { await diffExtract(root); return []; }
