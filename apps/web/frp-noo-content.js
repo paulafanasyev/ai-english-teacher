@@ -136,10 +136,12 @@ export function parseMusic(lines) {
   }
   return out;
 }
+// Названия тем ФРП, отличающиеся от подпунктов ФОП: «Музыка в церкви» (ФРП) = 166.6.5.4 «Искусство Русской православной церкви».
+const ALIAS = { 'музыка в церкви': 'искусство русской православной церкви' };
 export function musicSections(corpus, fop, miss) {
   return corpus.sections.map(s => ({ title: s.title, topics: s.topics.map(t => {
     const name = String(t).split(/:\s/)[0];
-    const f = fop[key(name)];
+    const f = fop[key(name)] || fop[ALIAS[key(name)]];
     if (!f || !f.text.length) { miss.push(`${corpus.grade}: ${name}`); return t; }
     return `${f.title}: ${f.text.join(' ')}`;
   }) }));
