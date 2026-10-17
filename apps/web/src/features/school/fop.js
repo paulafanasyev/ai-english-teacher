@@ -63,8 +63,9 @@ import nooA from '../../data/fop/noo_results_a.json';
 import nooB from '../../data/fop/noo_results_b.json';
 import nooC from '../../data/fop/noo_results_c.json';
 import nooD from '../../data/fop/noo_results_d.json';
+import nooE from '../../data/fop/noo_results_e.json';
 import nooMusic from '../../data/fop/noo_music_results.json';
-const nooResults={...nooA,...nooB,...nooC,...nooD};
+const nooResults={...nooA,...nooB,...nooC,...nooD,...nooE};
 // Явные опечатки в тексте КонсультантПлюс (согласование, пропущенная скобка) исправлены по смыслу официального текста.
 [['pe-1','уроках физической культурой,','уроках физической культуры,'],['pe-2','перекатыванию;','перекатывании;'],['eng-4','литературных персонажей.','литературных персонажах.'],['eng-4','до 160 слов.','до 160 слов).'],['eng-2','Is it.?','Is it...?']].forEach(([id,a,b])=>{if(nooResults[id])nooResults[id]=nooResults[id].map(l=>l.replace(a,b));});
 // Музыка НОО: предметные результаты в ФОП даны по модулям (п. 166.9.3), а не по классам; берём общие результаты и модули, изучаемые в классе.
