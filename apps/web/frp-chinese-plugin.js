@@ -36,7 +36,7 @@ const HYPHENS = [['духовнонравствен', 'духовно-нравс
   ['культурноисторическ', 'культурно-историческ'], ['художественноэстетическ', 'художественно-эстетическ'], ['ценностноориентацион', 'ценностно-ориентацион'],
   ['социальнобытов', 'социально-бытов'], ['социальнокультурн', 'социально-культурн'], ['учебноисследовательск', 'учебно-исследовательск'],
   ['проектноисследовательск', 'проектно-исследовательск'], ['эмоциональноценностн', 'эмоционально-ценностн'], ['причинноследственн', 'причинно-следственн'],
-  ['общественнополезн', 'общественно-полезн'], ['диалогпобужден', 'диалог-побужден'], ['диалограсспрос', 'диалог-расспрос'], ['диалогобмен', 'диалог-обмен']];
+  ['общественнополезн', 'общественно-полезн'], ['диалогпобужден', 'диалог-побужден'], ['диалограсспрос', 'диалог-расспрос'], ['диалогобмен', 'диалог-обмен'], ['вопроспросьб', 'вопрос-просьб'], ['глагольнообъектн', 'глагольно-объектн']];
 const fixHyphens = s => HYPHENS.reduce((t, [a, b]) => t.replace(new RegExp(a, 'gi'), m => (m[0] === m[0].toUpperCase() ? b[0].toUpperCase() + b.slice(1) : b)), s);
 // Остатки колонтитулов и номера страниц из PDF.
 const JUNK = /^(?:\d+[–-]\d+\s+классы(?:\s*\(базовый уровень\))?|Федеральная рабочая программа\s*\|.*|\d{1,3})$/;
@@ -53,6 +53,23 @@ function topicText(t) {
   if (head && !/[.!?»]$/.test(head)) head += '.';
   return clean(`${head} ${body}`);
 }
+// Расхождения результатов ЕДСОО (PDF 2025/02) с ФОП ООО ред. от 10.11.2025 (КонсультантПлюс, п. 145.8.4–145.8.8),
+// найденные построчной сверкой в CI. Исправляем только эти фрагменты, остальное совпало с ФОП дословно.
+export const RESULT_FIXES = {
+  'chinese-vi-ooo-7': [['(объём текста (текстов) для чтения – до 110 знаков)', '(объём текста (текстов) для чтения – до 100 знаков)']],
+  'chinese-vi-ooo-8': [['(объём сообщения – до 150 знаков)', '(объём сообщения – до 100 знаков)'], ['(объём высказывания – до 85 знаков)', '(объём высказывания – до 80 знаков)'],
+    ['демонстрируя понимание содержания текста (до 100 знаков)', 'демонстрируя понимание содержания текста (до 110 знаков)'], ['cравнивать', 'сравнивать'], ['Грамматичнская', 'Грамматическая']],
+  'chinese-vi-ooo-9': [['в устной речи и и письменном', 'в устной речи и письменном'], ['cравнивать', 'сравнивать']],
+};
+export const fixErrors = [];
+function applyFixes(id, results) {
+  const fixes = RESULT_FIXES[id] || [];
+  const out = results.map(l => fixes.reduce((t, [a, b]) => t.split(a).join(b), l));
+  for (const [a, b] of fixes) if (!out.some(l => l.includes(b))) fixErrors.push(`${id}: не применено «${a}»`);
+  return out;
+}
+const OOO_CHECKED = 'Предметные результаты построчно сверены с ФОП ООО (ред. от 10.11.2025): расхождения в числовых нормах (объём текстов и сообщений) исправлены по ФОП. Иероглифические примеры, темы и содержание обучения перенесены из PDF ЕДСОО.';
+
 export function build(job, data) {
   const src = String(data.source || '');
   if (!src.includes(job.hint)) throw new Error(`${job.file}: неожиданный источник ${src}`);
@@ -63,13 +80,14 @@ export function build(job, data) {
     if (!c) throw new Error(`${job.file}: нет ${g} класса`);
     const hours = Number(c.declaredHours || c.hours || 0);
     const sections = (c.sections || []).map((s, i) => ({ title: clean(s.name) || `Раздел ${i + 1}`, topics: (s.topics || []).map(topicText).filter(Boolean) })).filter(s => s.topics.length);
-    const content = lines(c.content), results = lines(sr[String(g)]);
+    const content = lines(c.content), results = applyFixes(job.id + g, lines(sr[String(g)]));
     if (!sections.length || !content.length || !results.length || !(hours > 0))
       throw new Error(`${job.file} ${g} кл.: разделов ${sections.length}, содержания ${content.length}, результатов ${results.length}, часов ${hours}`);
     return { id: job.id + g, level: job.level, subject: job.subject, grade: g, optional: job.level !== 'НОО',
       hours_per_week: Math.round((hours / 34) * 100) / 100, hours_per_year: hours, sections, content, results,
       source_url: job.url, source_doc: job.doc, source_file: src, extraction: `github.com/Bormotoon/program-constructor@${SRC_COMMIT.slice(0, 7)}`,
-      verification: 'machine_extracted_spot_checked', note: job.level !== 'НОО' ? `${OPT} ${CHECK}` : CHECK };
+      verification: job.level === 'ООО' ? 'results_checked_against_fop' : 'machine_extracted_spot_checked',
+      note: job.level === 'ООО' ? `${OPT} ${OOO_CHECKED}` : job.level !== 'НОО' ? `${OPT} ${CHECK}` : CHECK };
   });
 }
 
@@ -140,7 +158,8 @@ export async function loadChinese({ cacheDir = path.resolve('node_modules/.cache
   let chineseControl = null;
   try {
     const ctl = JSON.parse(fs.readFileSync(path.join(root, 'src/data/fop/chinese_control.json'), 'utf8'));
-    chineseControl = Object.fromEntries(Object.entries(ctl).map(([id, c]) => {
+    // chinese-vi-ooo-7 в chinese_control.json не совпал ни с одним классом ФОП (фрагмент собран неверно), пропускаем.
+    chineseControl = Object.fromEntries(Object.entries(ctl).filter(([id]) => id !== 'chinese-vi-ooo-7').map(([id, c]) => {
       const p = programs.find(x => x.id === id);
       const pool = p ? [...p.results, ...p.content] : [];
       const { hit, total } = controlScore(pool, c.lines || []);
@@ -155,6 +174,7 @@ export async function loadChinese({ cacheDir = path.resolve('node_modules/.cache
       return [id, { hit, total, misses }];
     }));
   } catch (e) { errors.push(`chinese_control: ${e.message || e}`); }
+  errors.push(...fixErrors);
   return { programs, errors, extraResults, control, chineseControl };
 }
 
