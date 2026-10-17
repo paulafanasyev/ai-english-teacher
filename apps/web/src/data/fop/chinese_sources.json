@@ -1,0 +1,39 @@
+[
+  {
+    "id": "chinese-noo-2-4",
+    "level": "НОО",
+    "subject": "Иностранный (китайский) язык",
+    "grades": [2, 3, 4],
+    "hours_per_week": 2,
+    "hours_per_year": 68,
+    "source_url": "https://edsoo.ru/wp-content/uploads/2025/07/2025_noo_frp_kitajskij-yazyk_2-4.pdf",
+    "source_doc": "Федеральная рабочая программа начального общего образования «Иностранный (китайский) язык» (для 2–4 классов), Москва – 2025",
+    "content_status": "SOURCE_READY",
+    "content_complete": false
+  },
+  {
+    "id": "chinese-second-foreign-ooo-5-9",
+    "level": "ООО",
+    "subject": "Второй иностранный (китайский) язык",
+    "grades": [5, 6, 7, 8, 9],
+    "hours_per_week": 2,
+    "hours_per_year": 68,
+    "source_url": "https://edsoo.ru/wp-content/uploads/2025/02/frp-kit-yaz_vi_5-9_.pdf",
+    "source_doc": "Федеральная рабочая программа основного общего образования «Второй иностранный (китайский) язык» (для 5–9 классов), Москва – 2024",
+    "content_status": "SOURCE_READY",
+    "content_complete": false,
+    "note": "Второй иностранный язык включается образовательной организацией при наличии потребности и условий; в ФРП рекомендовано 2 часа в неделю."
+  },
+  {
+    "id": "chinese-second-foreign-soo-10-11",
+    "level": "СОО",
+    "subject": "Китайский язык. Второй иностранный язык",
+    "grades": [10, 11],
+    "hours_per_week": 2,
+    "hours_per_year": 68,
+    "source_url": "https://edsoo.ru/wp-content/uploads/2025/07/2025_soo_frp_vi_kit-yaz_10-11.pdf",
+    "source_doc": "Федеральная рабочая программа среднего общего образования «Китайский язык. Второй иностранный язык» (базовый уровень), Москва – 2025",
+    "content_status": "SOURCE_READY",
+    "content_complete": false
+  }
+]
