@@ -71,6 +71,22 @@ export async function diffExtract(root) {
 
 // ФПУ (приказ № 436): по номеру раздела находим страницу КонсультантПлюс и печатаем строки таблиц.
 // Задание: { type: 'fpu', section: '1.1.2.14', grades?: [5, 6] }.
+// Страница раздела у КонсультантПлюс: ячейки таблицы склеены в текст. Строка = «583.1.1.2.14.1.1.Наименование…Класс Приказ…».
+// Печатаем: порядковый номер ФПУ | код | наименование, авторы, издатель, класс | срок использования.
+export function fpuRows(md) {
+  const t = md.replace(/\[[^\]]*\]\([^)]*\)/g, '').replace(/\s*\n\s*/g, ' ');
+  const re = /(?:^|[^\d.])(\d{1,4})\.\s*([12]\.1\.[123]\.\d+\.\d+\.\d+)\.?/g;
+  const ms = [...t.matchAll(re)], seen = new Set(), out = [];
+  ms.forEach((m, i) => {
+    if (seen.has(m[2])) return; seen.add(m[2]);
+    const s = m.index + m[0].length, e = i + 1 < ms.length ? ms[i + 1].index + 1 : t.length;
+    let body = t.slice(s, e); const k = body.indexOf('Приказ'); const tail = k > 0 ? body.slice(k) : ''; if (k > 0) body = body.slice(0, k);
+    const until = (tail.match(/До 31 августа (\d{4})/) || [])[1] || '';
+    body = body.replace(/Акционерное общество "Издательство "Просвещение"/g, ' @Просвещение ').replace(/Общество с ограниченной ответственностью/g, 'ООО').replace(/\s+/g, ' ').trim();
+    out.push(`${m[1]}|${m[2]}|${body}|${until}`);
+  });
+  return out;
+}
 const FPU_INDEX = 'https://www.consultant.ru/document/cons_doc_LAW_540209/';
 export async function fpuExtract(jobs) {
   const get = async u => (await fetch(`https://r.jina.ai/${u}`, { signal: AbortSignal.timeout(90000) })).text();
@@ -84,11 +100,8 @@ export async function fpuExtract(jobs) {
     if (!url) { blocks.push(`#${job.section} NO LINK`); continue; }
     try {
       const md = await get(url);
-      const rows = md.split('\n').filter(l => l.trim().startsWith('|') && !/^\|\s*-{3}/.test(l.trim()))
-        .map(l => l.trim().replace(/^\||\|$/g, '').split('|').map(c => c.replace(/\[([^\]]*)\]\([^)]*\)/g, '$1').replace(/\s+/g, ' ').trim().slice(0, 140)))
-        .filter(c => c.some(Boolean));
-      const keep = rows.filter(c => !job.grades || c.some(x => job.grades.some(g => new RegExp(`^${g}(?:\\s*[-–]\\s*\\d+)?$`).test(x))) || !/^\d/.test(c[0] || ''));
-      blocks.push(`#${job.section} ${url} rows=${rows.length} keep=${keep.length}\n` + (rows.length ? keep.map(c => c.join(' | ')).join('\n') : (() => { const k = Math.max(0, md.indexOf(job.section + '.', md.indexOf(job.section) + job.section.length)); return `len=${md.length} at=${k}\n` + md.slice(k, k + 3000); })()));
+      const rows = fpuRows(md).filter(r => r.split('|')[1].startsWith(job.section + '.'));
+      blocks.push(`#${job.section} rows=${rows.length}\n` + (rows.length ? rows.join('\n') : `len=${md.length}\n` + md.slice(0, 1500)));
     } catch (e) { blocks.push(`#${job.section} ERR ${e.message || e}`); }
   }
   return blocks.join('\n');
