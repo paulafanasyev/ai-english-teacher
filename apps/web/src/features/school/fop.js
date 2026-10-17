@@ -63,11 +63,16 @@ import nooA from '../../data/fop/noo_results_a.json';
 import nooB from '../../data/fop/noo_results_b.json';
 import nooC from '../../data/fop/noo_results_c.json';
 import nooD from '../../data/fop/noo_results_d.json';
+import nooMusic from '../../data/fop/noo_music_results.json';
 const nooResults={...nooA,...nooB,...nooC,...nooD};
+// Явные опечатки в тексте КонсультантПлюс (согласование, пропущенная скобка) исправлены по смыслу официального текста.
+[['pe-1','уроках физической культурой,','уроках физической культуры,'],['pe-2','перекатыванию;','перекатывании;'],['eng-4','литературных персонажей.','литературных персонажах.'],['eng-4','до 160 слов.','до 160 слов).'],['eng-2','Is it.?','Is it...?']].forEach(([id,a,b])=>{if(nooResults[id])nooResults[id]=nooResults[id].map(l=>l.replace(a,b));});
+// Музыка НОО: предметные результаты в ФОП даны по модулям (п. 166.9.3), а не по классам; берём общие результаты и модули, изучаемые в классе.
+const musicResults=p=>[...nooMusic.general,...p.sections.map(s=>(s.title.match(/№ (\d+)/)||[])[1]).filter(n=>nooMusic.modules[n]).flatMap(n=>nooMusic.modules[n])];
 
 // extraResults: обществознание 10 (новая программа, приказ № 729) из корпуса ФРП, см. frp-chinese-plugin.js.
 const RESULTS={...(extraResults||{}),...resLiterature11,...resRussian5,...resRussian6,...resRussian7,...resRussian8,...resRussian9,...resArt,...resMusic,...resTech,...resPe,...resObzr};
-const withResults=p=>nooResults[p.id]?{...p,results:nooResults[p.id],source_doc:'ФОП НОО (приказ № 372, ред. от 10.11.2025)'}:p.results?.length?p:{...p,results:RESULTS[p.id]||RESULTS[p.id.replace(/-\d+$/,'')]||p.results||[]};
+const withResults=p=>/^music-[1-4]$/.test(p.id)?{...p,results:musicResults(p),source_doc:'ФОП НОО (приказ № 372, ред. от 10.11.2025)'}:nooResults[p.id]?{...p,results:nooResults[p.id],source_doc:'ФОП НОО (приказ № 372, ред. от 10.11.2025)'}:p.results?.length?p:{...p,results:RESULTS[p.id]||RESULTS[p.id.replace(/-\d+$/,'')]||p.results||[]};
 // ФРП «История» 2025: Первая мировая война и 1917 г. изучаются в 10 классе (курс «История России. 1914–1945 гг.»), а не в 9.
 const CONTENT_FIXES={'history-9':t=>t.replace(/\s*Россия в Первой мировой войне и революционные события 1917 г\./,'')};
 const withFixes=p=>CONTENT_FIXES[p.id]?{...p,sections:p.sections.map(s=>({...s,topics:s.topics.map(CONTENT_FIXES[p.id])}))}:p;
