@@ -131,13 +131,23 @@ export function eorRows(md, section) {
   });
   return out;
 }
+let PROGS = null;
+async function allPrograms(root) {
+  if (PROGS) return PROGS;
+  PROGS = [];
+  const dir = path.join(root, 'src/data/fop');
+  for (const f of fs.readdirSync(dir).filter(f => f.endsWith('.json'))) {
+    try { const a = JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8')); if (Array.isArray(a)) for (const q of a) if (q && q.id && Array.isArray(q.sections)) PROGS.push(q); } catch {}
+  }
+  return PROGS;
+}
 const FPU_DOC = 'LAW_540209'; // ФПУ, приказ № 436; ЭОР (приказ № 591) — job.doc = 'LAW_545053'
-export async function fpuExtract(jobs) {
+export async function fpuExtract(jobs, root) {
   const get = async u => (await fetch(`https://r.jina.ai/${u}`, { signal: AbortSignal.timeout(90000) })).text();
   // direct: страница КонсультантПлюс без r.jina.ai (порядок абзацев как в документе), HTML -> текст.
   const ENT = { nbsp: ' ', quot: '"', laquo: '«', raquo: '»', amp: '&', lt: '<', gt: '>', mdash: '—', ndash: '–', hellip: '…' };
   const getDirect = async u => (await (await fetch(u, { headers: { 'User-Agent': 'Mozilla/5.0', 'Accept-Language': 'ru' }, signal: AbortSignal.timeout(90000) })).text())
-    .replace(/<(script|style)[\s\S]*?<\/\1>/gi, '').replace(/<\/?(?:p|br|div|h\d|li|tr)\b[^>]*>/gi, '\n').replace(/<[^>]+>/g, '')
+    .replace(/<(script|style)[\s\S]*?<\/\1>/gi, '').replace(/<img[^>]*>/gi, 'ё').replace(/<\/?(?:p|br|div|h\d|li|tr)\b[^>]*>/gi, '\n').replace(/<[^>]+>/g, '')
     .replace(/&#(\d+);/g, (m, d) => String.fromCodePoint(+d)).replace(/&([a-z]+);/g, (m, k) => ENT[k] ?? m).replace(/[ \t]+/g, ' ').replace(/\n\s*\n+/g, '\n');
   const indexes = new Map();
   const linksOf = async doc => {
@@ -153,18 +163,36 @@ export async function fpuExtract(jobs) {
   const blocks = [];
   for (const job of jobs) {
     const links = await linksOf(job.doc || FPU_DOC);
-    if (job.list) { blocks.push(`#${job.doc} links=${links.size}\n` + [...links].filter(([, v]) => !job.grep || new RegExp(job.grep, 'i').test(v.name)).map(([k, v]) => `${k} ${v.name.slice(0, job.grep ? 110 : 40)} ${job.full ? v.url.slice(-41, -1) : v.url.slice(-41, -31)}`).join('\n')); continue; }
+    if (job.list) { blocks.push(`#${job.doc} links=${links.size}\n` + [...links].filter(([k, v]) => (!job.grep || new RegExp(job.grep, 'i').test(v.name)) && (!job.keys || new RegExp(job.keys).test(k))).map(([k, v]) => `${k} ${v.name.slice(0, job.grep ? 110 : 40)} ${job.full ? v.url.slice(-41, -1) : v.url.slice(-41, -31)}`).join('\n')); continue; }
     const url = job.url || (links.get(job.section) || {}).url;
     if (!url) { blocks.push(`#${job.section} NO LINK`); continue; }
     if (job.urlOnly) { blocks.push(`#${job.section} ${url}`); continue; }
     try {
       const md = job.direct ? await getDirect(url) : await get(url);
+      if (job.content) {
+        // Сверка содержания обучения: абзацы ФОП (до метапредметных результатов) против тем корпуса.
+        const p = (await allPrograms(root)).find(q => q.id === job.content);
+        const pool = p ? p.sections.flatMap(x => [x.title, ...x.topics]) : [];
+        const hay = ` ${norm(pool.join(' '))} `;
+        const ls = md.split('\n').map(x => x.trim()).filter(Boolean);
+        const a = ls.findIndex(x => x.startsWith(`${job.section}.1.`));
+        const b = a < 0 ? -1 : ls.slice(a).findIndex(x => /^\d+(?:\.\d+)+\.?\s.*(?:позволяет|универсальн|метапредметн|Планируемые результаты)/i.test(x));
+        const body = a < 0 ? [] : ls.slice(a, b < 0 ? ls.length : a + b).filter(x => !/^-{5,}|^<\d+>|^\((?:в ред|введен|абзац|пп?\.)/.test(x)).map(x => x.replace(/<\d+>/g, ''));
+        const heads = body.filter(x => /^\d+(?:\.\d+)+\.?\s/.test(x) && x.length < 90);
+        const paras = body.filter(x => !heads.includes(x)).map(x => x.replace(/^\d+(?:\.\d+)+\.?\s*/, '')).filter(x => norm(x).length > 15);
+        const miss = paras.filter(x => !hay.includes(` ${norm(x)} `));
+        const fh = ` ${norm(body.join(' '))} `;
+        const sent = pool.flatMap(t => String(t).split(/(?<=[.;:])\s+/)).filter(x => norm(x).length > 15);
+        const extra = sent.filter(x => !fh.includes(` ${norm(x).replace(/ $/, '')}`));
+        blocks.push(`#${job.content} ${job.section} ${url.slice(-41, -31)} len=${md.length} heads=${heads.length} paras=${paras.length} miss=${miss.length} csent=${sent.length} cextra=${extra.length}${p ? '' : ' NOPROG'}` + (job.show ? '\n' + miss.slice(0, job.show).map(x => '- ' + x.slice(0, 100)).join('\n') : ''));
+        continue;
+      }
       if (job.raw) { const f = job.from ? md.indexOf(job.from) : -1, k = f >= 0 ? f : Math.max(0, md.indexOf('\n# ')); blocks.push(`#${job.section} RAW len=${md.length} ${url.slice(-41, -1)}\n` + md.slice(k, k + job.raw)); continue; }
       const all = job.doc === 'LAW_545053' ? eorRows(md, job.section) : fpuRows(md);
       let rows0 = null;
       if (job.pick) {
         // Компактно: по каждому классу до job.pick ЭОР, приоритет — правообладатели из job.prefer.
-        const pref = job.prefer || ['Государственный университет просвещения', 'Издательство "Просвещения', 'ЯКласс'];
+        const pref = job.prefer || ['Государственный университет просвещения', 'Издательство "Просвещение', 'ЯКласс'];
         const parsed = all.filter(r => r.split('|')[1].startsWith(job.section + '.')).map(r => {
           const [n, code, title, owner, grade] = r.split('|');
           const g = (grade.match(/^(\d+)(?:\s*-\s*(\d+))?/) || []);
@@ -192,7 +220,7 @@ export async function extractJobs(root) {
   const jobs = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')) : [];
   const fpu = jobs.filter(j => j.type === 'fpu');
   if (fpu.length) {
-    emit('f', await fpuExtract(fpu));
+    emit('f', await fpuExtract(fpu, root));
   }
   if (jobs.some(j => j.type !== 'fpu')) await diffExtract(root);
   return [];
