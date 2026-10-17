@@ -62,7 +62,8 @@ import resLiterature11 from '../../data/fop/literature_soo_11_results.json';
 import nooA from '../../data/fop/noo_results_a.json';
 import nooB from '../../data/fop/noo_results_b.json';
 import nooC from '../../data/fop/noo_results_c.json';
-const nooResults={...nooA,...nooB,...nooC};
+import nooD from '../../data/fop/noo_results_d.json';
+const nooResults={...nooA,...nooB,...nooC,...nooD};
 
 // extraResults: обществознание 10 (новая программа, приказ № 729) из корпуса ФРП, см. frp-chinese-plugin.js.
 const RESULTS={...(extraResults||{}),...resLiterature11,...resRussian5,...resRussian6,...resRussian7,...resRussian8,...resRussian9,...resArt,...resMusic,...resTech,...resPe,...resObzr};
