@@ -134,6 +134,11 @@ export function eorRows(md, section) {
 const FPU_DOC = 'LAW_540209'; // ФПУ, приказ № 436; ЭОР (приказ № 591) — job.doc = 'LAW_545053'
 export async function fpuExtract(jobs) {
   const get = async u => (await fetch(`https://r.jina.ai/${u}`, { signal: AbortSignal.timeout(90000) })).text();
+  // direct: страница КонсультантПлюс без r.jina.ai (порядок абзацев как в документе), HTML -> текст.
+  const ENT = { nbsp: ' ', quot: '"', laquo: '«', raquo: '»', amp: '&', lt: '<', gt: '>', mdash: '—', ndash: '–', hellip: '…' };
+  const getDirect = async u => (await (await fetch(u, { headers: { 'User-Agent': 'Mozilla/5.0', 'Accept-Language': 'ru' }, signal: AbortSignal.timeout(90000) })).text())
+    .replace(/<(script|style)[\s\S]*?<\/\1>/gi, '').replace(/<\/?(?:p|br|div|h\d|li|tr)\b[^>]*>/gi, '\n').replace(/<[^>]+>/g, '')
+    .replace(/&#(\d+);/g, (m, d) => String.fromCodePoint(+d)).replace(/&([a-z]+);/g, (m, k) => ENT[k] ?? m).replace(/[ \t]+/g, ' ').replace(/\n\s*\n+/g, '\n');
   const indexes = new Map();
   const linksOf = async doc => {
     if (!indexes.has(doc)) {
@@ -153,13 +158,13 @@ export async function fpuExtract(jobs) {
     if (!url) { blocks.push(`#${job.section} NO LINK`); continue; }
     if (job.urlOnly) { blocks.push(`#${job.section} ${url}`); continue; }
     try {
-      const md = await get(url);
-      if (job.raw) { const k = Math.max(0, md.indexOf('\n# ')); blocks.push(`#${job.section} RAW len=${md.length} ${url.slice(-41, -1)}\n` + md.slice(k, k + job.raw)); continue; }
+      const md = job.direct ? await getDirect(url) : await get(url);
+      if (job.raw) { const f = job.from ? md.indexOf(job.from) : -1, k = f >= 0 ? f : Math.max(0, md.indexOf('\n# ')); blocks.push(`#${job.section} RAW len=${md.length} ${url.slice(-41, -1)}\n` + md.slice(k, k + job.raw)); continue; }
       const all = job.doc === 'LAW_545053' ? eorRows(md, job.section) : fpuRows(md);
       let rows0 = null;
       if (job.pick) {
         // Компактно: по каждому классу до job.pick ЭОР, приоритет — правообладатели из job.prefer.
-        const pref = job.prefer || ['Государственный университет просвещения', 'Издательство "Просвещение', 'ЯКласс'];
+        const pref = job.prefer || ['Государственный университет просвещения', 'Издательство "Просвещения', 'ЯКласс'];
         const parsed = all.filter(r => r.split('|')[1].startsWith(job.section + '.')).map(r => {
           const [n, code, title, owner, grade] = r.split('|');
           const g = (grade.match(/^(\d+)(?:\s*-\s*(\d+))?/) || []);
