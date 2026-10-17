@@ -87,6 +87,23 @@ export function fpuRows(md) {
   });
   return out;
 }
+// ЭОР (приказ № 591): «1589.4.3.4.1.Наименование и описание…Правообладатель…Класс Приказ N 413…».
+// Печатаем: номер | код | начало наименования | правообладатель | класс.
+export function eorRows(md, section) {
+  const t = md.replace(/\[[^\]]*\]\([^)]*\)/g, '').replace(/\s*\n\s*/g, ' ');
+  const ms = [...t.matchAll(new RegExp(`(?<!\\d)(\\d{1,4})\\.\\s*(${section.replace(/\./g, '\\.')}\\.\\d+(?:\\.\\d+)?)\\.?(?!\\d)`, 'g'))], seen = new Set(), out = [];
+  ms.forEach((m, i) => {
+    if (seen.has(m[2])) return; seen.add(m[2]);
+    let body = t.slice(m.index + m[0].length, i + 1 < ms.length ? ms[i + 1].index + 1 : t.length);
+    const k = body.search(/Приказ\s*N \d{3}/); if (k > 0) body = body.slice(0, k);
+    const own = [...body.matchAll(/(?:Общество с ограниченной ответственностью|Акционерное общество|Автономная некоммерческая организация|Федеральное государственное [а-яё ]+|Государственное [а-яё ]+)\s*"[^"]*(?:"[^"]*)?"+/g)].pop();
+    const owner = own ? own[0].replace('Общество с ограниченной ответственностью', 'ООО').replace('Акционерное общество', 'АО') : '?';
+    const title = (own ? body.slice(0, own.index) : body).replace(/\s+/g, ' ').trim().slice(0, 150);
+    const grade = own ? body.slice(own.index + own[0].length).replace(/\s+/g, ' ').trim() : '';
+    out.push(`${m[1]}|${m[2]}|${title}|${owner}|${grade}`);
+  });
+  return out;
+}
 const FPU_DOC = 'LAW_540209'; // ФПУ, приказ № 436; ЭОР (приказ № 591) — job.doc = 'LAW_545053'
 export async function fpuExtract(jobs) {
   const get = async u => (await fetch(`https://r.jina.ai/${u}`, { signal: AbortSignal.timeout(90000) })).text();
@@ -111,7 +128,7 @@ export async function fpuExtract(jobs) {
     try {
       const md = await get(url);
       if (job.raw) { const k = Math.max(0, md.indexOf('\n# ')); blocks.push(`#${job.section} RAW len=${md.length} ${url.slice(-41, -1)}\n` + md.slice(k, k + job.raw)); continue; }
-      const all = fpuRows(md);
+      const all = job.doc === 'LAW_545053' ? eorRows(md, job.section) : fpuRows(md);
       const rows = job.numbers ? all.filter(r => job.numbers.includes(Number(r.split('|')[0]))) : all.filter(r => r.split('|')[1].startsWith(job.section + '.'));
       blocks.push(`#${job.section} rows=${rows.length} ${url.slice(-41, -1)}\n` + (rows.length ? rows.join('\n') : `len=${md.length}\n` + md.slice(Math.max(0, md.indexOf('\n# ')), Math.max(0, md.indexOf('\n# ')) + 3000)));
     } catch (e) { blocks.push(`#${job.section} ERR ${e.message || e}`); }
