@@ -75,7 +75,7 @@ export async function diffExtract(root) {
 // Печатаем: порядковый номер ФПУ | код | наименование, авторы, издатель, класс | срок использования.
 export function fpuRows(md) {
   const t = md.replace(/\[[^\]]*\]\([^)]*\)/g, '').replace(/\s*\n\s*/g, ' ');
-  const re = /(?:^|[^\d.])(\d{1,4})\.\s*([12]\.1\.[123]\.\d+\.\d+\.\d+)\.?/g;
+  const re = /(?:^|[^\d.])(\d{1,4})\.\s*([12]\.1\.[123]\.\d+(?:\.\d+){1,2})\.?(?!\d)/g;
   const ms = [...t.matchAll(re)], seen = new Set(), out = [];
   ms.forEach((m, i) => {
     if (seen.has(m[2])) return; seen.add(m[2]);
