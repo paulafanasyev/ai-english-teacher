@@ -2,9 +2,12 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../../core/store.js';
 import { PLANS, DOCS, SOURCE_REGISTRY, findProgram, findPrograms, isSampleResults, fmtHours } from './fop.js';
-import textbooks from '../../data/fop/textbooks.json';
+import textbooksMain from '../../data/fop/textbooks.json';
+import textbooksAdd from '../../data/fop/textbooks_add.json';
 import resources from '../../data/fop/resources.json';
 import RuOnly from './RuOnly.jsx';
+
+const textbooks = [...textbooksMain, ...textbooksAdd];
 
 const Doc = ({ k }) => (
   <a href={DOCS[k].url} target="_blank" rel="noreferrer" className="underline font-bold text-primary">{DOCS[k].title}</a>
