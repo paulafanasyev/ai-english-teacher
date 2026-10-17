@@ -8,7 +8,7 @@ async function collect(root) {
   const file = path.join(root, 'src/data/fop/extract_jobs.json');
   if (!fs.existsSync(file)) return [];
   const out = [], cache = new Map();
-  for (const job of JSON.parse(fs.readFileSync(file, 'utf8'))) {
+  for (const job of JSON.parse(fs.readFileSync(file, 'utf8')).filter(j => j.type !== 'fpu')) {
     try {
       if (!cache.has(job.url)) {
         const res = await fetch(`https://r.jina.ai/${job.url}`, { signal: AbortSignal.timeout(90000) });
@@ -69,5 +69,42 @@ export async function diffExtract(root) {
     console.log(`::${n < 8 ? 'notice' : 'warning'} title=d${n}::${esc(text.slice(i, i + 1900))}`);
 }
 
+// ФПУ (приказ № 436): по номеру раздела находим страницу КонсультантПлюс и печатаем строки таблиц.
+// Задание: { type: 'fpu', section: '1.1.2.14', grades?: [5, 6] }.
+const FPU_INDEX = 'https://www.consultant.ru/document/cons_doc_LAW_540209/';
+export async function fpuExtract(jobs) {
+  const get = async u => (await fetch(`https://r.jina.ai/${u}`, { signal: AbortSignal.timeout(90000) })).text();
+  const index = await get(FPU_INDEX);
+  const links = new Map();
+  for (const m of index.matchAll(/\[(\d+(?:\.\d+)+)\.?\s[^\]]*\]\((https:\/\/www\.consultant\.ru\/document\/cons_doc_LAW_540209\/[0-9a-f]+\/)\)/g))
+    if (!links.has(m[1])) links.set(m[1], m[2]);
+  const blocks = [`index links=${links.size}`];
+  for (const job of jobs) {
+    const url = links.get(job.section);
+    if (!url) { blocks.push(`#${job.section} NO LINK`); continue; }
+    try {
+      const md = await get(url);
+      const rows = md.split('\n').filter(l => l.trim().startsWith('|') && !/^\|\s*-{3}/.test(l.trim()))
+        .map(l => l.trim().replace(/^\||\|$/g, '').split('|').map(c => c.replace(/\[([^\]]*)\]\([^)]*\)/g, '$1').replace(/\s+/g, ' ').trim().slice(0, 140)))
+        .filter(c => c.some(Boolean));
+      const keep = rows.filter(c => !job.grades || c.some(x => job.grades.some(g => new RegExp(`^${g}(?:\\s*[-–]\\s*\\d+)?$`).test(x))) || !/^\d/.test(c[0] || ''));
+      blocks.push(`#${job.section} ${url.split('/').slice(-2, -1)[0].slice(0, 10)} rows=${rows.length} keep=${keep.length}\n` + keep.map(c => c.join(' | ')).join('\n'));
+    } catch (e) { blocks.push(`#${job.section} ERR ${e.message || e}`); }
+  }
+  return blocks.join('\n');
+}
+
 // Плагин вызывает extractJobs и печатает результат сам; печатаем здесь сверку и возвращаем пустой список.
-export async function extractJobs(root) { await diffExtract(root); return []; }
+export async function extractJobs(root) {
+  const file = path.join(root, 'src/data/fop/extract_jobs.json');
+  const jobs = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')) : [];
+  const fpu = jobs.filter(j => j.type === 'fpu');
+  if (fpu.length) {
+    const esc = s => s.replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A');
+    const text = await fpuExtract(fpu);
+    for (let i = 0, n = 0; i < text.length && n < 18; i += 1900, n++)
+      console.log(`::${n < 8 ? 'notice' : 'warning'} title=f${n}::${esc(text.slice(i, i + 1900))}`);
+  }
+  if (jobs.some(j => j.type !== 'fpu')) await diffExtract(root);
+  return [];
+}
