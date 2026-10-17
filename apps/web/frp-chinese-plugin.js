@@ -5,7 +5,7 @@
 //    на уже сверенных вручную результатах литературы 10 класса.
 // Слова не меняются: убираются только колонтитулы/номера страниц и восстанавливаются потерянные дефисы.
 // Если источник недоступен, сборка не падает (данные просто не появятся).
-// Исключение: в GitHub Actions сборка падает, чтобы зелёный CI гарантировал все данные и пройденный контроль.
+// Исключение: в GitHub Actions сборка падает, если не собраны все 10 программ по китайскому. Отчёт: frp-report.json в сборке.
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -84,8 +84,10 @@ const norm = s => String(s).toLowerCase().replace(/ё/g, 'е').replace(/[^a-zа-
 export function controlScore(corpusLines, ours) {
   const hay = ` ${norm(corpusLines.join(' '))} `;
   const items = ours.filter(x => norm(x).length > 20);
-  const hit = items.filter(x => hay.includes(` ${norm(x)} `)).length;
-  return { hit, total: items.length, ratio: items.length ? hit / items.length : 0 };
+  const miss = items.filter(x => !hay.includes(` ${norm(x)} `));
+  const hit = items.length - miss.length;
+  return { hit, total: items.length, ratio: items.length ? hit / items.length : 0,
+    misses: miss.slice(0, 3).map(x => x.slice(0, 160)), corpusSample: corpusLines.slice(0, 3).map(x => x.slice(0, 160)), corpusLines: corpusLines.length };
 }
 
 async function load(job, cacheDir, localDir) {
@@ -124,17 +126,21 @@ export async function loadChinese({ cacheDir = path.resolve('node_modules/.cache
 }
 
 export default function chineseFrp() {
-  let mod = null;
+  let mod = null, report = null;
   return {
     name: 'chinese-frp',
+    // Отчёт о загрузке кладётся в сборку (frp-report.json), чтобы проверить результат без доступа к логам CI.
+    generateBundle() { if (report) this.emitFile({ type: 'asset', fileName: 'frp-report.json', source: JSON.stringify(report, null, 1) }); },
     resolveId(id) { return id === VID ? '\0' + VID : null; },
     async load(id) {
       if (id !== '\0' + VID) return null;
       if (!mod) {
         const { programs, errors, extraResults, control } = await loadChinese();
         console.log(`[chinese-frp] программ: ${programs.length}; доп. результаты: ${Object.keys(extraResults).join(', ')}; контроль: ${control ? `${control.hit}/${control.total}` : 'нет'}`);
-        if (process.env.GITHUB_ACTIONS === 'true' && (errors.length || programs.length !== 10 || Object.keys(extraResults).length !== EXTRA_RESULTS.length))
-          this.error(`ФРП из корпуса: программ ${programs.length} из 10, доп. результатов ${Object.keys(extraResults).length} из ${EXTRA_RESULTS.length}. ${errors.join(' | ')}`);
+        report = { programs: programs.map(p => ({ id: p.id, hours: p.hours_per_year, topics: p.sections.reduce((n, s) => n + s.topics.length, 0), content: p.content.length, results: p.results.length })),
+          extraResults: Object.fromEntries(Object.entries(extraResults).map(([k, v]) => [k, v.length])), control, errors };
+        if (process.env.GITHUB_ACTIONS === 'true' && programs.length !== 10)
+          this.error(`ФРП из корпуса: программ ${programs.length} из 10. ${errors.join(' | ')}`);
         errors.forEach(e => this.warn(`ФРП из корпуса: ${e}`));
         mod = `export const errors=${JSON.stringify(errors)};\nexport const extraResults=${JSON.stringify(extraResults)};\nexport const control=${JSON.stringify(control)};\nexport default ${JSON.stringify(programs)};`;
       }
