@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useApp, useT } from '../core/store.js';
 import { LOCALES, pickL } from '../i18n/index.js';
@@ -15,6 +15,7 @@ const L_CLASSES = { ru: 'Классы и чат', en: 'Classes & chat' };
 const L_PLANNER = { ru: 'План уроков', en: 'Lesson plan' };
 const L_A11Y = { ru: 'Доступность', en: 'Accessibility' };
 const L_READ = { ru: 'Прочитать выделенное', en: 'Read selection aloud' };
+const L_MORE = { ru: 'Ещё', en: 'More' };
 
 const NAV = [
   { to: '/', icon: '🏠', key: 'nav.home' },
@@ -69,6 +70,7 @@ export default function Layout({ children }) {
   const { user, prefs, setPref, setUser, locale, setLocale } = useApp();
   const t = useT();
   const nav = useNavigate();
+  const [more, setMore] = useState(false);
   const teacher = teacherById(user.teacherId);
   const isStaff = user.role === 'TEACHER' || user.role === 'PARENT';
   const label = (n) => (n.label ? pickL(n.label, locale) : t(n.key));
@@ -103,10 +105,17 @@ export default function Layout({ children }) {
     ]
     : NAV;
 
+  // Mobile bottom bar has room for 5 buttons: if there are more sections, the 5th one opens the full menu.
+  const SETTINGS = { to: '/settings', icon: '⚙️', key: 'nav.settings' };
+  const hasMore = items.length > 4;
+  const mobileBar = hasMore ? items.slice(0, 4) : [...items, SETTINGS];
+  const mobileMore = hasMore ? [...items.slice(4), SETTINGS] : [];
+
   const linkCls = ({ isActive }) =>
     `flex items-center gap-3 px-4 py-2.5 rounded-2xl font-extrabold transition ${isActive ? 'bg-primary text-white shadow-lg shadow-primary/30' : 'hover:bg-soft text-ink/70'}`;
   const a11yName = pickL(L_A11Y, locale);
   const readName = pickL(L_READ, locale);
+  const moreName = pickL(L_MORE, locale);
   const musicName = `${t('settings.music')}: ${prefs.musicOn ? 'ON' : 'OFF'}`;
   const toggleA11y = () => setPref('a11y', !prefs.a11y);
 
@@ -174,14 +183,35 @@ export default function Layout({ children }) {
           </footer>
         </main>
 
+        {/* Full menu sheet (mobile) */}
+        {more && hasMore && (
+          <div className="md:hidden fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label={moreName} onClick={() => setMore(false)}>
+            <div className="absolute inset-0 bg-black/30" />
+            <div className="absolute bottom-0 inset-x-0 bg-surface rounded-t-3xl p-4 pb-24 grid grid-cols-3 gap-2 max-h-[80vh] overflow-y-auto shadow-2xl" onClick={(e) => e.stopPropagation()}>
+              {mobileMore.map((n) => (
+                <NavLink key={n.to} to={n.to} onClick={() => { sfx.click(); setMore(false); }}
+                  className={({ isActive }) => `flex flex-col items-center gap-1 p-3 rounded-2xl text-xs font-bold text-center ${isActive ? 'bg-primary text-white' : 'bg-soft text-ink/70'}`}>
+                  <span className="text-2xl" aria-hidden="true">{n.icon}</span>{label(n)}
+                </NavLink>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Bottom nav (mobile) */}
-        <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-surface/95 backdrop-blur border-t border-black/5 flex justify-around py-1.5">
-          {[...items.slice(0, 4), { to: '/settings', icon: '⚙️', key: 'nav.settings' }].map((n) => (
-            <NavLink key={n.to} to={n.to} onClick={() => sfx.click()}
+        <nav className="md:hidden fixed bottom-0 inset-x-0 z-50 bg-surface/95 backdrop-blur border-t border-black/5 flex justify-around py-1.5">
+          {mobileBar.map((n) => (
+            <NavLink key={n.to} to={n.to} onClick={() => { sfx.click(); setMore(false); }}
               className={({ isActive }) => `flex flex-col items-center px-3 py-1 rounded-xl text-[11px] font-bold ${isActive ? 'text-primary' : 'text-ink/50'}`}>
               <span className="text-2xl" aria-hidden="true">{n.icon}</span>{label(n)}
             </NavLink>
           ))}
+          {hasMore && (
+            <button type="button" aria-expanded={more} onClick={() => { sfx.click(); setMore((v) => !v); }}
+              className={`flex flex-col items-center px-3 py-1 rounded-xl text-[11px] font-bold ${more ? 'text-primary' : 'text-ink/50'}`}>
+              <span className="text-2xl" aria-hidden="true">☰</span>{moreName}
+            </button>
+          )}
         </nav>
       </div>
     </div>

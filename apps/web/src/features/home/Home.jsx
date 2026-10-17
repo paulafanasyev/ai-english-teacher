@@ -4,13 +4,28 @@ import { useApp, useT } from '../../core/store.js';
 import { api } from '../../core/api.js';
 import { teacherById } from '../../data/teachers.js';
 import { greetingFor, vocabulary, pickOne } from '../../data/index.js';
+import { pickL } from '../../i18n/index.js';
 import Avatar, { SpeechBubble, useEmotion } from '../../avatar/Avatar.jsx';
 import { tts } from '../../audio/tts.js';
 import { Stat } from '../../ui/kit.jsx';
 import { sfx } from '../../audio/sfx.js';
 
+// School blocks on the home screen: programs by grade (ФОП/ФРП 2026/27, textbooks ФПУ №436, ЭОР №591, Chinese), math, class.
+const L_SCHOOL = {
+  title: { ru: 'Школьная программа 1–11', en: 'School curriculum 1–11', vi: 'Chương trình phổ thông 1–11' },
+  desc: { ru: 'Темы ФОП по классам, учебники ФПУ, ЭОР и китайский язык', en: 'Topics by grade, approved textbooks, e-resources, Chinese', vi: 'Chủ đề theo lớp, sách giáo khoa, tài nguyên số, tiếng Trung' },
+};
+const L_MATH = {
+  title: { ru: 'Математика', en: 'Math', vi: 'Toán' },
+  desc: { ru: 'Разбор задач с репетитором', en: 'Solve problems with a tutor', vi: 'Giải bài cùng gia sư' },
+};
+const L_CLASS = {
+  title: { ru: 'Мой класс', en: 'My class', vi: 'Lớp của tôi' },
+  desc: { ru: 'Класс, задания и чат', en: 'Class, assignments and chat', vi: 'Lớp, bài tập và trò chuyện' },
+};
+
 export default function Home() {
-  const { user, prefs } = useApp();
+  const { user, locale } = useApp();
   const t = useT();
   const teacher = teacherById(user.teacherId);
   const [stats, setStats] = useState(null);
@@ -31,6 +46,9 @@ export default function Home() {
   };
 
   const CTA = [
+    { to: '/programs', icon: '📋', title: pickL(L_SCHOOL.title, locale), desc: pickL(L_SCHOOL.desc, locale), cls: 'from-blue-600 to-sky-500' },
+    { to: '/math', icon: '🧮', title: pickL(L_MATH.title, locale), desc: pickL(L_MATH.desc, locale), cls: 'from-lime-600 to-emerald-500' },
+    { to: '/classroom', icon: '👥', title: pickL(L_CLASS.title, locale), desc: pickL(L_CLASS.desc, locale), cls: 'from-slate-600 to-slate-500' },
     { to: '/lesson', icon: '📖', title: t('home.startLesson'), desc: t('home.lessonDesc'), cls: 'from-violet-500 to-fuchsia-500' },
     { to: '/talk', icon: '🎤', title: t('home.quickTalk', { name: teacher.name }), desc: t('home.talkDesc'), cls: 'from-sky-500 to-cyan-400' },
     { to: '/games', icon: '🎮', title: t('home.playGames'), desc: t('home.gamesDesc'), cls: 'from-amber-500 to-orange-500' },
