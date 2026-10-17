@@ -23,9 +23,10 @@ async function collect(root) {
       // Иероглифы и примеры в КонсультантПлюс даны картинками: на их месте ставим маркер [рис.].
       const lines = [];
       // Номера подпунктов ФОП (110.8.7.2.) убираем: в ФРП их нет.
-      for (const x0 of body) { const x = x0.replace(/^\d+(?:\.\d+)+\.?\s*/, ''); if (IMG.test(x)) { if (lines.length && !lines[lines.length - 1].endsWith('[рис.]')) lines[lines.length - 1] += ' [рис.]'; } else lines.push(x); }
+      const NOTE = /^\((?:в ред\.|см\. текст|введен|абзац|пп?\.\s|подпункт)|consultant\.ru|^<\d+>/i;
+      for (const x0 of body) { const x = x0.replace(/^\d+(?:\.\d+)+\.?\s*/, '').replace(/Image \d+: Рисунок \d+/g, 'ё'); if (NOTE.test(x)) continue; if (IMG.test(x)) { if (lines.length && !lines[lines.length - 1].endsWith('[рис.]')) lines[lines.length - 1] += ' [рис.]'; } else lines.push(x); }
       const probe = start < 0 ? paras.filter(x => /класс|^\d+(?:\.\d+)+/.test(x)).slice(0, 12).map(x => x.slice(0, 120)) : [];
-      out.push({ id: job.id, grade: job.grade, skip: job.skip || 0, paras: paras.length, lines, probe });
+      out.push({ id: job.id, grade: job.grade, skip: job.skip || 0, out: job.out, paras: paras.length, lines, probe });
     } catch (e) { out.push({ id: job.id, grade: job.grade, skip: 0, lines: [], error: String(e.message || e) }); }
   }
   return out;
@@ -56,7 +57,11 @@ export async function diffExtract(root) {
   const programs = [];
   const dir = path.join(root, 'src/data/fop');
   for (const f of fs.readdirSync(dir).filter(f => f.endsWith('.json'))) {
-    try { const a = JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8')); if (Array.isArray(a)) for (const q of a) if (q && q.id && Array.isArray(q.results)) programs.push(q); } catch {}
+    try {
+      const a = JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8'));
+      if (Array.isArray(a)) { for (const q of a) if (q && q.id && Array.isArray(q.results)) programs.push(q); }
+      else if (f.endsWith('_results.json')) for (const [id, r] of Object.entries(a)) if (Array.isArray(r)) programs.unshift({ id, results: r });
+    } catch {}
   }
   try { const { loadChinese } = await import('./frp-chinese-plugin.js'); programs.push(...(await loadChinese({ root })).programs); } catch {}
   const blocks = [];
@@ -73,6 +78,14 @@ export async function diffExtract(root) {
       return `F${i}: ${l}\nC: ${best}`;
     });
     const extra = pool.filter(c => norm(c).length > 20 && !fopHay.includes(` ${norm(c)} `));
+    const all = x.lines.slice(1).filter(l => norm(l).length > 5);
+    if (x.out && all.length) {
+      // Итоговые формулировки: строка корпуса, если совпадает с ФОП (сохраняем «ё» и кавычки), иначе текст ФОП в оформлении корпуса.
+      const fmt = l => { let t = l.trim().replace(/"([^"]*)"/g, '«$1»').replace(/(\d)\s+-\s+(\d)/g, '$1–$2').replace(/\s+-\s+/g, ' — ').replace(/[;,.]$/, '') + '.'; return t[0].toUpperCase() + t.slice(1); };
+      const fin = all.map(l => pool.find(c => norm(c) === norm(l)) || fmt(l));
+      blocks.push(`#${x.id} n=${fin.length} same=${fin.filter(f => pool.includes(f)).length}\n` + fin.join('\n'));
+      continue;
+    }
     if (!fop.length) { blocks.push(`#${x.id} fop=0 paras=${x.paras}${x.error ? ' ERR ' + x.error : ''}\nPROBE:\n${(x.probe || []).join('\n')}`); continue; }
     // Компактно: при расхождениях печатаем все строки ФОП по порядку, «*» — нет в корпусе; затем номера лишних строк корпуса.
     const missSet = new Set(fop.filter(l => !hay.includes(` ${norm(l)} `)));
