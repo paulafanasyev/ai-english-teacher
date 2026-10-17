@@ -3,6 +3,7 @@
 // (github.com/Bormotoon/program-constructor, src/data/frp) по зафиксированному коммиту и кэшируются.
 // Слова не меняются: убираются только колонтитулы/номера страниц и восстанавливаются потерянные дефисы.
 // Если источник недоступен, сборка не падает: китайский остаётся в разделе «официальные источники».
+// Исключение: в GitHub Actions сборка падает, чтобы зелёный CI гарантировал все 10 программ.
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -99,8 +100,10 @@ export default function chineseFrp() {
       if (id !== '\0' + VID) return null;
       if (!mod) {
         const { programs, errors } = await loadChinese();
-        errors.forEach(e => this.warn(`ФРП «Китайский язык»: ${e}`));
         console.log(`[chinese-frp] программ: ${programs.length} (${programs.map(p => p.id).join(', ')})`);
+        if (process.env.GITHUB_ACTIONS === 'true' && (errors.length || programs.length !== 10))
+          this.error(`ФРП «Китайский язык»: собрано ${programs.length} из 10. ${errors.join(' | ')}`);
+        errors.forEach(e => this.warn(`ФРП «Китайский язык»: ${e}`));
         mod = `export const errors=${JSON.stringify(errors)};\nexport default ${JSON.stringify(programs)};`;
       }
       return mod;
