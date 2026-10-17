@@ -90,6 +90,19 @@ export function controlScore(corpusLines, ours) {
     misses: miss.slice(0, 3).map(x => x.slice(0, 160)), corpusSample: corpusLines.slice(0, 3).map(x => x.slice(0, 160)), corpusLines: corpusLines.length };
 }
 
+// Результаты класса: по ключу класса; если ФРП излагает их одним блоком (пустой ключ),
+// берём отрезок от «к концу N класса» до следующего такого заголовка.
+export function gradeResults(sr, g) {
+  if (!sr || typeof sr !== 'object') return [];
+  if (sr[String(g)]) return lines(sr[String(g)]);
+  const all = lines(sr['']);
+  const head = n => new RegExp(`к\\s+концу\\s+(?:обучения\\s+в\\s+)?${n}\\s+класс`, 'i');
+  const start = all.findIndex(x => head(g).test(x));
+  if (start < 0) return [];
+  const rest = all.slice(start + 1).findIndex(x => head('\\d+').test(x));
+  return all.slice(start, rest < 0 ? all.length : start + 1 + rest);
+}
+
 async function load(job, cacheDir, localDir) {
   if (localDir) return JSON.parse(fs.readFileSync(path.join(localDir, job.file), 'utf8'));
   const cached = path.join(cacheDir, `${SRC_COMMIT.slice(0, 7)}-${job.file}`);
@@ -113,12 +126,12 @@ export async function loadChinese({ cacheDir = path.resolve('node_modules/.cache
   try {
     const data = await load(CONTROL, cacheDir, localDir);
     const ours = JSON.parse(fs.readFileSync(path.join(root, CONTROL.local), 'utf8')).find(p => p.id === CONTROL.id)?.results || [];
-    control = controlScore(lines(data.subjectResults?.[String(CONTROL.grade)]), ours);
+    control = { ...controlScore(gradeResults(data.subjectResults, CONTROL.grade), ours), keys: Object.keys(data.subjectResults || {}) };
     if (control.ratio < CONTROL.min) errors.push(`контроль корпуса: литература 10 совпала ${control.hit}/${control.total}`);
     else for (const job of EXTRA_RESULTS) {
       const d = await load(job, cacheDir, localDir);
       if (job.hint && !String(d.source || '').includes(job.hint)) { errors.push(`${job.file}: неожиданный источник ${d.source}`); continue; }
-      const r = lines(d.subjectResults?.[String(job.grade)]);
+      const r = gradeResults(d.subjectResults, job.grade);
       if (r.length) extraResults[job.id] = r; else errors.push(`${job.file}: нет результатов ${job.grade} класса`);
     }
   } catch (e) { errors.push(String(e.message || e)); }
