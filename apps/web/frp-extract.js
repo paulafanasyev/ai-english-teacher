@@ -87,25 +87,33 @@ export function fpuRows(md) {
   });
   return out;
 }
-const FPU_INDEX = 'https://www.consultant.ru/document/cons_doc_LAW_540209/';
+const FPU_DOC = 'LAW_540209'; // ФПУ, приказ № 436; ЭОР (приказ № 591) — job.doc = 'LAW_545053'
 export async function fpuExtract(jobs) {
   const get = async u => (await fetch(`https://r.jina.ai/${u}`, { signal: AbortSignal.timeout(90000) })).text();
-  const index = await get(FPU_INDEX);
-  const links = new Map();
-  for (const m of index.matchAll(/\[(\d+(?:\.\d+)+)\.?\s[^\]]*\]\((https:\/\/www\.consultant\.ru\/document\/cons_doc_LAW_540209\/[0-9a-f]+\/)\)/g))
-    if (!links.has(m[1])) links.set(m[1], m[2]);
-  const blocks = [`index links=${links.size}`];
+  const indexes = new Map();
+  const linksOf = async doc => {
+    if (!indexes.has(doc)) {
+      const index = await get(`https://www.consultant.ru/document/cons_doc_${doc}/`);
+      const links = new Map();
+      for (const m of index.matchAll(new RegExp(`\\[(\\d+(?:\\.\\d+)+)\\.?\\s([^\\]]*)\\]\\((https:\\/\\/www\\.consultant\\.ru\\/document\\/cons_doc_${doc}\\/[0-9a-f]+\\/)\\)`, 'g')))
+        if (!links.has(m[1])) links.set(m[1], { url: m[3], name: m[2].slice(0, 40) });
+      indexes.set(doc, links);
+    }
+    return indexes.get(doc);
+  };
+  const blocks = [];
   for (const job of jobs) {
-    const url = job.url || links.get(job.section);
+    const links = await linksOf(job.doc || FPU_DOC);
+    if (job.list) { blocks.push(`#${job.doc} links=${links.size}\n` + [...links].map(([k, v]) => `${k} ${v.name} ${v.url.slice(-41, -31)}`).join('\n')); continue; }
+    const url = job.url || (links.get(job.section) || {}).url;
     if (!url) { blocks.push(`#${job.section} NO LINK`); continue; }
     if (job.urlOnly) { blocks.push(`#${job.section} ${url}`); continue; }
     try {
       const md = await get(url);
+      if (job.raw) { const k = Math.max(0, md.indexOf('\n# ')); blocks.push(`#${job.section} RAW len=${md.length} ${url.slice(-41, -1)}\n` + md.slice(k, k + job.raw)); continue; }
       const all = fpuRows(md);
       const rows = job.numbers ? all.filter(r => job.numbers.includes(Number(r.split('|')[0]))) : all.filter(r => r.split('|')[1].startsWith(job.section + '.'));
-      const heads = [...md.matchAll(/([12]\.1\.[123]\.\d+)\.\s*([^\n()]{0,60}\(учебный предмет\))/g)].map(m => m[1] + ' ' + m[2]).slice(0, 4).join('; ');
-      const app = (md.match(/Приложени[ея] N ?\d[^\n]{0,80}/) || [''])[0];
-      blocks.push(`#${job.section || job.url.slice(-41, -1)} rows=${rows.length} ${url.slice(-41, -1)}\n` + (job.numbers ? `HEADS: ${heads}\nAPP: ${app}\n` : '') + (rows.length ? rows.join('\n') : `len=${md.length}\n` + md.slice(Math.max(0, md.indexOf('\n# ')), Math.max(0, md.indexOf('\n# ')) + 3000)));
+      blocks.push(`#${job.section} rows=${rows.length} ${url.slice(-41, -1)}\n` + (rows.length ? rows.join('\n') : `len=${md.length}\n` + md.slice(Math.max(0, md.indexOf('\n# ')), Math.max(0, md.indexOf('\n# ')) + 3000)));
     } catch (e) { blocks.push(`#${job.section} ERR ${e.message || e}`); }
   }
   return blocks.join('\n');
