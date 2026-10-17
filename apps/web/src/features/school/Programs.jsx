@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../../core/store.js';
-import { PLANS, DOCS, findProgram, findPrograms, isSampleResults, fmtHours } from './fop.js';
+import { PLANS, DOCS, SOURCE_REGISTRY, findProgram, findPrograms, isSampleResults, fmtHours } from './fop.js';
 import RuOnly from './RuOnly.jsx';
 
 const Doc = ({ k }) => (
@@ -36,6 +36,25 @@ export default function Programs() {
         </p>
       </div>
       <RuOnly />
+
+      {SOURCE_REGISTRY.chinese?.length > 0 && (
+        <div className="card p-5 space-y-3">
+          <div className="font-black text-lg">🇨🇳 Китайский язык: официальные источники</div>
+          <p className="text-sm font-semibold text-ink/60">Эти карточки показывают действующие федеральные рабочие программы и рекомендуемый объём. Полные программы появятся только после дословной проверки содержания по каждому классу, поэтому неполные данные не выдаются за готовые уроки.</p>
+          <div className="grid gap-3 md:grid-cols-3">
+            {SOURCE_REGISTRY.chinese.map((src) => (
+              <div key={src.id} className="rounded-2xl bg-soft/60 p-3 space-y-2">
+                <div className="font-black">{src.subject}</div>
+                <div className="text-sm font-bold text-ink/70">{src.grades.join(', ')} классы · {fmtHours(src.hours_per_week)} ч/нед. · {src.hours_per_year} ч/год</div>
+                <div className="text-xs font-semibold text-ink/60">Всего за диапазон: {src.total_hours_for_range} ч</div>
+                {src.note && <div className="text-xs font-semibold text-ink/60">{src.note}</div>}
+                <div className="text-xs font-black uppercase text-ink/50">Источник только, программа проверяется</div>
+                <a href={src.source_url} target="_blank" rel="noreferrer" className="inline-block text-sm font-bold text-primary underline">Открыть официальный PDF</a>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="flex flex-wrap gap-2" role="group" aria-label="Уровень образования">
         {Object.keys(PLANS).map((l) => (
