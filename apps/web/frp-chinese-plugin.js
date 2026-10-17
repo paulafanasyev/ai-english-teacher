@@ -9,6 +9,7 @@
 // Исключение: в GitHub Actions сборка падает, если не собраны все 10 программ по китайскому и результаты обществознания 10.
 import fs from 'node:fs';
 import path from 'node:path';
+import { extractJobs } from './frp-extract.js';
 
 const SRC_COMMIT = '0efda7cf9967ec37abae7b70610d74bd0a46cb50';
 const BASE = `https://raw.githubusercontent.com/Bormotoon/program-constructor/${SRC_COMMIT}/src/data/frp/`;
@@ -155,27 +156,6 @@ export async function loadChinese({ cacheDir = path.resolve('node_modules/.cache
     }));
   } catch (e) { errors.push(`chinese_control: ${e.message || e}`); }
   return { programs, errors, extraResults, control, chineseControl };
-}
-
-// Разовое извлечение действующей редакции ФОП (КонсультантПлюс через r.jina.ai) в аннотации CI.
-// Задания лежат в src/data/fop/extract_jobs.json: [{ id, url, grade }]. Текст печатается частями, ничего не меняется.
-export async function extractJobs(root) {
-  const file = path.join(root, 'src/data/fop/extract_jobs.json');
-  if (!fs.existsSync(file)) return [];
-  const out = [];
-  for (const job of JSON.parse(fs.readFileSync(file, 'utf8'))) {
-    try {
-      const res = await fetch(`https://r.jina.ai/${job.url}`, { signal: AbortSignal.timeout(90000) });
-      const md = await res.text();
-      const paras = md.split('\n').map(x => x.replace(/\[\]\([^)]*\)/g, '').replace(/\s+/g, ' ').trim()).filter(Boolean);
-      const head = n => new RegExp(`^(?:\\d+(?:\\.\\d+)*\\.?\\s*)?К концу (?:обучения )?в ${n} класс`, 'i');
-      const start = paras.findIndex(x => head(job.grade).test(x));
-      const end = start < 0 ? -1 : paras.slice(start + 1).findIndex(x => head('\\d+').test(x) || /^\d+(?:\.\d+)+\.?\s/.test(x));
-      const body = start < 0 ? [] : paras.slice(start, end < 0 ? paras.length : start + 1 + end);
-      out.push({ id: job.id, grade: job.grade, status: res.status, paras: paras.length, lines: body });
-    } catch (e) { out.push({ id: job.id, grade: job.grade, error: String(e.message || e) }); }
-  }
-  return out;
 }
 
 export default function chineseFrp() {
