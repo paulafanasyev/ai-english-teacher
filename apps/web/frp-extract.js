@@ -129,7 +129,25 @@ export async function fpuExtract(jobs) {
       const md = await get(url);
       if (job.raw) { const k = Math.max(0, md.indexOf('\n# ')); blocks.push(`#${job.section} RAW len=${md.length} ${url.slice(-41, -1)}\n` + md.slice(k, k + job.raw)); continue; }
       const all = job.doc === 'LAW_545053' ? eorRows(md, job.section) : fpuRows(md);
-      const rows = job.numbers ? all.filter(r => job.numbers.includes(Number(r.split('|')[0]))) : all.filter(r => r.split('|')[1].startsWith(job.section + '.'));
+      let rows0 = null;
+      if (job.pick) {
+        // Компактно: по каждому классу до job.pick ЭОР, приоритет — правообладатели из job.prefer.
+        const pref = job.prefer || ['Государственный университет просвещения', 'Издательство "Просвещение', 'ЯКласс'];
+        const parsed = all.filter(r => r.split('|')[1].startsWith(job.section + '.')).map(r => {
+          const [n, code, title, owner, grade] = r.split('|');
+          const g = (grade.match(/^(\d+)(?:\s*-\s*(\d+))?/) || []);
+          const short = (title.match(/^(.*?\d+(?:\s*-\s*\d+)?\s*(?:-?(?:й|е))?\s*(?:класс(?:ы|а)?|кл\.)\.?\)?(?:\s*\((?:базовый|углубленный)[^)]*\))?(?:[.:]?\s*(?:Цифровая рабочая тетрадь|Наглядные уроки|Интерактивные задания))?)/) || [, title.slice(0, 90)])[1];
+          const until = (grade.match(/До (\d+ [а-я]+ \d{4})/) || [])[1] || '';
+          const rank = pref.findIndex(p => owner.includes(p));
+          return { n, code, short, owner, from: +g[1] || 0, to: +(g[2] || g[1]) || 0, until, rank: rank < 0 ? 99 : rank };
+        });
+        const out = [], per = new Map();
+        for (const x of parsed.sort((a, b) => a.rank - b.rank || a.n - b.n)) {
+          const key = `${x.from}-${x.to}`; if ((per.get(key) || 0) >= job.pick) continue; per.set(key, (per.get(key) || 0) + 1); out.push(x);
+        }
+        rows0 = out.sort((a, b) => a.n - b.n).map(x => `${x.n}|${x.from}${x.to !== x.from ? '-' + x.to : ''}|${x.short}|${x.owner.replace(/Федеральное государственное автономное образовательное учреждение высшего образования/, 'ФГАОУ ВО')}|${x.until}`);
+      }
+      const rows = rows0 || (job.numbers ? all.filter(r => job.numbers.includes(Number(r.split('|')[0]))) : all.filter(r => r.split('|')[1].startsWith(job.section + '.')));
       blocks.push(`#${job.section} rows=${rows.length} ${url.slice(-41, -1)}\n` + (rows.length ? rows.join('\n') : `len=${md.length}\n` + md.slice(Math.max(0, md.indexOf('\n# ')), Math.max(0, md.indexOf('\n# ')) + 3000)));
     } catch (e) { blocks.push(`#${job.section} ERR ${e.message || e}`); }
   }
