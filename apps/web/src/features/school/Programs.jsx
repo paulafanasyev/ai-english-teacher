@@ -2,11 +2,25 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../../core/store.js';
 import { PLANS, DOCS, SOURCE_REGISTRY, findProgram, findPrograms, isSampleResults, fmtHours } from './fop.js';
+import textbooks from '../../data/fop/textbooks.json';
+import resources from '../../data/fop/resources.json';
 import RuOnly from './RuOnly.jsx';
 
 const Doc = ({ k }) => (
   <a href={DOCS[k].url} target="_blank" rel="noreferrer" className="underline font-bold text-primary">{DOCS[k].title}</a>
 );
+
+// Предмет учебного плана -> названия предмета в данных ФПУ/ЭОР
+const TB_MAP = {
+  'Иностранный язык': ['Английский язык'],
+  'Основы религиозных культур и светской этики': ['ОРКСЭ'],
+  'Основы безопасности и защиты Родины': ['ОБЗР'],
+  'Алгебра': ['Алгебра', 'Математика (алгебра и геометрия)'],
+  'Геометрия': ['Геометрия', 'Математика (алгебра и геометрия)'],
+  'Алгебра и начала математического анализа': ['Математика (алгебра и начала математического анализа)'],
+};
+const matchSubject = (s) => TB_MAP[s] || [s];
+const forSubject = (list, s, g) => (s ? list.filter((x) => x.verified && matchSubject(s).includes(x.subject) && Array.isArray(x.grades) && x.grades.includes(g)) : []);
 
 export default function Programs() {
   const { user } = useApp();
@@ -23,6 +37,8 @@ export default function Programs() {
   const programs = current ? findPrograms(current, g) : [];
   const program = programs[mod] || programs[0] || null;
   const canPlan = user.role === 'TEACHER' || user.role === 'ADMIN';
+  const books = forSubject(textbooks, current, g);
+  const eors = forSubject(resources, current, g);
 
   const pickLevel = (l) => { setLevel(l); setGrade(PLANS[l].grades[0]); setSubject(null); setMod(0); };
   const tab = (on) => `rounded-full px-4 py-1.5 text-sm font-black transition ${on ? 'bg-primary text-white' : 'bg-soft text-ink/70'}`;
@@ -48,6 +64,9 @@ export default function Programs() {
                 <div className="text-sm font-bold text-ink/70">{src.grades.join(', ')} классы · {fmtHours(src.hours_per_week)} ч/нед. · {src.hours_per_year} ч/год</div>
                 <div className="text-xs font-semibold text-ink/60">Всего за диапазон: {src.total_hours_for_range} ч</div>
                 {src.note && <div className="text-xs font-semibold text-ink/60">{src.note}</div>}
+                {textbooks.filter((b) => b.verified && b.subject === 'Китайский язык' && b.grades.some((x) => src.grades.includes(x))).map((b) => (
+                  <div key={`${b.fpu_number}-${b.title}`} className="text-xs font-semibold text-ink/70">📗 {b.title}. {b.authors}. {b.publisher} (ФПУ, № {b.fpu_number})</div>
+                ))}
                 <div className="text-xs font-black uppercase text-ink/50">Источник только, программа проверяется</div>
                 <a href={src.source_url} target="_blank" rel="noreferrer" className="inline-block text-sm font-bold text-primary underline">Открыть официальный PDF</a>
               </div>
@@ -133,6 +152,38 @@ export default function Programs() {
               )}
               <p className="text-[11px] font-semibold text-ink/50">Текст по федеральной рабочей программе, пунктуация упрощена для экрана. Для документов школы сверяйтесь с оригиналом.</p>
               <a href={program.source_url} target="_blank" rel="noreferrer" className="inline-block text-sm font-bold text-primary underline">Открыть официальный источник</a>
+            </div>
+          )}
+          {current && (
+            <div className="mt-5 space-y-3 border-t border-black/5 pt-4">
+              <div className="font-black">📚 Учебники из федерального перечня</div>
+              {books.length > 0 ? (
+                <ul className="space-y-2">
+                  {books.map((b) => (
+                    <li key={`${b.fpu_number}-${b.subject}-${b.title}-${b.grades.join('-')}`} className="rounded-xl bg-soft/60 px-3 py-2 text-sm">
+                      <div className="font-bold text-ink/90">{b.title}</div>
+                      <div className="font-semibold text-ink/70">{b.authors}</div>
+                      <div className="text-xs font-semibold text-ink/50">{b.publisher} · {b.grades.join(', ')} кл. · № {b.fpu_number} в ФПУ ({b.fpu_order}) · <a href={b.source_url} target="_blank" rel="noreferrer" className="underline text-primary">источник</a></div>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-sm font-semibold text-ink/60">По этому предмету и классу подтверждённых карточек пока нет. Полный перечень: <Doc k="fpu" />.</p>
+              )}
+              {eors.length > 0 && (
+                <>
+                  <div className="font-black pt-1">💻 Электронные образовательные ресурсы (приказ №591)</div>
+                  <ul className="space-y-2">
+                    {eors.map((r) => (
+                      <li key={`${r.eor_number}-${r.title}`} className="rounded-xl bg-soft/60 px-3 py-2 text-sm">
+                        <div className="font-bold text-ink/90">{r.title}</div>
+                        <div className="text-xs font-semibold text-ink/50">{r.owner} · № {r.eor_number} в перечне ЭОР · <a href={r.url} target="_blank" rel="noreferrer" className="underline text-primary">источник</a></div>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
+              <p className="text-[11px] font-semibold text-ink/50">Показаны только метаданные из приказов. Тексты учебников принадлежат издательствам и здесь не публикуются.</p>
             </div>
           )}
         </div>
