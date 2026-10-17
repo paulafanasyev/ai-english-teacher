@@ -139,6 +139,8 @@ export default function chineseFrp() {
         console.log(`[chinese-frp] программ: ${programs.length}; доп. результаты: ${Object.keys(extraResults).join(', ')}; контроль: ${control ? `${control.hit}/${control.total}` : 'нет'}`);
         report = { programs: programs.map(p => ({ id: p.id, hours: p.hours_per_year, topics: p.sections.reduce((n, s) => n + s.topics.length, 0), content: p.content.length, results: p.results.length })),
           extraResults: Object.fromEntries(Object.entries(extraResults).map(([k, v]) => [k, v.length])), control, errors };
+        // В GitHub Actions отчёт выводится аннотацией (видна в API проверок без доступа к логам).
+        if (process.env.GITHUB_ACTIONS === 'true') console.log(`::notice title=frp-report::${JSON.stringify(report).replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A')}`);
         if (process.env.GITHUB_ACTIONS === 'true' && programs.length !== 10)
           this.error(`ФРП из корпуса: программ ${programs.length} из 10. ${errors.join(' | ')}`);
         errors.forEach(e => this.warn(`ФРП из корпуса: ${e}`));
