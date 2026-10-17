@@ -57,9 +57,10 @@ import resMusic from '../../data/fop/music_ooo_results.json';
 import resTech from '../../data/fop/tech_ooo_results.json';
 import resPe from '../../data/fop/pe_ooo_results.json';
 import resObzr from '../../data/fop/obzr_ooo_results.json';
+import resLiterature11 from '../../data/fop/literature_soo_11_results.json';
 
-// extraResults: литература 11 и обществознание 10 (новая программа) из корпуса ФРП, см. frp-chinese-plugin.js.
-const RESULTS={...(extraResults||{}),...resRussian5,...resRussian6,...resRussian7,...resRussian8,...resRussian9,...resArt,...resMusic,...resTech,...resPe,...resObzr};
+// extraResults: обществознание 10 (новая программа, приказ № 729) из корпуса ФРП, см. frp-chinese-plugin.js.
+const RESULTS={...(extraResults||{}),...resLiterature11,...resRussian5,...resRussian6,...resRussian7,...resRussian8,...resRussian9,...resArt,...resMusic,...resTech,...resPe,...resObzr};
 const withResults=p=>p.results?.length?p:{...p,results:RESULTS[p.id]||RESULTS[p.id.replace(/-\d+$/,'')]||p.results||[]};
 // ФРП «История» 2025: Первая мировая война и 1917 г. изучаются в 10 классе (курс «История России. 1914–1945 гг.»), а не в 9.
 const CONTENT_FIXES={'history-9':t=>t.replace(/\s*Россия в Первой мировой войне и революционные события 1917 г\./,'')};
