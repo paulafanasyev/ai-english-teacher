@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../../core/store.js';
-import { PLANS, DOCS, SOURCE_REGISTRY, findProgram, findPrograms, isSampleResults, fmtHours } from './fop.js';
+import { PLANS, DOCS, SOURCE_REGISTRY, CHINESE_PROGRAMS, OPTIONAL_SUBJECTS, findProgram, findPrograms, isSampleResults, fmtHours } from './fop.js';
 import textbooksMain from '../../data/fop/textbooks.json';
 import textbooksAdd from '../../data/fop/textbooks_add.json';
 import resources from '../../data/fop/resources.json';
@@ -21,6 +21,8 @@ const TB_MAP = {
   'Алгебра': ['Алгебра', 'Математика (алгебра и геометрия)'],
   'Геометрия': ['Геометрия', 'Математика (алгебра и геометрия)'],
   'Алгебра и начала математического анализа': ['Математика (алгебра и начала математического анализа)'],
+  'Иностранный (китайский) язык': ['Китайский язык'],
+  'Второй иностранный (китайский) язык': ['Китайский язык'],
 };
 const matchSubject = (s) => TB_MAP[s] || [s];
 const forSubject = (list, s, g) => (s ? list.filter((x) => x.verified && matchSubject(s).includes(x.subject) && Array.isArray(x.grades) && x.grades.includes(g)) : []);
@@ -36,12 +38,14 @@ export default function Programs() {
   const g = plan.grades.includes(grade) ? grade : plan.grades[0];
   const gi = plan.grades.indexOf(g);
   const rows = plan.rows.filter(([, h]) => h[gi] > 0);
-  const current = rows.find(([s]) => s === subject) ? subject : null;
+  const extra = OPTIONAL_SUBJECTS.filter((s) => findProgram(s, g));
+  const current = (rows.find(([s]) => s === subject) || extra.includes(subject)) ? subject : null;
   const programs = current ? findPrograms(current, g) : [];
   const program = programs[mod] || programs[0] || null;
   const canPlan = user.role === 'TEACHER' || user.role === 'ADMIN';
   const books = forSubject(textbooks, current, g);
   const eors = forSubject(resources, current, g);
+  const chineseReady = CHINESE_PROGRAMS.length > 0;
 
   const pickLevel = (l) => { setLevel(l); setGrade(PLANS[l].grades[0]); setSubject(null); setMod(0); };
   const tab = (on) => `rounded-full px-4 py-1.5 text-sm font-black transition ${on ? 'bg-primary text-white' : 'bg-soft text-ink/70'}`;
@@ -51,7 +55,7 @@ export default function Programs() {
       <div>
         <div className="h2">📋 Федеральные рабочие программы</div>
         <p className="text-sm font-semibold text-ink/60 mt-1">
-          Учебный план и содержание обучения по документам Минпросвещения России. Для всех предметов обязательной части учебного плана 1–9 классов доступны разделы, темы и планируемые предметные результаты (ОРКСЭ по всем шести модулям, английский язык со 2 класса). Для 10–11 классов добавлен универсальный профиль (базовый уровень); по литературе 11 класса и обществознанию 10–11 классов пока нет предметных результатов. Это справка, она не заменяет полный текст действующей программы и утверждённый план школы.
+          Учебный план и содержание обучения по документам Минпросвещения России. Для всех предметов обязательной части учебного плана 1–9 классов доступны разделы, темы и планируемые предметные результаты (ОРКСЭ по всем шести модулям, английский язык со 2 класса). Для 10–11 классов добавлен универсальный профиль (базовый уровень); по литературе 11 класса и обществознанию 10–11 классов пока нет предметных результатов. Китайский язык (2–4 классы) и второй иностранный китайский (5–11 классы) показаны отдельно, в блоке «По выбору школы». Это справка, она не заменяет полный текст действующей программы и утверждённый план школы.
         </p>
       </div>
       <RuOnly />
@@ -59,7 +63,7 @@ export default function Programs() {
       {SOURCE_REGISTRY.chinese?.length > 0 && (
         <div className="card p-5 space-y-3">
           <div className="font-black text-lg">🇨🇳 Китайский язык: официальные источники</div>
-          <p className="text-sm font-semibold text-ink/60">Эти карточки показывают действующие федеральные рабочие программы и рекомендуемый объём. Полные программы появятся только после дословной проверки содержания по каждому классу, поэтому неполные данные не выдаются за готовые уроки.</p>
+          <p className="text-sm font-semibold text-ink/60">{chineseReady ? 'Программы по классам загружены из федеральных рабочих программ: выберите уровень и класс, затем предмет в блоке «По выбору школы».' : 'Эти карточки показывают действующие федеральные рабочие программы и рекомендуемый объём. Полные программы появятся после загрузки текста по каждому классу, поэтому неполные данные не выдаются за готовые уроки.'}</p>
           <div className="grid gap-3 md:grid-cols-3">
             {SOURCE_REGISTRY.chinese.map((src) => (
               <div key={src.id} className="rounded-2xl bg-soft/60 p-3 space-y-2">
@@ -70,7 +74,7 @@ export default function Programs() {
                 {textbooks.filter((b) => b.verified && b.subject === 'Китайский язык' && b.grades.some((x) => src.grades.includes(x))).map((b) => (
                   <div key={`${b.fpu_number}-${b.title}`} className="text-xs font-semibold text-ink/70">📗 {b.title}. {b.authors}. {b.publisher} (ФПУ, № {b.fpu_number})</div>
                 ))}
-                <div className="text-xs font-black uppercase text-ink/50">Источник только, программа проверяется</div>
+                <div className="text-xs font-black uppercase text-ink/50">{CHINESE_PROGRAMS.some((p) => src.grades.includes(p.grade)) ? 'Программа по классам доступна' : 'Источник только, программа проверяется'}</div>
                 <a href={src.source_url} target="_blank" rel="noreferrer" className="inline-block text-sm font-bold text-primary underline">Открыть официальный PDF</a>
               </div>
             ))}
@@ -107,6 +111,21 @@ export default function Programs() {
           <div className="mt-2 border-t border-black/5 px-2 pt-2 text-xs font-bold text-ink/60">
             Итого обязательная часть: {fmtHours(plan.total[gi])} ч · максимум с частью школы: {fmtHours(plan.max[gi])} ч
           </div>
+          {extra.length > 0 && (
+            <div className="mt-2 border-t border-black/5 pt-2">
+              <div className="text-xs font-black uppercase text-ink/50 px-2 pb-1">По выбору школы</div>
+              <ul className="space-y-1" aria-label="Предметы по выбору школы">
+                {extra.map((s) => (
+                  <li key={s}>
+                    <button onClick={() => { setSubject(s); setMod(0); }} aria-pressed={current === s} className={`w-full flex items-center justify-between gap-2 rounded-xl px-3 py-2 text-left text-sm font-bold transition ${current === s ? 'bg-primary text-white' : 'hover:bg-soft'}`}>
+                      <span>📘 🇨🇳 {s}</span><span className="shrink-0 opacity-70">{fmtHours(findProgram(s, g).hours_per_week)}</span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+              <p className="px-2 pt-1 text-[11px] font-semibold text-ink/50">Не входит в итог обязательной части: изучается по решению школы (во 2–4 классах вместо другого иностранного языка).</p>
+            </div>
+          )}
           {plan.note && <p className="px-2 pt-2 text-[11px] font-semibold text-ink/50">{plan.note}</p>}
           <p className="px-2 pt-2 text-[11px] font-semibold text-ink/50">📘 программа есть в Репетиторе. Источник плана: <Doc k={plan.doc} />.</p>
         </div>
@@ -137,6 +156,14 @@ export default function Programs() {
                 {canPlan && <button className="btn-primary !py-2 text-sm" onClick={() => nav(`/planner?p=${program.id}`)}>🗓️ Составить план уроков</button>}
               </div>
               {program.note && <p className="rounded-xl bg-soft/60 px-3 py-2 text-sm font-semibold text-ink/70">ℹ️ {program.note}</p>}
+              {program.content?.length > 0 && (
+                <details className="rounded-2xl bg-soft/60 p-3">
+                  <summary className="cursor-pointer font-black">Содержание обучения, {program.grade} класс</summary>
+                  <ul className="mt-2 list-disc space-y-1 pl-5 text-sm font-semibold text-ink/80">
+                    {program.content.map((t, i) => <li key={i}>{t}</li>)}
+                  </ul>
+                </details>
+              )}
               {program.sections.map((s) => (
                 <details key={s.title} className="rounded-2xl bg-soft/60 p-3" open>
                   <summary className="cursor-pointer font-black">{s.title}</summary>
