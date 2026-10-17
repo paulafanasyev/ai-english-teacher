@@ -80,7 +80,7 @@ export function fpuRows(md) {
   ms.forEach((m, i) => {
     if (seen.has(m[2])) return; seen.add(m[2]);
     const s = m.index + m[0].length, e = i + 1 < ms.length ? ms[i + 1].index + 1 : t.length;
-    let body = t.slice(s, e); const k = body.indexOf('Приказ'); const tail = k > 0 ? body.slice(k) : ''; if (k > 0) body = body.slice(0, k);
+    let body = t.slice(s, e); const k = body.search(/\s*(?:Приказ\s*)?N \d{3}/); const tail = k > 0 ? body.slice(k) : ''; if (k > 0) body = body.slice(0, k);
     const until = (tail.match(/До 31 августа (\d{4})/) || [])[1] || '';
     body = body.replace(/Акционерное общество "Издательство "Просвещение"/g, ' @Просвещение ').replace(/Общество с ограниченной ответственностью/g, 'ООО').replace(/\s+/g, ' ').trim();
     out.push(`${m[1]}|${m[2]}|${body}|${until}`);
@@ -96,12 +96,16 @@ export async function fpuExtract(jobs) {
     if (!links.has(m[1])) links.set(m[1], m[2]);
   const blocks = [`index links=${links.size}`];
   for (const job of jobs) {
-    const url = links.get(job.section);
+    const url = job.url || links.get(job.section);
     if (!url) { blocks.push(`#${job.section} NO LINK`); continue; }
+    if (job.urlOnly) { blocks.push(`#${job.section} ${url}`); continue; }
     try {
       const md = await get(url);
-      const rows = fpuRows(md).filter(r => r.split('|')[1].startsWith(job.section + '.'));
-      blocks.push(`#${job.section} rows=${rows.length}\n` + (rows.length ? rows.join('\n') : `len=${md.length}\n` + md.slice(0, 1500)));
+      const all = fpuRows(md);
+      const rows = job.numbers ? all.filter(r => job.numbers.includes(Number(r.split('|')[0]))) : all.filter(r => r.split('|')[1].startsWith(job.section + '.'));
+      const heads = [...md.matchAll(/([12]\.1\.[123]\.\d+)\.\s*([^\n()]{0,60}\(учебный предмет\))/g)].map(m => m[1] + ' ' + m[2]).slice(0, 4).join('; ');
+      const app = (md.match(/Приложени[ея] N ?\d[^\n]{0,80}/) || [''])[0];
+      blocks.push(`#${job.section || job.url.slice(-41, -1)} rows=${rows.length} ${url.slice(-41, -1)}\n` + (job.numbers ? `HEADS: ${heads}\nAPP: ${app}\n` : '') + (rows.length ? rows.join('\n') : `len=${md.length}\n` + md.slice(0, 1500)));
     } catch (e) { blocks.push(`#${job.section} ERR ${e.message || e}`); }
   }
   return blocks.join('\n');
